@@ -16,11 +16,15 @@ namespace Ona.App.Calendar
 		private bool isExpected;
 
 		public DateViewModel(
+			IDateTimeProvider dateTimeProvider,
 			DateTime date,
-			IDateTimeProvider dateTimeProvider)
+			int currentYear,
+			int currentMonth)
 		{
-			Date = date;
 			this.dateTimeProvider = dateTimeProvider;
+
+			Date = date;
+			IsCurrentMonth = date.Year == currentYear && date.Month == currentMonth;
 		}
 
 		public DateTime Date { get; }
@@ -48,14 +52,7 @@ namespace Ona.App.Calendar
 			}
 		}
 
-		public bool IsCurrentMonth
-		{
-			get
-			{
-				var now = this.dateTimeProvider.Now;
-				return Date.Year == now.Year && Date.Month == now.Month;
-			}
-		}
+		public bool IsCurrentMonth { get; }
 
 		public Color BackgroundColor
 		{
