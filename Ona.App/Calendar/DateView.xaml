@@ -6,7 +6,6 @@
 		RowSpacing="0" ColumnSpacing="0" Margin="0" Padding="0">
 		<Ellipse
 			Fill="{Binding BackgroundColor}"
-			StrokeThickness="0"
 			HorizontalOptions="Center" VerticalOptions="Center"
 			Aspect="UniformToFill"/>
 		<Label 
