@@ -13,6 +13,8 @@ namespace Ona.App.Calendar
 	{
 		private readonly IDateTimeProvider dateTimeProvider;
 
+		private bool isVisible = true;
+
 		public MonthViewModel(
 			IDateTimeProvider dateTimeProvider,
 			int year,
@@ -49,5 +51,7 @@ namespace Ona.App.Calendar
 
 		public DateTime MonthStart
 			=> new DateTime(Year, Month, 1);
+
+		public bool IsVisible { get => this.isVisible; set => SetProperty(ref this.isVisible, value); }
 	}
 }
