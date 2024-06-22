@@ -1,9 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-			 xmlns:calendar="clr-namespace:Ona.App.Calendar"
-             x:Class="Ona.App.MainPage">
-
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			xmlns:calendar="clr-namespace:Ona.App.Calendar"
+            x:Class="Ona.App.MainPage">
 	<Grid
 		Padding="30,0">
 		<Grid.RowDefinitions>
@@ -11,7 +10,7 @@
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
-		
+
 		<Label
 			Grid.Row="0"
 			Text="Day of your cycle"
@@ -25,8 +24,20 @@
 			HorizontalOptions="End"/>
 
 		<ScrollView
-			Grid.Row="2">
-			<calendar:CalendarView/>
+			Grid.Row="2"
+			x:Name="ScrollView"
+			VerticalScrollBarVisibility="Never" Margin="0,0,0,12">
+			<VerticalStackLayout>
+				<Rectangle
+					WidthRequest="1" HeightRequest="{Binding Source={RelativeSource AncestorType={x:Type ScrollView}}, Path=Height}"/>
+
+				<calendar:CalendarView
+					x:Name="CalendarView"
+					SizeChanged="CalendarView_SizeChanged"/>
+
+				<Rectangle
+					WidthRequest="1" HeightRequest="{Binding Source={RelativeSource AncestorType={x:Type ScrollView}}, Path=Height}"/>
+			</VerticalStackLayout>
 		</ScrollView>
 	</Grid>
 </ContentPage>
