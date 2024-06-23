@@ -81,4 +81,6 @@ namespace Ona.App.Calendar
 		private void ExecuteToggle()
 			=> this.messenger.Send(new DateToggledMessage(Date));
 	}
+
+	public delegate DateViewModel DateViewModelFactory(DateTime date, int currentYear, int currentMonth);
 }

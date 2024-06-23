@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.Extensions.DependencyInjection;
 using Ona.App.Calendar;
 using Ona.App.Model;
 using System;
@@ -20,6 +21,10 @@ namespace Ona.App
 
 			services.AddTransient<MainViewModel>();
 			services.AddTransient<CalendarViewModel>();
+			services.AddSingleton<MonthViewModelFactory>(sp => (year, month)
+				=> new MonthViewModel(sp.GetService<DateViewModelFactory>(), year, month));
+			services.AddSingleton<DateViewModelFactory>(sp => (date, currentYear, currentMonth)
+				=> new DateViewModel(sp.GetService<IDateTimeProvider>(), sp.GetService<IMessenger>(), date, currentYear, currentMonth));
 
 			return builder;
 		}
