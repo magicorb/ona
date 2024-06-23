@@ -1,5 +1,4 @@
-using Java.Time;
-using Microsoft.Maui.Controls;
+using CommunityToolkit.Mvvm.Messaging;
 using Ona.App.Model;
 
 namespace Ona.App.Calendar;
@@ -13,7 +12,8 @@ public partial class CalendarView : ContentView
 	{
 		InitializeComponent();
 
-		BindingContext = this.viewModel = new CalendarViewModel(new DateTimeProvider());
+		// TODO: use dependency injection library
+		BindingContext = this.viewModel = new CalendarViewModel(new DateTimeProvider(), new WeakReferenceMessenger());
 
 		this.isLoading = true;
 		Dispatcher.DispatchDelayed(
