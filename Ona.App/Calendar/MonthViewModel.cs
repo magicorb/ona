@@ -44,7 +44,7 @@ namespace Ona.App.Calendar
 		{
 			var firstDate = MonthStart.StartOfWeek(DayOfWeek.Monday);
 
-			return firstDate.DateRange(firstDate.AddMonths(1).AddDays(-1))
+			return firstDate.DateRange(MonthStart.AddMonths(1).AddDays(-1))
 				.Select(d => new DateViewModel(this.dateTimeProvider, d, Year, Month))
 				.ToArray();
 		}
