@@ -6,14 +6,10 @@ namespace Ona.App.Calendar;
 public partial class CalendarView : ContentView
 {
 	private bool isLoading;
-	private CalendarViewModel viewModel;
 
 	public CalendarView()
 	{
 		InitializeComponent();
-
-		// TODO: use dependency injection library
-		BindingContext = this.viewModel = new CalendarViewModel(new DateTimeProvider(), new WeakReferenceMessenger());
 
 		this.isLoading = true;
 		Dispatcher.DispatchDelayed(
@@ -21,32 +17,35 @@ public partial class CalendarView : ContentView
 			() =>
 			{
 				MonthCollectionView.ScrollTo(2, -1, ScrollToPosition.End, false);
-				viewModel.Months[2].IsVisible = true;
+				ViewModel.Months[2].IsVisible = true;
 			});
 		Dispatcher.DispatchDelayed(
 			TimeSpan.FromSeconds(4),
 			() => this.isLoading = false);
 	}
 
+	private CalendarViewModel ViewModel
+		=> (CalendarViewModel)BindingContext;
+
 	private void CollectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e)
 	{
 		if (!this.isLoading)
 		{
-			var curentMonthIndex = this.viewModel.Months.IndexOf(this.viewModel.CurentMonth);
+			var curentMonthIndex = ViewModel.Months.IndexOf(ViewModel.CurentMonth);
 
 			if (e.VerticalDelta > 0)
 			{
-				for (var i = curentMonthIndex + 1; i < this.viewModel.Months.Count; i++)
-					this.viewModel.Months[i].IsVisible = true;
+				for (var i = curentMonthIndex + 1; i < ViewModel.Months.Count; i++)
+					ViewModel.Months[i].IsVisible = true;
 			}
 			else if (e.VerticalDelta < 0)
 			{
 				for (var i = curentMonthIndex - 1; i > 0; i--)
-					this.viewModel.Months[i].IsVisible = true;
+					ViewModel.Months[i].IsVisible = true;
 			}
 		}
 
-		if (e.LastVisibleItemIndex == this.viewModel.Months.Count - 1)
+		if (e.LastVisibleItemIndex == ViewModel.Months.Count - 1)
 			AppendMonth();
 		else if (e.FirstVisibleItemIndex == 0)
 			InsertMonth();
@@ -59,7 +58,7 @@ public partial class CalendarView : ContentView
 			if (this.isLoading)
 				return;
 			this.isLoading = true;
-			this.viewModel.AppendMonth();
+			ViewModel.AppendMonth();
 			this.isLoading = false;
 		});
 	}
@@ -71,7 +70,7 @@ public partial class CalendarView : ContentView
 			if (this.isLoading)
 				return;
 			this.isLoading = true;
-			this.viewModel.InsertMonth();
+			ViewModel.InsertMonth();
 			this.isLoading = false;
 		});
 	}
