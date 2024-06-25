@@ -3,7 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 			 xmlns:calendar="clr-namespace:Ona.App.Calendar"
              x:Class="Ona.App.Calendar.MonthView">
-    <VerticalStackLayout>
+    <VerticalStackLayout
+		IsVisible="{Binding IsVisible}">
         <Label 
             Text="{Binding MonthName}"
             HorizontalOptions="Start" HeightRequest="24"

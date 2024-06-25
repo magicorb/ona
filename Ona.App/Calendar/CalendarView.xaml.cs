@@ -6,6 +6,7 @@ namespace Ona.App.Calendar;
 public partial class CalendarView : ContentView
 {
 	private bool isLoading;
+	private double scrollY;
 
 	public CalendarView()
 	{
@@ -16,7 +17,7 @@ public partial class CalendarView : ContentView
 			TimeSpan.FromSeconds(2),
 			() =>
 			{
-				MonthCollectionView.ScrollTo(2, -1, ScrollToPosition.End, false);
+				_ = MonthListViewLite.ScrollToIndexAsync(2, ScrollToPosition.End, false);
 				ViewModel.Months[2].IsVisible = true;
 			});
 		Dispatcher.DispatchDelayed(
@@ -27,51 +28,44 @@ public partial class CalendarView : ContentView
 	private CalendarViewModel ViewModel
 		=> (CalendarViewModel)BindingContext;
 
-	private void CollectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e)
+	private void ListViewLite_Scrolled(object sender, ScrolledEventArgs e)
 	{
-		if (!this.isLoading)
+		Dispatcher.Dispatch(() =>
 		{
+			var delta = e.ScrollY - this.scrollY;
+			this.scrollY = e.ScrollY;
+
 			var curentMonthIndex = ViewModel.Months.IndexOf(ViewModel.CurentMonth);
 
-			if (e.VerticalDelta > 0)
+			if (delta > 0)
 			{
 				for (var i = curentMonthIndex + 1; i < ViewModel.Months.Count; i++)
 					ViewModel.Months[i].IsVisible = true;
 			}
-			else if (e.VerticalDelta < 0)
+			else if (delta < 0)
 			{
-				for (var i = curentMonthIndex - 1; i > 0; i--)
+				for (var i = curentMonthIndex - 1; i >= 0; i--)
 					ViewModel.Months[i].IsVisible = true;
 			}
-		}
 
-		if (e.LastVisibleItemIndex == ViewModel.Months.Count - 1)
-			AppendMonth();
-		else if (e.FirstVisibleItemIndex == 0)
-			InsertMonth();
-	}
+			if (e.ScrollY <= 1)
+			{
+				if (this.isLoading)
+					return;
+				
+				this.isLoading = true;
+				ViewModel.InsertMonth();
+				this.isLoading = false;
+			}
+			else if (e.ScrollY >= MonthListViewLite.ContentHeight - MonthListViewLite.Height - 1)
+			{
+				if (this.isLoading)
+					return;
 
-	private void AppendMonth()
-	{
-		Dispatcher.Dispatch(() =>
-		{
-			if (this.isLoading)
-				return;
-			this.isLoading = true;
-			ViewModel.AppendMonth();
-			this.isLoading = false;
-		});
-	}
-
-	private void InsertMonth()
-	{
-		Dispatcher.Dispatch(() =>
-		{
-			if (this.isLoading)
-				return;
-			this.isLoading = true;
-			ViewModel.InsertMonth();
-			this.isLoading = false;
+				this.isLoading = true;
+				ViewModel.AppendMonth();
+				this.isLoading = false;
+			}
 		});
 	}
 }
