@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.Extensions.DependencyInjection;
 using Ona.App.Calendar;
+using Ona.App.Data;
 using Ona.App.Model;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,9 @@ namespace Ona.App
 			var services = builder.Services;
 
 			services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+			services.AddSingleton<SQLiteDateRepository>();
+			services.AddSingleton<IDateRepository, SQLiteDateRepository>();
+			
 			services.AddSingleton<IMessenger, WeakReferenceMessenger>();
 
 			services.AddTransient<MainViewModel>();
