@@ -23,6 +23,7 @@ namespace Ona.App.Calendar
 			IDateTimeProvider dateTimeProvider,
 			IMessenger messenger,
 			DateTime date,
+			MonthViewModel monthViewModel,
 			int currentYear,
 			int currentMonth)
 		{
@@ -30,12 +31,15 @@ namespace Ona.App.Calendar
 			this.messenger = messenger;
 
 			Date = date;
+			MonthViewModel = monthViewModel;
 			IsCurrentMonth = date.Year == currentYear && date.Month == currentMonth;
 
 			ToggleCommand = new RelayCommand(ExecuteToggle);
 		}
 
 		public DateTime Date { get; }
+
+		public MonthViewModel MonthViewModel { get; }
 
 		public bool IsToday
 			=> Date.Date == this.dateTimeProvider.Now.Date;
@@ -82,5 +86,5 @@ namespace Ona.App.Calendar
 			=> this.messenger.Send(new DateToggledMessage(Date));
 	}
 
-	public delegate DateViewModel DateViewModelFactory(DateTime date, int currentYear, int currentMonth);
+	public delegate DateViewModel DateViewModelFactory(DateTime date, MonthViewModel monthViewModel, int currentYear, int currentMonth);
 }

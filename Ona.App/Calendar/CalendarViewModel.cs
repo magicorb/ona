@@ -20,6 +20,8 @@ namespace Ona.App.Calendar
 
 		private readonly ObservableCollection<MonthViewModel> months;
 
+		private DateViewModel? selectionStart;
+
 		public CalendarViewModel(
 			IDateTimeProvider dateTimeProvider,
 			IDateRepository dateRepository,
@@ -44,7 +46,7 @@ namespace Ona.App.Calendar
 			foreach (var month in Months)
 				month.IsVisible = false;
 
-			this.messenger.Register<DateToggledMessage>(this, OnDateToggledMessage);
+			this.messenger.Register<DateToggledMessage>(this, (recipient, message) => _ = OnDateToggledMessageAsync(message));
 		}
 
 		public ReadOnlyObservableCollection<MonthViewModel> Months { get; }
@@ -67,15 +69,43 @@ namespace Ona.App.Calendar
 			_ = RefreshAsync();
 		}
 
-		private void OnDateToggledMessage(object recipient, DateToggledMessage message)
+		private async Task OnDateToggledMessageAsync(DateToggledMessage message)
 		{
 			var date = message.Date;
 			var dateViewModel = this.months.First(m => m.Year == date.Year && m.Month == date.Month).Dates.First(d => d.Date == date);
 
-			if (dateViewModel.IsMarked)
-				_ = UnmarkDateAsync(date);
+			if (IsSelectingRange)
+			{
+				if (this.selectionStart.Date > dateViewModel.Date)
+				{
+					for (var d = dateViewModel; d != this.selectionStart; d = GetNextDateViewModel(d))
+						await MarkDateAsync(d);
+				}
+				else if (this.selectionStart.Date < dateViewModel.Date)
+				{
+					for (var d = GetNextDateViewModel(this.selectionStart); true; d = GetNextDateViewModel(d))
+					{
+						await MarkDateAsync(d);
+
+						if (d == dateViewModel)
+							break;
+					}
+				}
+				else
+					await UnmarkDateAsync(dateViewModel);
+
+				this.selectionStart = null;
+			}
 			else
-				_ = MarkDateAsync(date);
+			{
+				if (dateViewModel.IsMarked)
+					await UnmarkDateAsync(dateViewModel);
+				else
+				{
+					await MarkDateAsync(dateViewModel);
+					this.selectionStart = dateViewModel;
+				}
+			}
 		}
 
 		private async Task RefreshAsync()
@@ -98,16 +128,24 @@ namespace Ona.App.Calendar
 			}
 		}
 
-		private async Task MarkDateAsync(DateTime date)
+		private async Task MarkDateAsync(DateViewModel dateViewModel)
 		{
-			await this.dateRepository.AddDateRecordAsync(date);
-			await RefreshAsync();
+			dateViewModel.IsMarked = true;
+			await this.dateRepository.AddDateRecordAsync(dateViewModel.Date);
 		}
 
-		private async Task UnmarkDateAsync(DateTime date)
+		private async Task UnmarkDateAsync(DateViewModel dateViewModel)
 		{
-			await this.dateRepository.DeleteDateRecordAsync(date);
-			await RefreshAsync();
+			dateViewModel.IsMarked = false;
+			await this.dateRepository.DeleteDateRecordAsync(dateViewModel.Date);
 		}
+
+		private bool IsSelectingRange
+			=> this.selectionStart != null;
+
+		private DateViewModel GetNextDateViewModel(DateViewModel dateViewModel)
+			=> dateViewModel == dateViewModel.MonthViewModel.Dates.Last(d => d.IsCurrentMonth)
+			? Months[Months.IndexOf(dateViewModel.MonthViewModel) + 1].Dates.First(d => d.IsCurrentMonth)
+			: dateViewModel.MonthViewModel.Dates[dateViewModel.MonthViewModel.Dates.IndexOf(dateViewModel) + 1];
 	}
 }

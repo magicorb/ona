@@ -27,8 +27,8 @@ namespace Ona.App
 			services.AddTransient<CalendarViewModel>();
 			services.AddSingleton<MonthViewModelFactory>(sp => (year, month)
 				=> new MonthViewModel(sp.GetService<DateViewModelFactory>(), year, month));
-			services.AddSingleton<DateViewModelFactory>(sp => (date, currentYear, currentMonth)
-				=> new DateViewModel(sp.GetService<IDateTimeProvider>(), sp.GetService<IMessenger>(), date, currentYear, currentMonth));
+			services.AddSingleton<DateViewModelFactory>(sp => (date, monthViewModel, currentYear, currentMonth)
+				=> new DateViewModel(sp.GetService<IDateTimeProvider>(), sp.GetService<IMessenger>(), date, monthViewModel, currentYear, currentMonth));
 
 			return builder;
 		}

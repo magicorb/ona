@@ -3,6 +3,8 @@ using CommunityToolkit.Mvvm.Messaging;
 using Ona.App.Model;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -40,16 +42,14 @@ namespace Ona.App.Calendar
 
 		public IEnumerable<string> DaysOfWeek { get; }
 
-		public IEnumerable<DateViewModel> Dates { get; }
+		public ReadOnlyCollection<DateViewModel> Dates { get; }
 
-		private IEnumerable<DateViewModel> GenerateDates()
-		{
-			var firstDate = MonthStart.StartOfWeek(DayOfWeek.Monday);
-
-			return firstDate.DateRange(MonthStart.AddMonths(1).AddDays(-1))
-				.Select(d => dateViewModelFactory(d, Year, Month))
-				.ToArray();
-		}
+		private ReadOnlyCollection<DateViewModel> GenerateDates()
+			=> new ReadOnlyCollection<DateViewModel>(
+				MonthStart.StartOfWeek(DayOfWeek.Monday)
+					.DateRange(MonthStart.AddMonths(1).AddDays(-1))
+					.Select(d => dateViewModelFactory(d, this, Year, Month))
+					.ToList());
 
 		public DateTime MonthStart
 			=> new DateTime(Year, Month, 1);
