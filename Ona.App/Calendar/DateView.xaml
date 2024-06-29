@@ -17,5 +17,10 @@
 	        Text="{Binding Date.Day}"
 			FontSize="32" TextColor="LightGray"
 			HorizontalOptions="Center" VerticalOptions="Center"/>
+		<Ellipse
+			Fill="#2BFF8C"
+			WidthRequest="12" HeightRequest="12"
+			HorizontalOptions="End"  VerticalOptions="Start"
+			IsVisible="{Binding IsToday}"/>
 	</Grid>
 </ContentView>

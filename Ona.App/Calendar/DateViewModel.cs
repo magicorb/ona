@@ -33,6 +33,7 @@ namespace Ona.App.Calendar
 			Date = date;
 			MonthViewModel = monthViewModel;
 			IsCurrentMonth = date.Year == currentYear && date.Month == currentMonth;
+			IsToday = Date.Date == this.dateTimeProvider.Now.Date;
 
 			ToggleCommand = new RelayCommand(ExecuteToggle);
 		}
@@ -41,8 +42,7 @@ namespace Ona.App.Calendar
 
 		public MonthViewModel MonthViewModel { get; }
 
-		public bool IsToday
-			=> Date.Date == this.dateTimeProvider.Now.Date;
+		public bool IsToday { get; }
 
 		public bool IsMarked
 		{

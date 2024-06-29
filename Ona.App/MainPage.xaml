@@ -6,7 +6,7 @@
 	x:Class="Ona.App.MainPage"
 	Loaded="ContentPage_Loaded">
 	<Grid
-		Padding="30,0">
+		Padding="30,0" Background="LightGray">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
