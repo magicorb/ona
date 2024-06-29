@@ -15,7 +15,7 @@
 			Aspect="UniformToFill"/>
 		<Label 
 	        Text="{Binding Date.Day}"
-			TextColor="LightGray"
+			FontSize="32" TextColor="LightGray"
 			HorizontalOptions="Center" VerticalOptions="Center"/>
 	</Grid>
 </ContentView>
