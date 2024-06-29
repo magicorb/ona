@@ -19,7 +19,7 @@ namespace Ona.App.Calendar
 		private readonly IMessenger messenger;
 		private readonly MonthViewModelFactory monthViewModelFactory;
 
-		private readonly ObservableCollection<MonthViewModel> months;
+		private ObservableCollection<MonthViewModel> months;
 
 		private DateViewModel? selectionStart;
 
@@ -36,25 +36,14 @@ namespace Ona.App.Calendar
 			this.messenger = messenger;
 			this.monthViewModelFactory = monthViewModelFactory;
 
-			this.months = new ObservableCollection<MonthViewModel>();
-			Months = new ReadOnlyObservableCollection<MonthViewModel>(this.months);
-
-			var now = dateTimeProvider.Now;
-			CurentMonth = this.monthViewModelFactory(now.Year, now.Month);
-			this.months.Add(CurentMonth);
-			InsertMonth();
-			InsertMonth();
-			AppendMonth();
-
-			foreach (var month in Months)
-				month.IsVisible = false;
+			_ = InitializeMonths();
 
 			this.messenger.Register<DateToggledMessage>(this, (recipient, message) => _ = OnDateToggledMessageAsync(message));
 		}
 
-		public ReadOnlyObservableCollection<MonthViewModel> Months { get; }
+		public ReadOnlyObservableCollection<MonthViewModel> Months { get; private set; }
 
-		public MonthViewModel CurentMonth { get; }
+		public MonthViewModel CurentMonth { get; private set; }
 
 		internal void AppendMonth()
 		{
@@ -71,6 +60,33 @@ namespace Ona.App.Calendar
 
 			_ = LoadDatesAsync();
 		}
+
+		private async Task InitializeMonths()
+		{
+			this.months = new ObservableCollection<MonthViewModel>();
+
+			var now = dateTimeProvider.Now;
+			var currentMonthStart = new DateTime(now.Year, now.Month, 1);
+
+			CurentMonth = CreateMonthViewModel(currentMonthStart);
+			
+			this.months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(-2)));
+			this.months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(-1)));
+			this.months.Add(CurentMonth);
+			this.months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(1)));
+
+			foreach (var month in this.months)
+				month.IsVisible = false;
+
+			CurentMonth.IsVisible = true;
+
+			Months = new ReadOnlyObservableCollection<MonthViewModel>(this.months);
+
+			await LoadDatesAsync();
+		}
+
+		private MonthViewModel CreateMonthViewModel(DateTime monthStart)
+			=> this.monthViewModelFactory(monthStart.Year, monthStart.Month);
 
 		private async Task OnDateToggledMessageAsync(DateToggledMessage message)
 		{
