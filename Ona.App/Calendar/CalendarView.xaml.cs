@@ -13,12 +13,6 @@ public partial class CalendarView : ContentView
 		InitializeComponent();
 
 		this.isLoading = true;
-		Dispatcher.DispatchDelayed(
-			TimeSpan.FromSeconds(5),
-			() => _ = MonthListViewLite.ScrollToIndexAsync(2, ScrollToPosition.End, false));
-		Dispatcher.DispatchDelayed(
-			TimeSpan.FromSeconds(4),
-			() => this.isLoading = false);
 	}
 
 	private CalendarViewModel ViewModel
@@ -62,6 +56,15 @@ public partial class CalendarView : ContentView
 				ViewModel.AppendMonth();
 				this.isLoading = false;
 			}
+		});
+	}
+
+	private void ContentView_Loaded(object sender, EventArgs e)
+	{
+		Dispatcher.Dispatch(async () =>
+		{
+			await MonthListViewLite.ScrollToIndexAsync(2, ScrollToPosition.End, false);
+			this.isLoading = false;
 		});
 	}
 }
