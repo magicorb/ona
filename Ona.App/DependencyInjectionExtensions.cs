@@ -20,6 +20,7 @@ namespace Ona.App
 			services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 			services.AddSingleton<SQLiteDateRepository>();
 			services.AddSingleton<IDateRepository, SQLiteDateRepository>();
+			services.AddSingleton<IPeriodStatsProvider, PeriodStatsProvider>();
 			
 			services.AddSingleton<IMessenger, WeakReferenceMessenger>();
 

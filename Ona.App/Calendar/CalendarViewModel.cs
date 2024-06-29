@@ -15,6 +15,7 @@ namespace Ona.App.Calendar
 	{
 		private readonly IDateTimeProvider dateTimeProvider;
 		private readonly IDateRepository dateRepository;
+		private readonly IPeriodStatsProvider periodStatsProvider;
 		private readonly IMessenger messenger;
 		private readonly MonthViewModelFactory monthViewModelFactory;
 
@@ -25,11 +26,13 @@ namespace Ona.App.Calendar
 		public CalendarViewModel(
 			IDateTimeProvider dateTimeProvider,
 			IDateRepository dateRepository,
+			IPeriodStatsProvider periodStatsProvider,
 			IMessenger messenger,
 			MonthViewModelFactory monthViewModelFactory)
 		{
 			this.dateTimeProvider = dateTimeProvider;
 			this.dateRepository = dateRepository;
+			this.periodStatsProvider = periodStatsProvider;
 			this.messenger = messenger;
 			this.monthViewModelFactory = monthViewModelFactory;
 
@@ -58,7 +61,7 @@ namespace Ona.App.Calendar
 			var monthStart = Months[Months.Count - 1].MonthStart.AddMonths(1);
 			this.months.Add(this.monthViewModelFactory(monthStart.Year, monthStart.Month));
 
-			_ = RefreshAsync();
+			_ = LoadDatesAsync();
 		}
 
 		internal void InsertMonth()
@@ -66,7 +69,7 @@ namespace Ona.App.Calendar
 			var monthStart = Months[0].MonthStart.AddMonths(-1);
 			this.months.Insert(0, this.monthViewModelFactory(monthStart.Year, monthStart.Month));
 
-			_ = RefreshAsync();
+			_ = LoadDatesAsync();
 		}
 
 		private async Task OnDateToggledMessageAsync(DateToggledMessage message)
@@ -106,11 +109,8 @@ namespace Ona.App.Calendar
 					this.selectionStart = dateViewModel;
 				}
 			}
-		}
 
-		private async Task RefreshAsync()
-		{
-			await LoadDatesAsync();
+			_ = UpdateForecastAsync();
 		}
 
 		private async Task LoadDatesAsync()
@@ -147,5 +147,16 @@ namespace Ona.App.Calendar
 			=> dateViewModel == dateViewModel.MonthViewModel.Dates.Last(d => d.IsCurrentMonth)
 			? Months[Months.IndexOf(dateViewModel.MonthViewModel) + 1].Dates.First(d => d.IsCurrentMonth)
 			: dateViewModel.MonthViewModel.Dates[dateViewModel.MonthViewModel.Dates.IndexOf(dateViewModel) + 1];
+
+		private async Task UpdateForecastAsync()
+		{
+			// TODO: If new call made, cancel all pending, wait for the current to complete and then start
+
+			var dates = await this.dateRepository.GetDateRecordsAsync();
+			var nextPeriod = await Task.Run(() => this.periodStatsProvider.GetNextPeriod(dates.Select(d => d.Date).ToArray()));
+
+			foreach (var date in Months.SelectMany(m => m.Dates))
+				date.IsExpected = date.Date >= nextPeriod.Start && date.Date <= nextPeriod.End;
+		}
 	}
 }

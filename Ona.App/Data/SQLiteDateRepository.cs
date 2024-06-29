@@ -39,7 +39,7 @@ namespace Ona.App.Data
 		{
 			await EnsureInitializeAsync();
 
-			return await this.connection.Table<DateRecord>().ToArrayAsync();
+			return await this.connection.Table<DateRecord>().OrderBy(d => d.Date).ToArrayAsync();
 		}
 
 		private async Task EnsureInitializeAsync()
