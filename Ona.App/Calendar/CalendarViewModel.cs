@@ -152,12 +152,18 @@ namespace Ona.App.Calendar
 
 		private async Task MarkDateAsync(DateViewModel dateViewModel)
 		{
+			if (dateViewModel.IsMarked)
+				return;
+
 			dateViewModel.IsMarked = true;
 			await this.dateRepository.AddDateRecordAsync(dateViewModel.Date);
 		}
 
 		private async Task UnmarkDateAsync(DateViewModel dateViewModel)
 		{
+			if (!dateViewModel.IsMarked)
+				return;
+
 			dateViewModel.IsMarked = false;
 			await this.dateRepository.DeleteDateRecordAsync(dateViewModel.Date);
 		}
@@ -175,6 +181,9 @@ namespace Ona.App.Calendar
 			// TODO: If new call made, cancel all pending, wait for the current to complete and then start
 
 			var dates = await this.dateRepository.GetDateRecordsAsync();
+
+			var d = dates.Select(d => d.Date.ToString()).ToArray();
+
 			var nextPeriod = await Task.Run(() => this.periodStatsProvider.GetNextPeriod(dates.Select(d => d.Date).ToArray()));
 
 			foreach (var date in Months.SelectMany(m => m.Dates))
