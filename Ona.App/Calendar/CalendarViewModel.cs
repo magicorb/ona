@@ -22,6 +22,7 @@ namespace Ona.App.Calendar
 		private ObservableCollection<MonthViewModel> months;
 
 		private DateViewModel? selectionStart;
+		private IEnumerator<DateTimePeriod> expectedPeriodsEnumerator;
 
 		public CalendarViewModel(
 			IDateTimeProvider dateTimeProvider,
@@ -45,20 +46,24 @@ namespace Ona.App.Calendar
 
 		public MonthViewModel CurentMonth { get; private set; }
 
-		internal void AppendMonth()
+		internal async Task AppendMonthAsync()
 		{
 			var monthStart = Months[Months.Count - 1].MonthStart.AddMonths(1);
 			this.months.Add(this.monthViewModelFactory(monthStart.Year, monthStart.Month));
 
-			_ = LoadDatesAsync();
+			await LoadDatesAsync();
+
+			ApplyExpectedPeriods();
 		}
 
-		internal void InsertMonth()
+		internal async Task InsertMonthAsync()
 		{
 			var monthStart = Months[0].MonthStart.AddMonths(-1);
 			this.months.Insert(0, this.monthViewModelFactory(monthStart.Year, monthStart.Month));
 
-			_ = LoadDatesAsync();
+			await LoadDatesAsync();
+
+			ApplyExpectedPeriods();
 		}
 
 		private async Task InitializeMonths()
@@ -84,7 +89,7 @@ namespace Ona.App.Calendar
 
 			await LoadDatesAsync();
 
-			await UpdateForecastAsync();
+			await UpdateExpectedPeriodsAsync();
 		}
 
 		private MonthViewModel CreateMonthViewModel(DateTime monthStart)
@@ -132,7 +137,7 @@ namespace Ona.App.Calendar
 				}
 			}
 
-			_ = UpdateForecastAsync();
+			_ = UpdateExpectedPeriodsAsync();
 		}
 
 		private async Task LoadDatesAsync()
@@ -176,18 +181,36 @@ namespace Ona.App.Calendar
 			? Months[Months.IndexOf(dateViewModel.MonthViewModel) + 1].Dates.First(d => d.IsCurrentMonth)
 			: dateViewModel.MonthViewModel.Dates[dateViewModel.MonthViewModel.Dates.IndexOf(dateViewModel) + 1];
 
-		private async Task UpdateForecastAsync()
+		private async Task UpdateExpectedPeriodsAsync()
 		{
 			// TODO: If new call made, cancel all pending, wait for the current to complete and then start
 
-			var dates = await this.dateRepository.GetDateRecordsAsync();
+			var dates = (await this.dateRepository.GetDateRecordsAsync()).Select(d => d.Date).ToArray();
 
-			var d = dates.Select(d => d.Date.ToString()).ToArray();
+			this.expectedPeriodsEnumerator = await Task.Run(()
+				=> this.periodStatsProvider.GetExpectedPeriodsEnumerator(dates.Select(d => d.Date).ToArray()));
 
-			var nextPeriod = await Task.Run(() => this.periodStatsProvider.GetNextPeriod(dates.Select(d => d.Date).ToArray()));
+			ApplyExpectedPeriods();
+		}
 
-			foreach (var date in Months.SelectMany(m => m.Dates))
-				date.IsExpected = nextPeriod != null && date.Date >= nextPeriod.Start && date.Date <= nextPeriod.End;
+		private void ApplyExpectedPeriods()
+		{
+			var lastDate = Months.Last().Dates.Last(d => d.IsCurrentMonth).Date;
+			var expectedPeriods = new List<DateTimePeriod>();
+
+			this.expectedPeriodsEnumerator.Reset();
+			while (this.expectedPeriodsEnumerator.MoveNext())
+			{
+				var period = this.expectedPeriodsEnumerator.Current;
+
+				if (period.Start > lastDate)
+					break;
+
+				expectedPeriods.Add(period);
+			}
+
+			foreach (var date in Months.SelectMany(m => m.Dates.Where(d => d.IsCurrentMonth)))
+				date.IsExpected = expectedPeriods.Any(p => date.Date >= p.Start && date.Date <= p.End);
 		}
 	}
 }

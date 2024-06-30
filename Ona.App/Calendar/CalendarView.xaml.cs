@@ -44,7 +44,7 @@ public partial class CalendarView : ContentView
 					return;
 				
 				this.isLoading = true;
-				ViewModel.InsertMonth();
+				_ = ViewModel.InsertMonthAsync();
 				this.isLoading = false;
 			}
 			else if (e.ScrollY >= MonthListViewLite.ContentHeight - MonthListViewLite.Height - 1)
@@ -53,7 +53,7 @@ public partial class CalendarView : ContentView
 					return;
 
 				this.isLoading = true;
-				ViewModel.AppendMonth();
+				_ = ViewModel.AppendMonthAsync();
 				this.isLoading = false;
 			}
 		});
