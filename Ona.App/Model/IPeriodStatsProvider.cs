@@ -9,5 +9,9 @@ namespace Ona.App.Model
 	public interface IPeriodStatsProvider
 	{
 		IEnumerator<DateTimePeriod> GetExpectedPeriodsEnumerator(DateTime[] orderedDates);
+
+		IReadOnlyList<DateTimePeriod> GetDatePeriods(IEnumerable<DateTime> orderedDates);
+
+		PeriodStats GetAveragePeriodStats(IReadOnlyList<DateTimePeriod> orderedPeriods);
 	}
 }

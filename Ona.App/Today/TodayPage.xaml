@@ -1,12 +1,13 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:calendar="clr-namespace:Ona.App.Calendar"
-	x:Class="Ona.App.MainPage"
+    x:Class="Ona.App.Today.TodayPage"
+    Title="TodayPage"
 	Loaded="ContentPage_Loaded">
 	<Grid
-		Padding="16,0" Background="LightGray">
+		Padding="16,0">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>

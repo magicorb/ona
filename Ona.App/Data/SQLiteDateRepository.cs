@@ -28,6 +28,13 @@ namespace Ona.App.Data
 			return result;
 		}
 
+		public async Task DeleteAllDateRecordsAsync()
+		{
+			await EnsureInitializeAsync();
+
+			await this.connection.Table<DateRecord>().DeleteAsync(d => true);
+		}
+
 		public async Task DeleteDateRecordAsync(DateTime date)
 		{
 			await EnsureInitializeAsync();

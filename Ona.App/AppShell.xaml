@@ -4,12 +4,23 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:local="clr-namespace:Ona.App"
+    xmlns:today="clr-namespace:Ona.App.Today"
+    xmlns:insights="clr-namespace:Ona.App.Insights"
+    xmlns:settings="clr-namespace:Ona.App.Settings"
     Shell.FlyoutBehavior="Disabled"
+	Shell.NavBarIsVisible="false"
     Title="Ona.App">
+	<TabBar>
+		<ShellContent
+			Title="Today" Icon="today.png"
+			ContentTemplate="{DataTemplate today:TodayPage}"/>
 
-    <ShellContent
-        Title="Home"
-        ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+		<ShellContent
+			Title="Insights" Icon="insights.png"
+			ContentTemplate="{DataTemplate insights:InsightsPage}"/>
 
+		<ShellContent
+			Title="Settings" Icon="settings.png"
+			ContentTemplate="{DataTemplate settings:SettingsPage}"/>
+	</TabBar>
 </Shell>

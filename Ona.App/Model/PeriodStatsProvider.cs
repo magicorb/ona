@@ -14,7 +14,7 @@ namespace Ona.App.Model
 		public IEnumerator<DateTimePeriod> GetExpectedPeriodsEnumerator(DateTime[] orderedDates)
 			=> GetExpectedPeriods(orderedDates).Memorize();
 
-		private IReadOnlyList<DateTimePeriod> GetDatePeriods(IEnumerable<DateTime> orderedDates)
+		public IReadOnlyList<DateTimePeriod> GetDatePeriods(IEnumerable<DateTime> orderedDates)
 		{
 			var periods = new List<DateTimePeriod>();
 
@@ -46,10 +46,7 @@ namespace Ona.App.Model
 			return periods;
 		}
 
-		private int GetDays(DateTimePeriod period)
-			=> (period.End - period.Start).Days;
-
-		private PeriodStats GetAveragePeriodStats(IReadOnlyList<DateTimePeriod> orderedPeriods)
+		public PeriodStats GetAveragePeriodStats(IReadOnlyList<DateTimePeriod> orderedPeriods)
 		{
 			if (orderedPeriods.Count == 1)
 			{
@@ -75,6 +72,9 @@ namespace Ona.App.Model
 
 		}
 
+		private int GetDays(DateTimePeriod period)
+			=> (period.End - period.Start).Days + 1;
+
 		private IEnumerable<DateTimePeriod> GetExpectedPeriods(DateTime[] orderedDates)
 		{
 			if (orderedDates.Length == 0)
@@ -85,7 +85,7 @@ namespace Ona.App.Model
 			var interval = average.Interval == null
 				? DefaultInterval
 				: average.Interval.Value;
-			var duration = average.Duration.Value;
+			var duration = average.Duration.Value - 1;
 
 			var start = periods.Last().Start.AddDays(interval);
 			do

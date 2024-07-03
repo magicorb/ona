@@ -67,4 +67,9 @@ public partial class CalendarView : ContentView
 			this.isLoading = false;
 		});
 	}
+
+	private void ContentView_Unloaded(object sender, EventArgs e)
+	{
+		ViewModel?.Dispose();
+	}
 }
