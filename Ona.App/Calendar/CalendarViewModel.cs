@@ -23,6 +23,7 @@ namespace Ona.App.Calendar
 
 		private DateViewModel? selectionStart;
 		private IEnumerator<DateTimePeriod> expectedPeriodsEnumerator;
+		private DateTimePeriod? expectedCurrentPeriod;
 
 		public CalendarViewModel(
 			IDateTimeProvider dateTimeProvider,
@@ -192,8 +193,25 @@ namespace Ona.App.Calendar
 
 			var dates = (await this.dateRepository.GetDateRecordsAsync()).Select(d => d.Date).ToArray();
 
+			var periods = this.periodStatsProvider.GetDatePeriods(dates.Select(d => d.Date));
+
 			this.expectedPeriodsEnumerator = await Task.Run(()
-				=> this.periodStatsProvider.GetExpectedPeriodsEnumerator(dates.Select(d => d.Date).ToArray()));
+				=> this.periodStatsProvider.GetExpectedPeriodsEnumerator(periods));
+
+			if (periods.Count > 1)
+			{
+				var previousPeriods = new List<DateTimePeriod>(periods.Take(periods.Count - 1));
+
+				var previousExpectedPeriodsEnumerator = await Task.Run(()
+					=> this.periodStatsProvider.GetExpectedPeriodsEnumerator(previousPeriods));
+
+				if (previousExpectedPeriodsEnumerator.MoveNext())
+					this.expectedCurrentPeriod = previousExpectedPeriodsEnumerator.Current;
+				else
+					this.expectedCurrentPeriod = null;
+			}
+			else
+				this.expectedCurrentPeriod = null;
 
 			ApplyExpectedPeriods();
 		}
@@ -202,6 +220,9 @@ namespace Ona.App.Calendar
 		{
 			var lastDate = Months.Last().Dates.Last(d => d.IsCurrentMonth).Date;
 			var expectedPeriods = new List<DateTimePeriod>();
+
+			if (this.expectedCurrentPeriod != null)
+				expectedPeriods.Add(this.expectedCurrentPeriod);
 
 			this.expectedPeriodsEnumerator.Reset();
 			while (this.expectedPeriodsEnumerator.MoveNext())
@@ -214,7 +235,9 @@ namespace Ona.App.Calendar
 				expectedPeriods.Add(period);
 			}
 
-			foreach (var date in Months.SelectMany(m => m.Dates.Where(d => d.IsCurrentMonth)))
+			var today = this.dateTimeProvider.Now.Date;
+
+			foreach (var date in Months.SelectMany(m => m.Dates.Where(d => d.IsCurrentMonth)).Where(d => d.Date >= today))
 				date.IsExpected = expectedPeriods.Any(p => date.Date >= p.Start && date.Date <= p.End);
 		}
 	}
