@@ -1,4 +1,4 @@
-namespace Ona.App.Calendar;
+namespace Ona.App.Features.Calendar;
 
 public partial class DateView : ContentView
 {

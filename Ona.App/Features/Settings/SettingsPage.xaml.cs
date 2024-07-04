@@ -2,7 +2,7 @@ using Ona.App.Controls;
 using Ona.App.Data;
 using System;
 
-namespace Ona.App.Settings;
+namespace Ona.App.Features.Settings;
 
 public partial class SettingsPage : ContentPage
 {

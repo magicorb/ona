@@ -1,4 +1,4 @@
-namespace Ona.App.Today;
+namespace Ona.App.Features.Today;
 
 public partial class TodayPage : ContentPage
 {

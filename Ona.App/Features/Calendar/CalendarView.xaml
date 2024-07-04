@@ -3,8 +3,8 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:controls="clr-namespace:Ona.App.Controls"
-	xmlns:calendar="clr-namespace:Ona.App.Calendar"
-    x:Class="Ona.App.Calendar.CalendarView"
+	xmlns:calendar="clr-namespace:Ona.App.Features.Calendar"
+    x:Class="Ona.App.Features.Calendar.CalendarView"
 	Loaded="ContentView_Loaded" Unloaded="ContentView_Unloaded">
 	<controls:ListViewLite
 		x:Name="MonthListViewLite"

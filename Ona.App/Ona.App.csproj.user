@@ -11,25 +11,25 @@
     <DebuggerFlavor>ProjectDebugger</DebuggerFlavor>
   </PropertyGroup>
   <ItemGroup>
-    <MauiXaml Update="Calendar\CalendarView.xaml">
+    <MauiXaml Update="Features\Calendar\CalendarView.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
-    <MauiXaml Update="Calendar\DateView.xaml">
+    <MauiXaml Update="Features\Calendar\DateView.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
-    <MauiXaml Update="Calendar\MonthView.xaml">
+    <MauiXaml Update="Features\Calendar\MonthView.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
     <MauiXaml Update="Controls\ListViewLite.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
-    <MauiXaml Update="Insights\InsightsPage.xaml">
+    <MauiXaml Update="Features\Insights\InsightsPage.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
-    <MauiXaml Update="Settings\SettingsPage.xaml">
+    <MauiXaml Update="Features\Settings\SettingsPage.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
-    <MauiXaml Update="Today\TodayPage.xaml">
+    <MauiXaml Update="Features\Today\TodayPage.xaml">
       <SubType>Designer</SubType>
     </MauiXaml>
   </ItemGroup>

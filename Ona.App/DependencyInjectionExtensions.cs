@@ -1,17 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.Messaging;
-using Microsoft.Extensions.DependencyInjection;
-using Ona.App.Calendar;
 using Ona.App.Controls;
 using Ona.App.Data;
-using Ona.App.Insights;
+using Ona.App.Features.Calendar;
+using Ona.App.Features.Insights;
+using Ona.App.Features.Today;
 using Ona.App.Model;
-using Ona.App.Settings;
-using Ona.App.Today;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Ona.App
 {
