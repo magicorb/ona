@@ -11,7 +11,7 @@
 			FontSize="54"
 			Margin="0,12,0,0"/>
 
-		<BoxView VerticalOptions="FillAndExpand" HeightRequest="2" Color="#0D1218" Margin="0,64,0,0"/>
+		<BoxView  Style="{StaticResource HorizontalSeparatorStyle}" Margin="0,64,0,0"/>
 
 		<Label
 			Text="Delete data→" FontSize="32" Margin="0,12,0,0">

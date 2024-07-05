@@ -206,12 +206,12 @@ namespace Ona.App.Features.Calendar
                     => periodStatsProvider.GetExpectedPeriodsEnumerator(previousPeriods));
 
                 if (previousExpectedPeriodsEnumerator.MoveNext())
-                    expectedCurrentPeriod = previousExpectedPeriodsEnumerator.Current;
+                    this.expectedCurrentPeriod = previousExpectedPeriodsEnumerator.Current;
                 else
-                    expectedCurrentPeriod = null;
+					this.expectedCurrentPeriod = null;
             }
             else
-                expectedCurrentPeriod = null;
+				this.expectedCurrentPeriod = null;
 
             ApplyExpectedPeriods();
         }
@@ -221,13 +221,13 @@ namespace Ona.App.Features.Calendar
             var lastDate = Months.Last().Dates.Last(d => d.IsCurrentMonth).Date;
             var expectedPeriods = new List<DateTimePeriod>();
 
-            if (expectedCurrentPeriod != null)
-                expectedPeriods.Add(expectedCurrentPeriod);
+            if (this.expectedCurrentPeriod != null)
+                expectedPeriods.Add(this.expectedCurrentPeriod);
 
-            expectedPeriodsEnumerator.Reset();
-            while (expectedPeriodsEnumerator.MoveNext())
+			this.expectedPeriodsEnumerator.Reset();
+            while (this.expectedPeriodsEnumerator.MoveNext())
             {
-                var period = expectedPeriodsEnumerator.Current;
+                var period = this.expectedPeriodsEnumerator.Current;
 
                 if (period.Start > lastDate)
                     break;

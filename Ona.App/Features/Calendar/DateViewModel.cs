@@ -33,7 +33,12 @@ namespace Ona.App.Features.Calendar
             Date = date;
             MonthViewModel = monthViewModel;
             IsCurrentMonth = date.Year == currentYear && date.Month == currentMonth;
-            IsToday = Date.Date == this.dateTimeProvider.Now.Date;
+
+            var today = this.dateTimeProvider.Now.Date;
+
+			IsToday = Date.Date == today;
+            IsPast = Date.Date < today;
+            IsFuture = Date.Date > today;
 
             ToggleCommand = new RelayCommand(ExecuteToggle);
         }
@@ -44,41 +49,15 @@ namespace Ona.App.Features.Calendar
 
         public bool IsToday { get; }
 
-        public bool IsMarked
-        {
-            get => isMarked;
-            set
-            {
-                SetProperty(ref isMarked, value);
-                OnPropertyChanged(nameof(BackgroundColor));
-            }
-        }
+        public bool IsPast { get; }
 
-        public bool IsExpected
-        {
-            get => isExpected;
-            set
-            {
-                SetProperty(ref isExpected, value);
-                OnPropertyChanged(nameof(BackgroundColor));
-            }
-        }
+        public bool IsFuture { get; }
+
+        public bool IsMarked { get => isMarked; set => SetProperty(ref isMarked, value); }
+
+        public bool IsExpected { get => isExpected; set => SetProperty(ref isExpected, value); }
 
         public bool IsCurrentMonth { get; }
-
-        public Color BackgroundColor
-        {
-            get
-            {
-                if (IsMarked)
-                    return Colors.Yellow;
-                if (isExpected)
-                    return Colors.LightYellow;
-                if (dateTimeProvider.Now >= Date)
-                    return Colors.Black;
-                return Colors.Gray;
-            }
-        }
 
         public ICommand ToggleCommand { get; }
 

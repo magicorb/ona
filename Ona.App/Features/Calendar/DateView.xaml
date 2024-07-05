@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="Ona.App.Features.Calendar.DateView">
+<ContentView
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:controls="clr-namespace:Ona.App.Controls"
+	x:Class="Ona.App.Features.Calendar.DateView">
     <Grid
 		RowSpacing="0" ColumnSpacing="0" Margin="0" Padding="0">
 		<Grid.GestureRecognizers>
@@ -9,16 +11,44 @@
 				Command="{Binding ToggleCommand}"
                 NumberOfTapsRequired="1" />
 		</Grid.GestureRecognizers>
+		
 		<Ellipse
-			Fill="{Binding BackgroundColor}"
+			Fill="{StaticResource Grayscale900}"
 			HorizontalOptions="Center" VerticalOptions="Center"
-			Aspect="UniformToFill"/>
+			Aspect="UniformToFill">
+			<Ellipse.Triggers>
+				<DataTrigger TargetType="Ellipse" Binding="{Binding IsMarked}" Value="True">
+					<Setter Property="Fill" Value="{StaticResource AccentPrimary}"/>
+				</DataTrigger>
+
+				<DataTrigger TargetType="Ellipse" Binding="{Binding IsFuture}" Value="True">
+					<Setter Property="Opacity" Value="0.5"/>
+				</DataTrigger>
+
+				<MultiTrigger TargetType="Ellipse">
+					<MultiTrigger.Conditions>
+						<BindingCondition Binding="{Binding IsExpected}" Value="True"/>
+						<BindingCondition Binding="{Binding IsMarked}" Value="False"/>
+					</MultiTrigger.Conditions>
+					<Setter Property="Fill" Value="{StaticResource AccentPrimary}"/>
+					<Setter Property="Opacity" Value="0.5"/>
+				</MultiTrigger>
+			</Ellipse.Triggers>
+		</Ellipse>
+
 		<Label 
 	        Text="{Binding Date.Day}"
-			FontSize="32" TextColor="LightGray"
-			HorizontalOptions="Center" VerticalOptions="Center"/>
+			FontSize="32" TextColor="{StaticResource Grayscale800}"
+			HorizontalOptions="Center" VerticalOptions="Center">
+			<Label.Triggers>
+				<DataTrigger TargetType="Label" Binding="{Binding IsFuture}" Value="True">
+					<Setter Property="Opacity" Value="0.5"/>
+				</DataTrigger>
+			</Label.Triggers>
+		</Label>
+		
 		<Ellipse
-			Fill="#2BFF8C"
+			Fill="{StaticResource AccentSecondary}"
 			WidthRequest="12" HeightRequest="12"
 			HorizontalOptions="End"  VerticalOptions="Start"
 			IsVisible="{Binding IsToday}"/>
