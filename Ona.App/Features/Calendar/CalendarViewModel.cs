@@ -235,9 +235,12 @@ namespace Ona.App.Features.Calendar
                 expectedPeriods.Add(period);
             }
 
-            var today = dateTimeProvider.Now.Date;
+            if (expectedPeriods.Count == 0)
+                return;
 
-            foreach (var date in Months.SelectMany(m => m.Dates.Where(d => d.IsCurrentMonth)).Where(d => d.Date >= today))
+            var firstExpectedPeriodStart = expectedPeriods[0].Start;
+
+            foreach (var date in Months.SelectMany(m => m.Dates.Where(d => d.IsCurrentMonth)).Where(d => d.Date >= firstExpectedPeriodStart))
                 date.IsExpected = expectedPeriods.Any(p => date.Date >= p.Start && date.Date <= p.End);
         }
     }
