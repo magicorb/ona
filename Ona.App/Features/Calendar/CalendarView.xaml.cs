@@ -7,18 +7,30 @@ namespace Ona.App.Features.Calendar;
 
 public partial class CalendarView : ContentView
 {
-	private bool isLoading;
 	private double scrollY;
 
 	public CalendarView()
 	{
 		InitializeComponent();
-
-		this.isLoading = true;
 	}
 
 	private CalendarViewModel ViewModel
 		=> (CalendarViewModel)BindingContext;
+
+	private void MonthListViewLite_FirstScrolled(object sender, ScrolledEventArgs e)
+	{
+		Dispatcher.Dispatch(() =>
+		{
+			for (var i = 0; i < ViewModel.Months.Count; i++)
+			{
+				if (i != 2)
+					ViewModel.Months[i].IsVisible = true;
+			}
+
+			MonthListViewLite.Scrolled -= MonthListViewLite_FirstScrolled;
+			MonthListViewLite.Scrolled += MonthListViewLite_Scrolled;
+		});
+	}
 
 	private void MonthListViewLite_Scrolled(object sender, ScrolledEventArgs e)
 	{
@@ -27,37 +39,10 @@ public partial class CalendarView : ContentView
 			var delta = e.ScrollY - this.scrollY;
 			this.scrollY = e.ScrollY;
 
-			var curentMonthIndex = ViewModel.Months.IndexOf(ViewModel.CurentMonth);
-
-			if (delta > 0)
-			{
-				for (var i = curentMonthIndex + 1; i < ViewModel.Months.Count; i++)
-					ViewModel.Months[i].IsVisible = true;
-			}
-			else if (delta < 0)
-			{
-				for (var i = curentMonthIndex - 1; i >= 0; i--)
-					ViewModel.Months[i].IsVisible = true;
-			}
-
 			if (delta < 0 && e.ScrollY <= 1)
-			{
-				if (this.isLoading)
-					return;
-				
-				this.isLoading = true;
 				_ = ViewModel.InsertMonthAsync();
-				this.isLoading = false;
-			}
 			else if (delta > 0 && e.ScrollY >= MonthListViewLite.ContentHeight - MonthListViewLite.Height - 1)
-			{
-				if (this.isLoading)
-					return;
-
-				this.isLoading = true;
 				_ = ViewModel.AppendMonthAsync();
-				this.isLoading = false;
-			}
 		});
 	}
 
@@ -72,7 +57,7 @@ public partial class CalendarView : ContentView
 		Dispatcher.Dispatch(async () =>
 		{
 			await MonthListViewLite.ScrollToIndexAsync(3, ScrollToPosition.End, false);
-			this.isLoading = false;
+			MonthListViewLite.Scrolled += MonthListViewLite_FirstScrolled;
 		});
 	}
 
