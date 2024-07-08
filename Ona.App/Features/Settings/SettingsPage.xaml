@@ -14,28 +14,26 @@
 			<Setter Property="FontSize" Value="32"/>
 		</Style>
 	</ContentPage.Resources>
-	
-	<VerticalStackLayout
-		Padding="16,0">
-		<Label
-			Text="Settings"
-			FontSize="54"
-			Margin="0,12,0,0"/>
 
-		<BoxView  Style="{StaticResource HorizontalSeparatorStyle}" Margin="0,64,0,0"/>
+	<Grid Padding="16,12">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<VerticalStackLayout Grid.Row="0">
+			<Label Text="Settings" FontSize="54"/>
 
-		<Label
-			Text="Delete data→" Style="{StaticResource FieldValueStyle}" Margin="0,12,0,0">
-			<Label.GestureRecognizers>
-				<TapGestureRecognizer Command="{Binding DeleteDataCommand}"/>
-			</Label.GestureRecognizers>
-		</Label>
+			<BoxView Style="{StaticResource HorizontalSeparatorStyle}" Margin="0,64,0,0"/>
 
-		<Label Text="App Version" Style="{StaticResource FieldNameStyle}" Margin="0,48,0,0"/>
-
-		<BoxView Style="{StaticResource HorizontalSeparatorStyle}" Margin="0,12,0,0"/>
-
-		<Label Text="{Binding VersionNumber, TargetNullValue='No data'}" Style="{StaticResource FieldValueStyle}" Margin="0,12,0,0"/>
-
-	</VerticalStackLayout>
+			<Label Text="Delete data→" Style="{StaticResource FieldValueStyle}" Margin="0,12,0,0">
+				<Label.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding DeleteDataCommand}"/>
+				</Label.GestureRecognizers>
+			</Label>
+		</VerticalStackLayout>
+		<HorizontalStackLayout Grid.Row="1" HorizontalOptions="Center" VerticalOptions="End">
+			<Label Text="App Version" />
+			<Label Text="{Binding VersionNumber, TargetNullValue='No data'}" Margin="4,0,0,0" />
+		</HorizontalStackLayout>
+	</Grid>
 </ContentPage>
