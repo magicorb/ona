@@ -11,5 +11,7 @@ namespace Ona.App.Model
 		public DateTime Start { get; set; }
 
 		public DateTime End { get; set; }
+
+		public TimeSpan Length => End - Start;
 	}
 }

@@ -217,9 +217,16 @@ namespace Ona.App.Features.Calendar
                     => periodStatsProvider.GetExpectedPeriodsEnumerator(previousPeriods));
 
                 if (previousExpectedPeriodsEnumerator.MoveNext())
-                    this.expectedCurrentPeriod = previousExpectedPeriodsEnumerator.Current;
+                {
+                    var expectedCurrentPeriod = previousExpectedPeriodsEnumerator.Current;
+                    var lastPeriod = this.periods[this.periods.Count - 1];
+
+					this.expectedCurrentPeriod = expectedCurrentPeriod.Start == lastPeriod.Start
+                        ? expectedCurrentPeriod
+                        : new DateTimePeriod() { Start = lastPeriod.Start, End = lastPeriod.Start.Add(expectedCurrentPeriod.Length) };
+                }
                 else
-					this.expectedCurrentPeriod = null;
+                    this.expectedCurrentPeriod = null;
             }
             else
 				this.expectedCurrentPeriod = null;
