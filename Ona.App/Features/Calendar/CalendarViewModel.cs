@@ -22,6 +22,7 @@ namespace Ona.App.Features.Calendar
         private ObservableCollection<MonthViewModel> months;
 
         private DateViewModel? selectionStart;
+        private IReadOnlyList<DateTimePeriod> periods;
         private IEnumerator<DateTimePeriod> expectedPeriodsEnumerator;
         private DateTimePeriod? expectedCurrentPeriod;
 
@@ -193,8 +194,8 @@ namespace Ona.App.Features.Calendar
             => selectionStart != null;
 
         private DateViewModel GetNextDateViewModel(DateViewModel dateViewModel)
-            => dateViewModel == dateViewModel.MonthViewModel.Dates.Last(d => d.IsCurrentMonth)
-            ? Months[Months.IndexOf(dateViewModel.MonthViewModel) + 1].Dates.First(d => d.IsCurrentMonth)
+            => dateViewModel == dateViewModel.MonthViewModel.MonthDates.Last()
+            ? Months[Months.IndexOf(dateViewModel.MonthViewModel) + 1].MonthDates.First()
             : dateViewModel.MonthViewModel.Dates[dateViewModel.MonthViewModel.Dates.IndexOf(dateViewModel) + 1];
 
         private async Task UpdateExpectedPeriodsAsync()
@@ -203,14 +204,14 @@ namespace Ona.App.Features.Calendar
 
             var dates = (await dateRepository.GetDateRecordsAsync()).Select(d => d.Date).ToArray();
 
-            var periods = periodStatsProvider.GetDatePeriods(dates.Select(d => d.Date));
+            this.periods = periodStatsProvider.GetDatePeriods(dates.Select(d => d.Date));
 
             expectedPeriodsEnumerator = await Task.Run(()
-                => periodStatsProvider.GetExpectedPeriodsEnumerator(periods));
+                => periodStatsProvider.GetExpectedPeriodsEnumerator(this.periods));
 
-            if (periods.Count > 1)
+            if (this.periods.Count > 1)
             {
-                var previousPeriods = new List<DateTimePeriod>(periods.Take(periods.Count - 1));
+                var previousPeriods = new List<DateTimePeriod>(this.periods.Take(this.periods.Count - 1));
 
                 var previousExpectedPeriodsEnumerator = await Task.Run(()
                     => periodStatsProvider.GetExpectedPeriodsEnumerator(previousPeriods));
@@ -228,7 +229,7 @@ namespace Ona.App.Features.Calendar
 
         private void ApplyExpectedPeriods()
         {
-            var lastDate = Months.Last().Dates.Last(d => d.IsCurrentMonth).Date;
+            var lastDate = Months.Last().MonthDates.Last().Date;
             var expectedPeriods = new List<DateTimePeriod>();
 
             if (this.expectedCurrentPeriod != null)
@@ -246,12 +247,17 @@ namespace Ona.App.Features.Calendar
             }
 
             if (expectedPeriods.Count == 0)
+            {
+                foreach (var date in Months.SelectMany(m => m.MonthDates))
+                    date.IsExpected = false;
                 return;
+            }
 
-            var firstExpectedPeriodStart = expectedPeriods[0].Start;
+            var lastPeriodEnd = this.periods[this.periods.Count - 1].End;
 
-            foreach (var date in Months.SelectMany(m => m.Dates.Where(d => d.IsCurrentMonth)).Where(d => d.Date >= firstExpectedPeriodStart))
-                date.IsExpected = expectedPeriods.Any(p => date.Date >= p.Start && date.Date <= p.End);
+            foreach (var date in Months.SelectMany(m => m.MonthDates))
+                date.IsExpected = date.Date > lastPeriodEnd
+                    && expectedPeriods.Any(p => date.Date >= p.Start && date.Date <= p.End);
         }
     }
 }

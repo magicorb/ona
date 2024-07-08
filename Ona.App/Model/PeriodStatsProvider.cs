@@ -20,7 +20,9 @@ namespace Ona.App.Model
 
 			var enumerator = orderedDates.GetEnumerator();
 
-			enumerator.MoveNext();
+			if (!enumerator.MoveNext())
+				return periods;
+
 			var currentPeriod = new DateTimePeriod()
 			{
 				Start = enumerator.Current.Date,
@@ -77,6 +79,9 @@ namespace Ona.App.Model
 
 		private IEnumerable<DateTimePeriod> GetExpectedPeriods(IReadOnlyList<DateTimePeriod> orderedPeriods)
 		{
+			if (orderedPeriods.Count == 0)
+				yield break;
+
 			var average = GetAveragePeriodStats(orderedPeriods);
 			var interval = average.Interval == null
 				? DefaultInterval
