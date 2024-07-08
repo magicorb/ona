@@ -1,4 +1,4 @@
-
+using System;
 using System.Collections;
 using System.Collections.Specialized;
 
@@ -44,7 +44,12 @@ public partial class ListViewLite : ContentView
 	public async Task ScrollToIndexAsync(int index, ScrollToPosition position, bool animated)
 		=> await ItemsScrollView.ScrollToAsync((Element)ItemsPanel.Children[index], position, animated);
 
+	public async Task ScrollToOffsetAsync(double offset, bool animated)
+		=> await ItemsScrollView.ScrollToAsync(0, offset, animated);
+
 	public event EventHandler<ScrolledEventArgs> Scrolled;
+
+	public event EventHandler<ListItemAddedEventArgs> ItemAdded;
 
 	private static void OnItemsSourceChanged(BindableObject bindable, object oldValue, object newValue)
 		=> ((ListViewLite)bindable).OnItemsSourceChanged(oldValue, newValue);
@@ -65,16 +70,20 @@ public partial class ListViewLite : ContentView
 		switch (e.Action)
 		{
 			case NotifyCollectionChangedAction.Add:
-				if (e.NewStartingIndex == 0)
+				for (int i = 0; i < e.NewItems.Count; i++)
 				{
-					var i = 0;
-					foreach (var newItem in e.NewItems)
-						ItemsPanel.Insert(i++, CreateItemView(newItem));
-				}
-				else
-				{
-					foreach (var newItem in e.NewItems)
-						ItemsPanel.Add(CreateItemView(newItem));
+					var newView = (View)CreateItemView(e.NewItems[i]);
+					var index = e.NewStartingIndex + i;
+
+					void NewView_SizeChanged(object? sender2, EventArgs e2)
+					{
+						newView.SizeChanged -= NewView_SizeChanged;
+						ItemAdded?.Invoke(this, new ListItemAddedEventArgs(index, newView));
+					}
+
+					newView.SizeChanged += NewView_SizeChanged;
+					
+					ItemsPanel.Insert(index, newView);
 				}
 				break;
 			case NotifyCollectionChangedAction.Remove:
@@ -99,7 +108,11 @@ public partial class ListViewLite : ContentView
 
 	private IView CreateItemView(object item)
 	{
-		var content = (BindableObject)ItemTemplate.CreateContent();
+		var template = ItemTemplate is DataTemplateSelector selector
+			? selector.SelectTemplate(item, this)
+			: ItemTemplate;
+
+		var content = (BindableObject)template.CreateContent();
 		content.BindingContext = item;
 		return (IView)content;
 	}

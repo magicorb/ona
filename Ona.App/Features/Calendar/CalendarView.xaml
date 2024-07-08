@@ -8,13 +8,20 @@
 	Loaded="ContentView_Loaded" Unloaded="ContentView_Unloaded">
 	<controls:ListViewLite
 		x:Name="MonthListViewLite"
-		ItemsSource="{Binding Months}"
-		Scrolled="ListViewLite_Scrolled">
+		ItemsSource="{Binding Items}"
+		Scrolled="MonthListViewLite_Scrolled" ItemAdded="MonthListViewLite_ItemAdded">
 		<controls:ListViewLite.ItemTemplate>
-			<DataTemplate>
-				<calendar:MonthView
-					Margin="0,0,0,12"/>
-			</DataTemplate>
+			<controls:DictionaryDataTemplateSelector>
+				<controls:DictionaryDataTemplateSelector.Templates>
+					<DataTemplate x:Key="MonthViewModel">
+						<calendar:MonthView Margin="0,0,0,12"/>
+					</DataTemplate>
+
+					<DataTemplate x:Key="SpinnerViewModel">
+						<ActivityIndicator IsRunning="True" HeightRequest="32" Color="{StaticResource Grayscale600}"/>
+					</DataTemplate>
+				</controls:DictionaryDataTemplateSelector.Templates>
+			</controls:DictionaryDataTemplateSelector>
 		</controls:ListViewLite.ItemTemplate>
 	</controls:ListViewLite>
 </ContentView>
