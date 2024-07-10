@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CommunityToolkit.Maui.Alerts;
+using CommunityToolkit.Maui.Core;
 
 namespace Ona.App.Controls
 {
@@ -18,7 +20,7 @@ namespace Ona.App.Controls
 		public async Task<bool> ConfirmAsync(string title, string message, string accept, string cancel)
 			=> await this.page.DisplayAlert(title, message, accept, cancel);
 
-		public async Task NotifyAsync(string title, string message, string ok)
-			=> await this.page.DisplayAlert(title, message, ok);
+		public async Task NotifyAsync(string message)
+			=> await Toast.Make(message, ToastDuration.Short).Show();
 	}
 }

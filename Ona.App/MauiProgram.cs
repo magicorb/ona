@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using CommunityToolkit.Maui;
+using Microsoft.Extensions.Logging;
 
 namespace Ona.App
 {
@@ -10,6 +11,7 @@ namespace Ona.App
 			builder
 				.UseMauiApp<App>()
 				.RegisterAll()
+				.UseMauiCommunityToolkit()
 				.ConfigureFonts(fonts =>
 				{
 					fonts.AddFont("Satoshi-Regular.otf", "SatoshiRegular");

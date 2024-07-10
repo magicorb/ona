@@ -1,11 +1,14 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using CommunityToolkit.Maui.Storage;
+using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Ona.App.Controls;
 using Ona.App.Data;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -15,25 +18,40 @@ namespace Ona.App.Features.Settings
     {
         private readonly IDateRepository dateRepository;
         private readonly IUserNotificationService userNotificationService;
+        private readonly IFileSaver fileSaver;
+		private readonly IFilePicker filePicker;
 
-        private Task? deleteTask;
+		private Task? deleteDataTask;
+        private Task<FileSaverResult>? exportDataTask;
+		private Task<bool>? importDataTask;
 
-        public SettingsViewModel(
+		public SettingsViewModel(
             IDateRepository dateRepository,
-			IUserNotificationService userNotificationService)
+			IUserNotificationService userNotificationService,
+			IFileSaver fileSaver,
+            IFilePicker filePicker)
         {
             this.dateRepository = dateRepository;
             this.userNotificationService = userNotificationService;
+			this.fileSaver = fileSaver;
+			this.filePicker = filePicker;
 
-            VersionNumber = AppInfo.Current.VersionString;
+			VersionNumber = AppInfo.Current.VersionString;
+			
 			DeleteDataCommand = new RelayCommand(ExecuteDeleteData, CanExecuteDeleteData);
-        }
+			ExportDataCommand = new RelayCommand(ExecuteExportData, CanExecuteExportData);
+			ImportDataCommand = new RelayCommand(ExecuteImportData, CanExecuteImportData);
+		}
 
-        public string VersionNumber { get; }
+		public string VersionNumber { get; }
 
 		public ICommand DeleteDataCommand { get; }
 
-        private async void ExecuteDeleteData()
+		public ICommand ExportDataCommand { get; }
+
+		public ICommand ImportDataCommand { get; }
+
+		private async void ExecuteDeleteData()
         {
             var isConfirmrd = await userNotificationService.ConfirmAsync(
                 title: "Confirm Data Deletion",
@@ -44,14 +62,85 @@ namespace Ona.App.Features.Settings
             if (!isConfirmrd)
                 return;
 
-            deleteTask = dateRepository.DeleteAllDateRecordsAsync();
-            await deleteTask;
-            deleteTask = null;
+            this.deleteDataTask = this.dateRepository.DeleteAllDateRecordsAsync();
+            await this.deleteDataTask;
+            this.deleteDataTask = null;
 
-            await this.userNotificationService.NotifyAsync("Complete", "Data deleted", "OK");
+            await this.userNotificationService.NotifyAsync("Data deleted");
 		}
 
         private bool CanExecuteDeleteData()
-            => deleteTask == null;
-    }
+            => this.deleteDataTask == null;
+
+		private async void ExecuteExportData()
+		{
+            this.exportDataTask = ExportDataAsync();
+            var taskResult = await this.exportDataTask;
+            this.exportDataTask = null;
+
+            var message = taskResult.IsSuccessful ? "Data exported" : "Error exporting data";
+			await this.userNotificationService.NotifyAsync(message);
+		}
+
+        private bool CanExecuteExportData()
+            => this.exportDataTask == null;
+
+		private async void ExecuteImportData()
+		{
+			this.importDataTask = ImportDataAsync();
+			var taskResult = await this.importDataTask;
+			this.importDataTask = null;
+
+			var message = taskResult ? "Data imported" : "Error importing data";
+			await this.userNotificationService.NotifyAsync(message);
+		}
+
+		private bool CanExecuteImportData()
+			=> this.importDataTask == null;
+
+		private async Task<FileSaverResult> ExportDataAsync()
+        {
+			var dateRecords = await this.dateRepository.GetDateRecordsAsync();
+
+			using var stream = new MemoryStream();
+			using var writer = new StreamWriter(stream);
+
+			foreach (var dateRecord in dateRecords)
+				await writer.WriteLineAsync(dateRecord.Date.ToString("yyyy-MM-dd"));
+
+			await writer.FlushAsync();
+
+			var fileSaverResult = await FileSaver.Default.SaveAsync("data.ona", stream);
+			return fileSaverResult;
+		}
+
+		private async Task<bool> ImportDataAsync()
+		{
+			var filePickerResult = await this.filePicker.PickAsync();
+
+			if (filePickerResult == null)
+				return false;
+
+			try
+			{
+				using var stream = await filePickerResult.OpenReadAsync();
+				using var streamReader = new StreamReader(stream);
+
+				var dates = new List<DateTime>();
+				while (await streamReader.ReadLineAsync() is string line)
+					dates.Add(DateTime.Parse(line));
+
+				await this.dateRepository.DeleteAllDateRecordsAsync();
+
+				foreach (var date in dates)
+					await this.dateRepository.AddDateRecordAsync(date);
+
+				return true;
+			}
+			catch
+			{
+				return false;
+			}
+		}
+	}
 }

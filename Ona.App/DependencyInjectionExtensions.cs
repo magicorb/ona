@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Maui.Storage;
+using CommunityToolkit.Mvvm.Messaging;
 using Ona.App.Controls;
 using Ona.App.Data;
 using Ona.App.Features.Calendar;
@@ -26,6 +27,10 @@ namespace Ona.App
 
 			services.AddSingleton<Func<Page, IUserNotificationService>>(sp => page
 				=> new UserNotificationService(page));
+
+			services.AddSingleton(FilePicker.Default);
+
+			services.AddSingleton(FileSaver.Default);
 
 			services.AddTransient<TodayViewModel>();
 			
