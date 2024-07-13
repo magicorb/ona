@@ -17,27 +17,27 @@ namespace Ona.App.Features.Calendar
         private readonly IDateRepository dateRepository;
         private readonly IPeriodStatsProvider periodStatsProvider;
         private readonly IMessenger messenger;
-        private readonly MonthViewModelFactory monthViewModelFactory;
+		private readonly MainModel mainModel;
+		private readonly MonthViewModelFactory monthViewModelFactory;
 
         private ObservableCollection<MonthViewModel> months;
 
         private DateViewModel? selectionStart;
-        private IReadOnlyList<DateTimePeriod> periods;
-        private IEnumerator<DateTimePeriod> expectedPeriodsEnumerator;
-        private DateTimePeriod? expectedCurrentPeriod;
-
+        
         public CalendarViewModel(
             IDateTimeProvider dateTimeProvider,
             IDateRepository dateRepository,
             IPeriodStatsProvider periodStatsProvider,
             IMessenger messenger,
+            MainModel mainModel,
             MonthViewModelFactory monthViewModelFactory)
         {
             this.dateTimeProvider = dateTimeProvider;
             this.dateRepository = dateRepository;
             this.periodStatsProvider = periodStatsProvider;
             this.messenger = messenger;
-            this.monthViewModelFactory = monthViewModelFactory;
+			this.mainModel = mainModel;
+			this.monthViewModelFactory = monthViewModelFactory;
 
             _ = InitializeMonths();
 
@@ -202,65 +202,25 @@ namespace Ona.App.Features.Calendar
         {
             // TODO: If new call made, cancel all pending, wait for the current to complete and then start
 
-            var dates = (await dateRepository.GetDateRecordsAsync()).Select(d => d.Date).ToArray();
-
-            this.periods = periodStatsProvider.GetDatePeriods(dates.Select(d => d.Date));
-
-            expectedPeriodsEnumerator = await Task.Run(()
-                => periodStatsProvider.GetExpectedPeriodsEnumerator(this.periods));
-
-            if (this.periods.Count > 1)
-            {
-                var previousPeriods = new List<DateTimePeriod>(this.periods.Take(this.periods.Count - 1));
-
-                var previousExpectedPeriodsEnumerator = await Task.Run(()
-                    => periodStatsProvider.GetExpectedPeriodsEnumerator(previousPeriods));
-
-                if (previousExpectedPeriodsEnumerator.MoveNext())
-                {
-                    var expectedCurrentPeriod = previousExpectedPeriodsEnumerator.Current;
-                    var lastPeriod = this.periods[this.periods.Count - 1];
-
-					this.expectedCurrentPeriod = expectedCurrentPeriod.Start == lastPeriod.Start
-                        ? expectedCurrentPeriod
-                        : new DateTimePeriod() { Start = lastPeriod.Start, End = lastPeriod.Start.Add(expectedCurrentPeriod.Length) };
-                }
-                else
-                    this.expectedCurrentPeriod = null;
-            }
-            else
-				this.expectedCurrentPeriod = null;
+            await this.mainModel.UpdateExpectedPeriodsAsync();
 
             ApplyExpectedPeriods();
         }
 
         private void ApplyExpectedPeriods()
         {
-            var lastDate = Months.Last().MonthDates.Last().Date;
-            var expectedPeriods = new List<DateTimePeriod>();
+			this.mainModel.EndDate = Months.Last().MonthDates.Last().Date;
 
-            if (this.expectedCurrentPeriod != null)
-                expectedPeriods.Add(this.expectedCurrentPeriod);
+            var expectedPeriods = this.mainModel.ExpectedPeriods;
 
-			this.expectedPeriodsEnumerator.Reset();
-            while (this.expectedPeriodsEnumerator.MoveNext())
-            {
-                var period = this.expectedPeriodsEnumerator.Current;
-
-                if (period.Start > lastDate)
-                    break;
-
-                expectedPeriods.Add(period);
-            }
-
-            if (expectedPeriods.Count == 0)
+			if (expectedPeriods.Count == 0)
             {
                 foreach (var date in Months.SelectMany(m => m.MonthDates))
                     date.IsExpected = false;
                 return;
             }
 
-            var lastPeriodEnd = this.periods[this.periods.Count - 1].End;
+            var lastPeriodEnd = this.mainModel.Periods[this.mainModel.Periods.Count - 1].End;
 
             foreach (var date in Months.SelectMany(m => m.MonthDates))
                 date.IsExpected = date.Date > lastPeriodEnd
