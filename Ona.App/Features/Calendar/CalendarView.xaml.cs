@@ -56,9 +56,4 @@ public partial class CalendarView : ContentView
 			MonthListViewLite.Scrolled += MonthListViewLite_FirstScrolled;
 		});
 	}
-
-	private void ContentView_Unloaded(object sender, EventArgs e)
-	{
-		ViewModel?.Dispose();
-	}
 }

@@ -17,7 +17,6 @@ namespace Ona.App.Features.Settings
     public class SettingsViewModel : ObservableObject
     {
         private readonly IDateRepository dateRepository;
-        private readonly IUserNotificationService userNotificationService;
         private readonly IFileSaver fileSaver;
 		private readonly IFilePicker filePicker;
 
@@ -27,12 +26,10 @@ namespace Ona.App.Features.Settings
 
 		public SettingsViewModel(
             IDateRepository dateRepository,
-			IUserNotificationService userNotificationService,
 			IFileSaver fileSaver,
             IFilePicker filePicker)
         {
             this.dateRepository = dateRepository;
-            this.userNotificationService = userNotificationService;
 			this.fileSaver = fileSaver;
 			this.filePicker = filePicker;
 
@@ -42,6 +39,8 @@ namespace Ona.App.Features.Settings
 			ExportDataCommand = new RelayCommand(ExecuteExportData, CanExecuteExportData);
 			ImportDataCommand = new RelayCommand(ExecuteImportData, CanExecuteImportData);
 		}
+
+		public IUserNotificationService UserNotificationService { get; set; }
 
 		public string VersionNumber { get; }
 
@@ -53,7 +52,7 @@ namespace Ona.App.Features.Settings
 
 		private async void ExecuteDeleteData()
         {
-            var isConfirmrd = await userNotificationService.ConfirmAsync(
+            var isConfirmrd = await UserNotificationService.ConfirmAsync(
                 title: "Confirm Data Deletion",
                 message: "This action can’t be undone.",
                 accept: "Confirm & Delete Data",
@@ -66,7 +65,7 @@ namespace Ona.App.Features.Settings
             await this.deleteDataTask;
             this.deleteDataTask = null;
 
-            await this.userNotificationService.NotifyAsync("Data deleted");
+            await UserNotificationService.NotifyAsync("Data deleted");
 		}
 
         private bool CanExecuteDeleteData()
@@ -79,7 +78,7 @@ namespace Ona.App.Features.Settings
             this.exportDataTask = null;
 
             var message = taskResult.IsSuccessful ? "Data exported" : "Error exporting data";
-			await this.userNotificationService.NotifyAsync(message);
+			await UserNotificationService.NotifyAsync(message);
 		}
 
         private bool CanExecuteExportData()
@@ -92,7 +91,7 @@ namespace Ona.App.Features.Settings
 			this.importDataTask = null;
 
 			var message = taskResult ? "Data imported" : "Error importing data";
-			await this.userNotificationService.NotifyAsync(message);
+			await UserNotificationService.NotifyAsync(message);
 		}
 
 		private bool CanExecuteImportData()
