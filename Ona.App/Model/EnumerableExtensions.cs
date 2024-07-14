@@ -9,6 +9,9 @@ namespace Ona.App.Model
 {
 	public static class EnumerableExtensions
 	{
+		public static T Last<T>(this IReadOnlyList<T> list)
+			=> list[list.Count - 1];
+
 		public static IEnumerator<T> Memorize<T>(this IEnumerable<T> enumerable)
 			=> new MemorizeEnumerator<T>(enumerable);
 
