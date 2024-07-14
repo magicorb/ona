@@ -24,8 +24,6 @@ namespace Ona.App.Features.Insights
         {
             this.dateRepository = dateRepository;
             this.periodStatsProvider = periodStatsProvider;
-
-            _ = InitializeAsync();
         }
 
         public string? LastPeriodStart { get => lastPeriodStart; private set => SetProperty(ref lastPeriodStart, value); }
@@ -34,7 +32,7 @@ namespace Ona.App.Features.Insights
 
         public string? AveragePeriodLength { get => averagePeriodLength; private set => SetProperty(ref averagePeriodLength, value); }
 
-        private async Task InitializeAsync()
+		public async Task RefreshAsync()
         {
             var datesRecords = await dateRepository.GetDateRecordsAsync();
 
