@@ -17,6 +17,7 @@ namespace Ona.App.Model
 		private readonly IDateRepository dateRepository;
 		private readonly IPeriodStatsProvider periodStatsProvider;
 
+		private List<DateTime> dates;
 		private IEnumerator<DateTimePeriod> expectedPeriodsEnumerator;
 		private DateTimePeriod? expectedCurrentPeriod;
 
@@ -28,16 +29,42 @@ namespace Ona.App.Model
 			this.periodStatsProvider = periodStatsProvider;
 		}
 
+		public IReadOnlyList<DateTime> Dates => this.dates;
+
 		public DateTime EndDate { get; set; }
 
 		public IReadOnlyList<DateTimePeriod> Periods { get; private set; }
 
 		public IEnumerator<DateTimePeriod> ExpectedPeriodsEnumerator { get; private set; }
 
+		public async Task InitializeAsync()
+		{
+			this.dates = (await dateRepository.GetDateRecordsAsync()).Select(d => d.Date).ToList();
+		}
+
+		public async Task AddDateAsync(DateTime date)
+		{
+			var i = 0;
+			foreach (var date2 in this.dates)
+			{
+				if (date2 > date)
+					break;
+				i++;
+			}
+			this.dates.Insert(i, date);
+
+			await this.dateRepository.AddDateRecordAsync(date);
+		}
+
+		public async Task DeleteDateAsync(DateTime date)
+		{
+			this.dates.Remove(date);
+
+			await this.dateRepository.DeleteDateRecordAsync(date);
+		}
+
 		public async Task UpdateExpectedPeriodsAsync()
 		{
-			var dates = (await dateRepository.GetDateRecordsAsync()).Select(d => d.Date).ToArray();
-
 			Periods = this.periodStatsProvider.GetDatePeriods(dates.Select(d => d.Date));
 
 			expectedPeriodsEnumerator = await Task.Run(()

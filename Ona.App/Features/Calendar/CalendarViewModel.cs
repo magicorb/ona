@@ -14,7 +14,6 @@ namespace Ona.App.Features.Calendar
     public class CalendarViewModel : ObservableObject, IDisposable
     {
         private readonly IDateTimeProvider dateTimeProvider;
-        private readonly IDateRepository dateRepository;
         private readonly IPeriodStatsProvider periodStatsProvider;
         private readonly IMessenger messenger;
 		private readonly MainModel mainModel;
@@ -33,7 +32,6 @@ namespace Ona.App.Features.Calendar
             MonthViewModelFactory monthViewModelFactory)
         {
             this.dateTimeProvider = dateTimeProvider;
-            this.dateRepository = dateRepository;
             this.periodStatsProvider = periodStatsProvider;
             this.messenger = messenger;
 			this.mainModel = mainModel;
@@ -66,7 +64,7 @@ namespace Ona.App.Features.Calendar
 			this.months.Add(newItem);
 			Items.Insert(Items.Count - 1, newItem);
 
-			await LoadDatesAsync();
+			MarkDates();
 
             ApplyExpectedPeriods();
         }
@@ -78,7 +76,7 @@ namespace Ona.App.Features.Calendar
 			this.months.Insert(0, newItem);
 			Items.Insert(1, newItem);
 
-			await LoadDatesAsync();
+			MarkDates();
 
             ApplyExpectedPeriods();
         }
@@ -104,7 +102,9 @@ namespace Ona.App.Features.Calendar
 
             Months = new ReadOnlyObservableCollection<MonthViewModel>(months);
 
-            await LoadDatesAsync();
+			await this.mainModel.InitializeAsync();
+
+			MarkDates();
 
             await UpdateExpectedPeriodsAsync();
         }
@@ -157,13 +157,10 @@ namespace Ona.App.Features.Calendar
             _ = UpdateExpectedPeriodsAsync();
         }
 
-        private async Task LoadDatesAsync()
+        private void MarkDates()
         {
-            var dateRecords = await dateRepository.GetDateRecordsAsync();
-
-            foreach (var dateRecord in dateRecords)
+            foreach (var date in this.mainModel.Dates)
             {
-                var date = dateRecord.Date;
                 var monthViewModel = Months.FirstOrDefault(m => m.Year == date.Year && m.Month == date.Month);
                 if (monthViewModel == null)
                     continue;
@@ -178,7 +175,7 @@ namespace Ona.App.Features.Calendar
                 return;
 
             dateViewModel.IsMarked = true;
-            await dateRepository.AddDateRecordAsync(dateViewModel.Date);
+            await this.mainModel.AddDateAsync(dateViewModel.Date);
         }
 
         private async Task UnmarkDateAsync(DateViewModel dateViewModel)
@@ -187,7 +184,7 @@ namespace Ona.App.Features.Calendar
                 return;
 
             dateViewModel.IsMarked = false;
-            await dateRepository.DeleteDateRecordAsync(dateViewModel.Date);
+            await this.mainModel.DeleteDateAsync(dateViewModel.Date);
         }
 
         private bool IsSelectingRange
