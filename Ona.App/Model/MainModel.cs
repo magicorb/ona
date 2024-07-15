@@ -17,6 +17,8 @@ namespace Ona.App.Model
 		private readonly IDateRepository dateRepository;
 		private readonly IPeriodStatsProvider periodStatsProvider;
 
+		private Task initializeTask;
+
 		private List<DateTime> markedDates;
 		private List<DateTimePeriod>? expectedPeriods;
 		private DateTime endDate;
@@ -44,8 +46,12 @@ namespace Ona.App.Model
 
 		public async Task InitializeAsync()
 		{
-			this.markedDates = (await dateRepository.GetDateRecordsAsync()).Select(d => d.Date).ToList();
+			this.initializeTask = InitializeInternalAsync();
+			await this.initializeTask;
 		}
+
+		public async Task OnInititalizedAsync()
+			=> await this.initializeTask;
 
 		public async Task AddDateAsync(DateTime date)
 		{
@@ -78,6 +84,11 @@ namespace Ona.App.Model
 				UpdateExpectedPeriods();
 
 			return this.expectedPeriods;
+		}
+
+		private async Task InitializeInternalAsync()
+		{
+			this.markedDates = (await dateRepository.GetDateRecordsAsync()).Select(d => d.Date).ToList();
 		}
 
 		private void UpdateExpectedPeriods()
