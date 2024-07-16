@@ -24,7 +24,6 @@ namespace Ona.App.Features.Calendar
         
         public CalendarViewModel(
             IDateTimeProvider dateTimeProvider,
-            IDateRepository dateRepository,
             IMessenger messenger,
             IMainModel mainModel,
             MonthViewModelFactory monthViewModelFactory)
@@ -45,7 +44,7 @@ namespace Ona.App.Features.Calendar
 
         public async Task RefreshAsync()
         {
-            await this.mainModel.OnInititalizedAsync();
+            await this.mainModel.OnInitializedAsync();
 
 			RefreshMarkedDates();
 			await RefreshExpectedDatesAsync();
@@ -198,7 +197,7 @@ namespace Ona.App.Features.Calendar
         {
 			this.mainModel.ObservedEnd = this.months.Last().MonthDates.Last().Date;
 
-            var expectedPeriods = await Task.Run(this.mainModel.GetExpectedPeriods);
+            var expectedPeriods = await Task.Run(() => this.mainModel.ExpectedPeriods);
 
 			if (expectedPeriods.Count == 0)
             {

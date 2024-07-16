@@ -57,6 +57,7 @@ namespace Ona.App.Model
 				return new PeriodStats
 				{
 					Duration = GetDays(datePeriod),
+					Interval = DefaultInterval
 				};
 			}
 
@@ -66,8 +67,8 @@ namespace Ona.App.Model
 
 			var result = new PeriodStats()
 			{
-				Duration = orderedPeriods.Average(GetDays),
-				Interval = intervals.Average()
+				Duration = (int)Math.Round(orderedPeriods.Average(GetDays), MidpointRounding.AwayFromZero),
+				Interval = (int)Math.Round(intervals.Average(), MidpointRounding.AwayFromZero)
 			};
 
 			return result;
