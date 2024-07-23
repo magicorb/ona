@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
 	xmlns:today="clr-namespace:Ona.App.Features.Today"
 	xmlns:calendar="clr-namespace:Ona.App.Features.Calendar"
-    x:Class="Ona.App.Features.Today.TodayPage"
-    Title="TodayPage" x:DataType="today:TodayViewModel">
+	x:Class="Ona.App.Features.Today.TodayPage"
+	Title="TodayPage" x:DataType="today:TodayViewModel">
 	<Grid
 		Padding="16,0">
 		<Grid.RowDefinitions>

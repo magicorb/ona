@@ -9,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace Ona.App.Features.Today
 {
-    public class TodayViewModel : ObservableObject
-    {
+	public class TodayViewModel : ObservableObject
+	{
 		private readonly IDateTimeProvider timeProvider;
 		private readonly IMainModel mainModel;
 
@@ -19,9 +19,9 @@ namespace Ona.App.Features.Today
 
 		public TodayViewModel(
 			IDateTimeProvider timeProvider,
-            IMainModel mainModel,
-            CalendarViewModel calendarViewModel)
-        {
+			IMainModel mainModel,
+			CalendarViewModel calendarViewModel)
+		{
 			this.timeProvider = timeProvider;
 			this.mainModel = mainModel;
 			CalendarViewModel = calendarViewModel;
@@ -35,9 +35,9 @@ namespace Ona.App.Features.Today
 	
 		public CalendarViewModel CalendarViewModel { get; }
 
-        public async Task InititalizeAsync()
-        {
-            await this.mainModel.OnInitializedAsync();
+		public async Task InititalizeAsync()
+		{
+			await this.mainModel.OnInitializedAsync();
 
 			RefreshTitles();
 
@@ -56,8 +56,8 @@ namespace Ona.App.Features.Today
 				Title = "Tap";
 				Subtitle = "on the day when your last period started.";
 			}
-            else
-            {
+			else
+			{
 				var lastPeriodStart = this.mainModel.MarkedPeriods.Last().Start;
 				var today = this.timeProvider.Now.Date;
 				var periodElapsedDays = (today - lastPeriodStart).Days;
@@ -78,6 +78,6 @@ namespace Ona.App.Features.Today
 						: "Tap on the day to record new period started";
 				}
 			}
-        }
+		}
 	}
 }

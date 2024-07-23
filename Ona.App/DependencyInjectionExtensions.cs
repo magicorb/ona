@@ -10,7 +10,7 @@ using Ona.App.Model;
 
 namespace Ona.App
 {
-    public static class DependencyInjectionExtensions
+	public static class DependencyInjectionExtensions
 	{
 		public static MauiAppBuilder RegisterAll(this MauiAppBuilder builder)
 		{

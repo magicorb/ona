@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace Ona.App.Features.Calendar
 {
-    public class DateToggledMessage
-    {
-        public DateToggledMessage(DateTime date)
-        {
-            Date = date;
-        }
+	public class DateToggledMessage
+	{
+		public DateToggledMessage(DateTime date)
+		{
+			Date = date;
+		}
 
-        public DateTime Date { get; }
-    }
+		public DateTime Date { get; }
+	}
 }

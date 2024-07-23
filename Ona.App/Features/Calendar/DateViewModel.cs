@@ -11,59 +11,59 @@ using System.Windows.Input;
 
 namespace Ona.App.Features.Calendar
 {
-    public class DateViewModel : ObservableObject
-    {
-        private readonly IDateTimeProvider dateTimeProvider;
-        private readonly IMessenger messenger;
+	public class DateViewModel : ObservableObject
+	{
+		private readonly IDateTimeProvider dateTimeProvider;
+		private readonly IMessenger messenger;
 
-        private bool isMarked;
-        private bool isExpected;
+		private bool isMarked;
+		private bool isExpected;
 
-        public DateViewModel(
-            IDateTimeProvider dateTimeProvider,
-            IMessenger messenger,
-            DateTime date,
-            MonthViewModel monthViewModel,
-            int currentYear,
-            int currentMonth)
-        {
-            this.dateTimeProvider = dateTimeProvider;
-            this.messenger = messenger;
+		public DateViewModel(
+			IDateTimeProvider dateTimeProvider,
+			IMessenger messenger,
+			DateTime date,
+			MonthViewModel monthViewModel,
+			int currentYear,
+			int currentMonth)
+		{
+			this.dateTimeProvider = dateTimeProvider;
+			this.messenger = messenger;
 
-            Date = date;
-            MonthViewModel = monthViewModel;
-            IsCurrentMonth = date.Year == currentYear && date.Month == currentMonth;
+			Date = date;
+			MonthViewModel = monthViewModel;
+			IsCurrentMonth = date.Year == currentYear && date.Month == currentMonth;
 
-            var today = this.dateTimeProvider.Now.Date;
+			var today = this.dateTimeProvider.Now.Date;
 
 			IsToday = Date.Date == today;
-            IsPast = Date.Date < today;
-            IsFuture = Date.Date > today;
+			IsPast = Date.Date < today;
+			IsFuture = Date.Date > today;
 
-            ToggleCommand = new RelayCommand(ExecuteToggle);
-        }
+			ToggleCommand = new RelayCommand(ExecuteToggle);
+		}
 
-        public DateTime Date { get; }
+		public DateTime Date { get; }
 
-        public MonthViewModel MonthViewModel { get; }
+		public MonthViewModel MonthViewModel { get; }
 
-        public bool IsToday { get; }
+		public bool IsToday { get; }
 
-        public bool IsPast { get; }
+		public bool IsPast { get; }
 
-        public bool IsFuture { get; }
+		public bool IsFuture { get; }
 
-        public bool IsMarked { get => isMarked; set => SetProperty(ref isMarked, value); }
+		public bool IsMarked { get => isMarked; set => SetProperty(ref isMarked, value); }
 
-        public bool IsExpected { get => isExpected; set => SetProperty(ref isExpected, value); }
+		public bool IsExpected { get => isExpected; set => SetProperty(ref isExpected, value); }
 
-        public bool IsCurrentMonth { get; }
+		public bool IsCurrentMonth { get; }
 
-        public ICommand ToggleCommand { get; }
+		public ICommand ToggleCommand { get; }
 
-        private void ExecuteToggle()
-            => messenger.Send(new DateToggledMessage(Date));
-    }
+		private void ExecuteToggle()
+			=> messenger.Send(new DateToggledMessage(Date));
+	}
 
-    public delegate DateViewModel DateViewModelFactory(DateTime date, MonthViewModel monthViewModel, int currentYear, int currentMonth);
+	public delegate DateViewModel DateViewModelFactory(DateTime date, MonthViewModel monthViewModel, int currentYear, int currentMonth);
 }

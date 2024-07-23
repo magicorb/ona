@@ -14,22 +14,22 @@ using System.Windows.Input;
 
 namespace Ona.App.Features.Settings
 {
-    public class SettingsViewModel : ObservableObject
-    {
-        private readonly IDateRepository dateRepository;
-        private readonly IFileSaver fileSaver;
+	public class SettingsViewModel : ObservableObject
+	{
+		private readonly IDateRepository dateRepository;
+		private readonly IFileSaver fileSaver;
 		private readonly IFilePicker filePicker;
 
 		private Task? deleteDataTask;
-        private Task<FileSaverResult>? exportDataTask;
+		private Task<FileSaverResult>? exportDataTask;
 		private Task<bool>? importDataTask;
 
 		public SettingsViewModel(
-            IDateRepository dateRepository,
+			IDateRepository dateRepository,
 			IFileSaver fileSaver,
-            IFilePicker filePicker)
-        {
-            this.dateRepository = dateRepository;
+			IFilePicker filePicker)
+		{
+			this.dateRepository = dateRepository;
 			this.fileSaver = fileSaver;
 			this.filePicker = filePicker;
 
@@ -51,38 +51,38 @@ namespace Ona.App.Features.Settings
 		public ICommand ImportDataCommand { get; }
 
 		private async void ExecuteDeleteData()
-        {
-            var isConfirmrd = await UserNotificationService.ConfirmAsync(
-                title: "Confirm Data Deletion",
-                message: "This action can’t be undone.",
-                accept: "Confirm & Delete Data",
-                cancel: "Cancel");
+		{
+			var isConfirmrd = await UserNotificationService.ConfirmAsync(
+				title: "Confirm Data Deletion",
+				message: "This action can’t be undone.",
+				accept: "Confirm & Delete Data",
+				cancel: "Cancel");
 
-            if (!isConfirmrd)
-                return;
+			if (!isConfirmrd)
+				return;
 
-            this.deleteDataTask = this.dateRepository.DeleteAllDateRecordsAsync();
-            await this.deleteDataTask;
-            this.deleteDataTask = null;
+			this.deleteDataTask = this.dateRepository.DeleteAllDateRecordsAsync();
+			await this.deleteDataTask;
+			this.deleteDataTask = null;
 
-            await UserNotificationService.NotifyAsync("Data deleted");
+			await UserNotificationService.NotifyAsync("Data deleted");
 		}
 
-        private bool CanExecuteDeleteData()
-            => this.deleteDataTask == null;
+		private bool CanExecuteDeleteData()
+			=> this.deleteDataTask == null;
 
 		private async void ExecuteExportData()
 		{
-            this.exportDataTask = ExportDataAsync();
-            var taskResult = await this.exportDataTask;
-            this.exportDataTask = null;
+			this.exportDataTask = ExportDataAsync();
+			var taskResult = await this.exportDataTask;
+			this.exportDataTask = null;
 
-            var message = taskResult.IsSuccessful ? "Data exported" : "Error exporting data";
+			var message = taskResult.IsSuccessful ? "Data exported" : "Error exporting data";
 			await UserNotificationService.NotifyAsync(message);
 		}
 
-        private bool CanExecuteExportData()
-            => this.exportDataTask == null;
+		private bool CanExecuteExportData()
+			=> this.exportDataTask == null;
 
 		private async void ExecuteImportData()
 		{
@@ -98,7 +98,7 @@ namespace Ona.App.Features.Settings
 			=> this.importDataTask == null;
 
 		private async Task<FileSaverResult> ExportDataAsync()
-        {
+		{
 			var dateRecords = await this.dateRepository.GetDateRecordsAsync();
 
 			using var stream = new MemoryStream();
