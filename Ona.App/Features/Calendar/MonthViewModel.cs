@@ -21,12 +21,16 @@ namespace Ona.App.Features.Calendar
 		public MonthViewModel(
 			DateViewModelFactory dateViewModelFactory,
 			int year,
-			int month)
+			int month,
+			int currentYear)
 		{
 			this.dateViewModelFactory = dateViewModelFactory;
 
 			Year = year;
 			Month = month;
+
+			var monthName = MonthStart.ToString("MMMM", CultureInfo.CreateSpecificCulture("en-us"));
+			Title = year == currentYear ? monthName : $"{monthName} {year}";
 
 			DaysOfWeek = CultureInfo.CurrentUICulture.DateTimeFormat.AbbreviatedDayNames;
 
@@ -37,8 +41,7 @@ namespace Ona.App.Features.Calendar
 
 		public int Month { get; }
 
-		public string MonthName
-			=> MonthStart.ToString("MMMM", CultureInfo.CreateSpecificCulture("en-us"));
+		public string Title { get; }
 
 		public IEnumerable<string> DaysOfWeek { get; }
 
@@ -60,5 +63,5 @@ namespace Ona.App.Features.Calendar
 		public bool IsVisible { get => isVisible; set => SetProperty(ref isVisible, value); }
 	}
 
-	public delegate MonthViewModel MonthViewModelFactory(int year, int month);
+	public delegate MonthViewModel MonthViewModelFactory(int year, int month, int currentYear);
 }

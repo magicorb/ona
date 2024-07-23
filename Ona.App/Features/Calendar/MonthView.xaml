@@ -5,12 +5,12 @@
 			 x:Class="Ona.App.Features.Calendar.MonthView">
 	<ContentView.Triggers>
 		<DataTrigger TargetType="ContentView" Binding="{Binding IsVisible}" Value="False">
-			<Setter Property="Opacity" Value="0.01"/>
+			<Setter Property="Opacity" Value="0.004"/>
 		</DataTrigger>
 	</ContentView.Triggers>
 	<VerticalStackLayout>
 		<Label 
-			Text="{Binding MonthName}"
+			Text="{Binding Title}"
 			HorizontalOptions="Start" HeightRequest="24"
 			FontSize="Subtitle"/>
 
