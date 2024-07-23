@@ -52,7 +52,7 @@ namespace Ona.App.Features.Calendar
 
 		private ReadOnlyCollection<DateViewModel> GenerateDates()
 			=> new ReadOnlyCollection<DateViewModel>(
-				MonthStart.StartOfWeek(DayOfWeek.Monday)
+				MonthStart.StartOfWeek(CultureInfo.CurrentUICulture.DateTimeFormat.FirstDayOfWeek)
 					.DateRange(MonthStart.AddMonths(1).AddDays(-1))
 					.Select(d => dateViewModelFactory(d, this, Year, Month))
 					.ToList());
