@@ -30,6 +30,7 @@
 		<calendar:CalendarView
 			Grid.Row="2"
 			BindingContext="{Binding CalendarViewModel}"
-			Margin="0,0,0,12"/>
+			Margin="0,0,0,12"
+			SizeChanged="CalendarView_SizeChanged"/>
 	</Grid>
 </ContentPage>

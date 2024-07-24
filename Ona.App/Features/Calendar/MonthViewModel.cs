@@ -14,8 +14,8 @@ namespace Ona.App.Features.Calendar
 {
 	public class MonthViewModel : ObservableObject
 	{
-        private readonly ICultureInfoProvider cultureProvider;
-        private readonly DateViewModelFactory dateViewModelFactory;
+		private readonly ICultureInfoProvider cultureProvider;
+		private readonly DateViewModelFactory dateViewModelFactory;
 
 		private bool isVisible = true;
 
@@ -26,8 +26,8 @@ namespace Ona.App.Features.Calendar
 			int month,
 			int currentYear)
 		{
-            this.cultureProvider = cultureProvider;
-            this.dateViewModelFactory = dateViewModelFactory;
+			this.cultureProvider = cultureProvider;
+			this.dateViewModelFactory = dateViewModelFactory;
 
 			Year = year;
 			Month = month;

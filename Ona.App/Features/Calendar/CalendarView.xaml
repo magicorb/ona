@@ -4,8 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:controls="clr-namespace:Ona.App.Controls"
 	xmlns:calendar="clr-namespace:Ona.App.Features.Calendar"
-	x:Class="Ona.App.Features.Calendar.CalendarView"
-	Loaded="ContentView_Loaded">
+	x:Class="Ona.App.Features.Calendar.CalendarView">
 	<controls:ListViewLite
 		x:Name="MonthListViewLite"
 		ItemsSource="{Binding Items}"

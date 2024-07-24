@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Ona.App.Model
 {
-    public interface ICultureInfoProvider
-    {
-        CultureInfo CurrentUICulture { get; }
-    }
+	public interface ICultureInfoProvider
+	{
+		CultureInfo CurrentUICulture { get; }
+	}
 }
