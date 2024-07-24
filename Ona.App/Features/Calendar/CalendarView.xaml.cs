@@ -14,16 +14,13 @@ public partial class CalendarView : ContentView
 		InitializeComponent();
 	}
 
-	public void InitializeScrolling()
-	{
-		Dispatcher.Dispatch(async () =>
-		{
-			var index = ViewModel.Items.IndexOf(ViewModel.CurentMonth);
-			await MonthListViewLite.ScrollToIndexAsync(index, ScrollToPosition.End, false);
-			ViewModel.CurentMonth.Show();
+	public async Task InitializeScrollingAsync()
+	{		
+		var index = ViewModel.Items.IndexOf(ViewModel.CurentMonth);
+		await MonthListViewLite.ScrollToIndexAsync(index, ScrollToPosition.End, false);
+		ViewModel.CurentMonth.Show();
 
-			MonthListViewLite.Scrolled += MonthListViewLite_FirstScrolled;
-		});
+		MonthListViewLite.Scrolled += MonthListViewLite_FirstScrolled;
 	}
 
 	private CalendarViewModel ViewModel
