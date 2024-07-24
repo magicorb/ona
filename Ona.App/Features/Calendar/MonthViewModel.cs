@@ -29,7 +29,7 @@ namespace Ona.App.Features.Calendar
 			var monthName = MonthStart.ToString("MMMM", CultureInfo.CreateSpecificCulture("en-us"));
 			Title = year == currentYear ? monthName : $"{monthName} {year}";
 
-			DaysOfWeek = CultureInfo.CurrentUICulture.DateTimeFormat.AbbreviatedDayNames;
+			DaysOfWeek = CultureInfo.CurrentUICulture.DateTimeFormat.GetAbbreviatedDayNames();
 
 			Dates = GenerateDates();
 		}
