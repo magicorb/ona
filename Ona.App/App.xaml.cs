@@ -6,6 +6,8 @@
 		{
 			InitializeComponent();
 
+			PropertyMapperConfigurator.Configure();
+
 			MainPage = appShell;
 		}
 	}
