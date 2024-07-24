@@ -1,14 +1,8 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
 using Ona.App.Model;
-using System;
-using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Ona.App.Features.Calendar
 {
@@ -16,8 +10,8 @@ namespace Ona.App.Features.Calendar
 	{
 		private readonly ICultureInfoProvider cultureProvider;
 		private readonly DateViewModelFactory dateViewModelFactory;
-
-		private bool isVisible = true;
+		
+		private bool isVisible;
 
 		public MonthViewModel(
 			ICultureInfoProvider cultureProvider,
@@ -53,17 +47,25 @@ namespace Ona.App.Features.Calendar
 		public IEnumerable<DateViewModel> MonthDates
 			=> Dates.Where(d => d.IsCurrentMonth);
 
+		public DateTime MonthStart
+			=> new DateTime(Year, Month, 1);
+
+		public ICommand TriggerShowCommand { get; set; }
+
+		public void Show()
+		{
+			if (this.isVisible)
+				return;
+			this.isVisible = true;
+			TriggerShowCommand.Execute(CancellationToken.None);
+		}
+
 		private ReadOnlyCollection<DateViewModel> GenerateDates()
 			=> new ReadOnlyCollection<DateViewModel>(
 				MonthStart.StartOfWeek(this.cultureProvider.CurrentUICulture.DateTimeFormat.FirstDayOfWeek)
 					.DateRange(MonthStart.AddMonths(1).AddDays(-1))
 					.Select(d => dateViewModelFactory(d, this, Year, Month))
 					.ToList());
-
-		public DateTime MonthStart
-			=> new DateTime(Year, Month, 1);
-
-		public bool IsVisible { get => isVisible; set => SetProperty(ref isVisible, value); }
 	}
 
 	public delegate MonthViewModel MonthViewModelFactory(int year, int month, int currentYear);
