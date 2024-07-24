@@ -6,12 +6,9 @@ namespace Ona.App
 	{
 		public static void Configure()
 		{
-			ScrollViewHandler.Mapper.AppendToMapping(
-				"DisableBounces",
-				(handler, view) =>
-				{
-					handler.PlatformView.Bounces = false;
-				});
+#if IOS
+			ScrollViewHandler.Mapper.AppendToMapping("DisableBounces", (handler, view) => handler.PlatformView.Bounces = false);
+#endif
 		}
 	}
 }
