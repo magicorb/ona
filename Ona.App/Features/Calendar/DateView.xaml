@@ -13,7 +13,7 @@
 		</Grid.GestureRecognizers>
 		
 		<Ellipse
-			Fill="{StaticResource Grayscale900}" StrokeThickness="0"
+			Fill="{StaticResource Grayscale900}" Stroke="{StaticResource Grayscale900}"
 			HorizontalOptions="Center" VerticalOptions="Center"
 			Aspect="UniformToFill">
 			<Ellipse.Triggers>
