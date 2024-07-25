@@ -8,7 +8,7 @@ namespace Ona.App.Controls
 {
 	public class ListItemAddedEventArgs
 	{
-		public ListItemAddedEventArgs(int index, BindableObject item)
+		public ListItemAddedEventArgs(int index, object item)
 		{
 			Index = index;
 			Item = item;
@@ -16,6 +16,6 @@ namespace Ona.App.Controls
 
 		public int Index { get; }
 
-		public BindableObject Item { get; }
+		public object Item { get; }
 	}
 }

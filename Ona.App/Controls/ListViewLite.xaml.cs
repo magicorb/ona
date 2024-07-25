@@ -72,18 +72,10 @@ public partial class ListViewLite : ContentView
 			case NotifyCollectionChangedAction.Add:
 				for (int i = 0; i < e.NewItems.Count; i++)
 				{
-					var newView = (View)CreateItemView(e.NewItems[i]);
+					var newView = CreateItemView(e.NewItems[i]);
 					var index = e.NewStartingIndex + i;
-
-					void NewView_SizeChanged(object? sender2, EventArgs e2)
-					{
-						newView.SizeChanged -= NewView_SizeChanged;
-						ItemAdded?.Invoke(this, new ListItemAddedEventArgs(index, newView));
-					}
-
-					newView.SizeChanged += NewView_SizeChanged;
-					
 					ItemsPanel.Insert(index, newView);
+					ItemAdded?.Invoke(this, new ListItemAddedEventArgs(index, newView));
 				}
 				break;
 			case NotifyCollectionChangedAction.Remove:

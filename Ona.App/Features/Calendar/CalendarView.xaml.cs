@@ -53,7 +53,28 @@ public partial class CalendarView : ContentView
 
 	private void MonthListViewLite_ItemAdded(object sender, ListItemAddedEventArgs e)
 	{
-		if (e.Index == 1)
-			MonthListViewLite.ScrollToOffsetAsync(MonthListViewLite.ScrollY + ((View)e.Item).DesiredSize.Height, false).Wait();
+		if (e.Index != 1)
+			return;
+
+		var view = (View)e.Item;
+
+#if IOS
+		var sizeChangeCount = 0;
+#endif
+
+		void InsertedItem_SizeChanged(object? sender2, EventArgs e2)
+		{
+#if IOS
+			if (sizeChangeCount == 0)
+			{
+				sizeChangeCount++;
+				return;
+			}
+#endif
+			view.SizeChanged -= InsertedItem_SizeChanged;
+			_ = MonthListViewLite.ScrollToOffsetAsync(MonthListViewLite.ScrollY + view.DesiredSize.Height, false);
+		}
+
+		view.SizeChanged += InsertedItem_SizeChanged;
 	}
 }
