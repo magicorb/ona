@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using Ona.App.Controls;
 using Ona.App.Data;
 using Ona.App.Model;
 using System;
@@ -14,21 +15,26 @@ namespace Ona.App.Features.Calendar
 	public class CalendarViewModel : ObservableObject, IDisposable
 	{
 		private readonly IDateTimeProvider dateTimeProvider;
+		private readonly IDispatcher dispatcher;
 		private readonly IMessenger messenger;
 		private readonly IMainModel mainModel;
 		private readonly MonthViewModelFactory monthViewModelFactory;
 
 		private ObservableCollection<MonthViewModel> months;
+		private SpinnerViewModel topSpinner;
+		private SpinnerViewModel bottomSpinner;
 
 		private DateViewModel? selectionStart;
 		
 		public CalendarViewModel(
 			IDateTimeProvider dateTimeProvider,
+			IDispatcher dispatcher,
 			IMessenger messenger,
 			IMainModel mainModel,
 			MonthViewModelFactory monthViewModelFactory)
 		{
 			this.dateTimeProvider = dateTimeProvider;
+			this.dispatcher = dispatcher;
 			this.messenger = messenger;
 			this.mainModel = mainModel;
 			this.monthViewModelFactory = monthViewModelFactory;
@@ -63,6 +69,10 @@ namespace Ona.App.Features.Calendar
 
 		internal async Task AppendMonthAsync()
 		{
+			this.bottomSpinner.IsRunning = true;
+			await this.dispatcher.DoEventsAsync();
+			//await Task.Delay(1);
+
 			var monthStart = this.months.Last().MonthStart.AddMonths(1);
 			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month, this.dateTimeProvider.Now.Year);
 			this.months.Add(newItem);
@@ -72,10 +82,16 @@ namespace Ona.App.Features.Calendar
 			await RefreshExpectedDatesAsync();
 
 			newItem.Show();
+
+			this.bottomSpinner.IsRunning = false;
 		}
 
 		internal async Task InsertMonthAsync()
 		{
+			this.topSpinner.IsRunning = true;
+			await this.dispatcher.DoEventsAsync();
+			//await Task.Delay(1);
+
 			var monthStart = this.months[0].MonthStart.AddMonths(-1);
 			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month, this.dateTimeProvider.Now.Year);
 			this.months.Insert(0, newItem);
@@ -85,6 +101,8 @@ namespace Ona.App.Features.Calendar
 			await RefreshExpectedDatesAsync();
 
 			newItem.Show();
+
+			this.topSpinner.IsRunning = false;
 		}
 
 		private void Initialize()
@@ -102,8 +120,11 @@ namespace Ona.App.Features.Calendar
 			months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(1)));
 
 			Items = new ObservableCollection<object>(this.months);
-			Items.Insert(0, new SpinnerViewModel());
-			Items.Add(new SpinnerViewModel());
+
+			this.topSpinner = new SpinnerViewModel();
+			Items.Insert(0, this.topSpinner);
+			this.bottomSpinner = new SpinnerViewModel();
+			Items.Add(this.bottomSpinner);
 		}
 
 		private MonthViewModel CreateMonthViewModel(DateTime monthStart)
