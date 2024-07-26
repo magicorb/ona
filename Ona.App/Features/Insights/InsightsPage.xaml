@@ -14,12 +14,8 @@
 		</Style>
 	</ContentPage.Resources>
 	
-	<VerticalStackLayout
-		Padding="16,0">
-		<Label
-			Text="Insights"
-			FontSize="54"
-			Margin="0,12,0,0"/>
+	<VerticalStackLayout Padding="16,0">
+		<Label Text="Insights" Style="{StaticResource Title}" Margin="0,12,0,0"/>
 
 		<Label Text="Last period started" Style="{StaticResource FieldNameStyle}" Margin="0,64,0,0"/>
 
