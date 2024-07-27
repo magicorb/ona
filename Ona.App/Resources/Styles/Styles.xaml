@@ -204,6 +204,7 @@
 		<Setter Property="FontSize" Value="54" />
 		<Setter Property="LineHeight" Value="0.72" />
 		<Setter Property="CharacterSpacing" Value="-0.5" />
+		<Setter Property="Padding" Value="{OnPlatform Android=0, iOS='0,6,0,0'}" />
 	</Style>
 	
 	<Style TargetType="ListView">
