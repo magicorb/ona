@@ -8,7 +8,7 @@
 		RowSpacing="0" ColumnSpacing="0" Margin="0" Padding="0">
 		<Grid.GestureRecognizers>
 			<TapGestureRecognizer
-				Command="{Binding ToggleCommand}"
+				Command="{Binding TapCommand}"
 				NumberOfTapsRequired="1" />
 		</Grid.GestureRecognizers>
 		

@@ -40,7 +40,7 @@ namespace Ona.App.Features.Calendar
 			IsPast = Date.Date < today;
 			IsFuture = Date.Date > today;
 
-			ToggleCommand = new RelayCommand(ExecuteToggle);
+			TapCommand = new RelayCommand(ExecuteTap);
 		}
 
 		public DateTime Date { get; }
@@ -59,10 +59,10 @@ namespace Ona.App.Features.Calendar
 
 		public bool IsCurrentMonth { get; }
 
-		public ICommand ToggleCommand { get; }
+		public ICommand TapCommand { get; }
 
-		private void ExecuteToggle()
-			=> messenger.Send(new DateToggledMessage(Date));
+		private void ExecuteTap()
+			=> messenger.Send(new DateTappedMessage(Date));
 	}
 
 	public delegate DateViewModel DateViewModelFactory(DateTime date, MonthViewModel monthViewModel, int currentYear, int currentMonth);
