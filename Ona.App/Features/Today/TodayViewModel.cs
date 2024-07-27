@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using Ona.App.Features.Calendar;
 using Ona.App.Model;
 using System;
@@ -12,6 +13,7 @@ namespace Ona.App.Features.Today
 	public class TodayViewModel : ObservableObject
 	{
 		private readonly IDateTimeProvider timeProvider;
+		private readonly IMessenger messenger;
 		private readonly IMainModel mainModel;
 
 		private Task initializeTask;
@@ -21,14 +23,16 @@ namespace Ona.App.Features.Today
 
 		public TodayViewModel(
 			IDateTimeProvider timeProvider,
+			IMessenger messenger,
 			IMainModel mainModel,
 			CalendarViewModel calendarViewModel)
 		{
 			this.timeProvider = timeProvider;
+			this.messenger = messenger;
 			this.mainModel = mainModel;
 			CalendarViewModel = calendarViewModel;
 
-			this.mainModel.DatesChanged += MainModel_DatesChanged;
+			this.messenger.Register<TodayViewModel, DatesChangedMessage>(this, (r, m) => r.OnDatesChanged(m));
 		}
 
 		public string Title { get => this.title; private set => SetProperty(ref this.title, value); }
@@ -55,7 +59,7 @@ namespace Ona.App.Features.Today
 			await CalendarViewModel.RefreshAsync();
 		}
 
-		private void MainModel_DatesChanged(object? sender, EventArgs e)
+		private void OnDatesChanged(DatesChangedMessage e)
 		{
 			RefreshTitles();
 		}

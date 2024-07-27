@@ -27,7 +27,5 @@ namespace Ona.App.Model
 		PeriodStats CurrentStats { get; }
 
 		PeriodStats PreviousStats { get; }
-
-		event EventHandler DatesChanged;
 	}
 }

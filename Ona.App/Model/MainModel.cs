@@ -123,8 +123,6 @@ namespace Ona.App.Model
 			}
 		}
 
-		public event EventHandler DatesChanged;
-
 		private async Task InitializeInternalAsync()
 		{
 			this.markedDates = (await dateRepository.GetDateRecordsAsync()).Select(d => d.Date).ToList();
@@ -182,8 +180,6 @@ namespace Ona.App.Model
 			this.markedPeriods = null;
 			this.currentStats = null;
 			this.previousStats = null;
-
-			DatesChanged?.Invoke(this, null);
 		}
 	}
 }
