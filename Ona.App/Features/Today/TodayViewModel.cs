@@ -16,8 +16,7 @@ namespace Ona.App.Features.Today
 		private readonly IMessenger messenger;
 		private readonly IMainModel mainModel;
 
-		private Task initializeTask;
-
+		private bool isInitialized;
 		private string title;
 		private string subtitle;
 
@@ -43,15 +42,11 @@ namespace Ona.App.Features.Today
 
 		public async Task InititalizeAsync()
 		{
-			this.initializeTask = InitializeInternalAsync();
-			await this.initializeTask;
-		}
+			if (this.isInitialized)
+				return;
 
-		public async Task OnInitializedAsync()
-			=> await this.initializeTask;
+			this.isInitialized = true;
 
-		private async Task InitializeInternalAsync()
-		{
 			await this.mainModel.OnInitializedAsync();
 
 			RefreshTitles();

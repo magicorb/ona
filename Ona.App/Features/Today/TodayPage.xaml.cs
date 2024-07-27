@@ -30,4 +30,9 @@ public partial class TodayPage : ContentPage
 
 	private TodayViewModel ViewModel
 		=> (TodayViewModel)BindingContext;
+
+	private void ContentPage_Loaded(object sender, EventArgs e)
+	{
+
+	}
 }

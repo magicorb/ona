@@ -1,22 +1,17 @@
 ﻿using CommunityToolkit.Maui.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Ona.App.Controls;
-using Ona.App.Data;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+using Ona.App.Model;
 using System.Windows.Input;
 
 namespace Ona.App.Features.Settings
 {
 	public class SettingsViewModel : ObservableObject
 	{
-		private readonly IDateRepository dateRepository;
+		private readonly IMainModel mainModel;
+		private readonly IMessenger messenger;
 		private readonly IFileSaver fileSaver;
 		private readonly IFilePicker filePicker;
 
@@ -25,11 +20,13 @@ namespace Ona.App.Features.Settings
 		private Task<bool>? importDataTask;
 
 		public SettingsViewModel(
-			IDateRepository dateRepository,
+			IMainModel mainModel,
+			IMessenger messenger,
 			IFileSaver fileSaver,
 			IFilePicker filePicker)
 		{
-			this.dateRepository = dateRepository;
+			this.mainModel = mainModel;
+			this.messenger = messenger;
 			this.fileSaver = fileSaver;
 			this.filePicker = filePicker;
 
@@ -61,11 +58,13 @@ namespace Ona.App.Features.Settings
 			if (!isConfirmrd)
 				return;
 
-			this.deleteDataTask = this.dateRepository.DeleteAllDateRecordsAsync();
+			this.deleteDataTask = this.mainModel.DeleteAllAsync();
 			await this.deleteDataTask;
 			this.deleteDataTask = null;
 
 			await UserNotificationService.NotifyAsync("Data deleted");
+
+			this.messenger.Send(new DatesChangedMessage(this));
 		}
 
 		private bool CanExecuteDeleteData()
@@ -92,6 +91,8 @@ namespace Ona.App.Features.Settings
 
 			var message = taskResult ? "Data imported" : "Error importing data";
 			await UserNotificationService.NotifyAsync(message);
+
+			this.messenger.Send(new DatesChangedMessage(this));
 		}
 
 		private bool CanExecuteImportData()
@@ -99,13 +100,13 @@ namespace Ona.App.Features.Settings
 
 		private async Task<FileSaverResult> ExportDataAsync()
 		{
-			var dateRecords = await this.dateRepository.GetDateRecordsAsync();
+			var dates = await Task.Run(() => this.mainModel.MarkedDates);
 
 			using var stream = new MemoryStream();
 			using var writer = new StreamWriter(stream);
 
-			foreach (var dateRecord in dateRecords)
-				await writer.WriteLineAsync(dateRecord.Date.ToString("yyyy-MM-dd"));
+			foreach (var date in dates)
+				await writer.WriteLineAsync(date.ToString("yyyy-MM-dd"));
 
 			await writer.FlushAsync();
 
@@ -129,10 +130,7 @@ namespace Ona.App.Features.Settings
 				while (await streamReader.ReadLineAsync() is string line)
 					dates.Add(DateTime.Parse(line));
 
-				await this.dateRepository.DeleteAllDateRecordsAsync();
-
-				foreach (var date in dates)
-					await this.dateRepository.AddDateRecordAsync(date);
+				await this.mainModel.ImportAsync(dates);
 
 				return true;
 			}
