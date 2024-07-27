@@ -6,7 +6,7 @@
 	xmlns:today="clr-namespace:Ona.App.Features.Today"
 	xmlns:calendar="clr-namespace:Ona.App.Features.Calendar"
 	x:Class="Ona.App.Features.Today.TodayPage"
-	Title="TodayPage" x:DataType="today:TodayViewModel">
+	Title="Today" x:DataType="today:TodayViewModel">
 	<Grid
 		Padding="16,0">
 		<Grid.RowDefinitions>
