@@ -7,10 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Ona.App.Controls;
 
 namespace Ona.App.Features.Insights
 {
-	public class InsightsViewModel : ObservableObject
+	public class InsightsViewModel : ViewModelBase
 	{
 		private readonly IDateRepository dateRepository;
 		private readonly IMessenger messenger;
@@ -39,15 +40,7 @@ namespace Ona.App.Features.Insights
 
 		public string? AveragePeriodLength { get => averagePeriodLength; private set => SetProperty(ref averagePeriodLength, value); }
 
-		public async Task InitializeAsync()
-		{
-			if (this.isInitialized)
-				return;
-
-			await RefreshAsync();
-		}
-
-		private async Task RefreshAsync()
+		protected override async Task RefreshAsync()
 		{
 			this.isInitialized = true;
 
@@ -80,6 +73,6 @@ namespace Ona.App.Features.Insights
 		}
 
 		private async Task OnDatesChangedMessageAsync(DatesChangedMessage m)
-			=> await RefreshAsync();
+			=> await RequestRefreshAsync();
 	}
 }

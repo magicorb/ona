@@ -17,7 +17,7 @@
 
 		<ShellContent
 			Title="Insights" Icon="insights.png"
-			BindingContext="{Binding InsightsViewModele}" ContentTemplate="{DataTemplate insights:InsightsPage}"/>
+			BindingContext="{Binding InsightsViewModel}" ContentTemplate="{DataTemplate insights:InsightsPage}"/>
 
 		<ShellContent
 			Title="Settings" Icon="settings.png"
