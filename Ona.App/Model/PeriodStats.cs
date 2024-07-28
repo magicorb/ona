@@ -8,8 +8,14 @@ namespace Ona.App.Model
 {
 	public class PeriodStats
 	{
-		public int? Duration { get; set; }
+		public PeriodStats(int duration, int interval)
+		{
+			Duration = duration;
+			Interval = interval;
+		}
 
-		public int? Interval { get; set; }
+		public int Duration { get; }
+
+		public int Interval { get; }
 	}
 }
