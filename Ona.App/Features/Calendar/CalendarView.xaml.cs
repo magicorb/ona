@@ -12,6 +12,8 @@ public partial class CalendarView : ContentView
 	public CalendarView()
 	{
 		InitializeComponent();
+
+		this.RegisterViewModel();
 	}
 
 	public async Task InitializeScrollingAsync()

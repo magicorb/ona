@@ -146,6 +146,9 @@
 		<MauiXaml Update="Features\Settings\SettingsPage.xaml">
 		<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
+		<MauiXaml Update="Features\Today\NewContent1.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="Features\Today\TodayPage.xaml">
 		<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

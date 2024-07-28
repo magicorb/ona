@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Messaging;
+using Ona.App.Controls;
 using Ona.App.Features.Calendar;
 using Ona.App.Model;
 using System;
@@ -10,13 +11,12 @@ using System.Threading.Tasks;
 
 namespace Ona.App.Features.Today
 {
-	public class TodayViewModel : ObservableObject
+	public class TodayViewModel : ViewModelBase
 	{
 		private readonly IDateTimeProvider timeProvider;
 		private readonly IMessenger messenger;
 		private readonly IMainModel mainModel;
 
-		private bool isInitialized;
 		private string title;
 		private string subtitle;
 
@@ -31,7 +31,7 @@ namespace Ona.App.Features.Today
 			this.mainModel = mainModel;
 			CalendarViewModel = calendarViewModel;
 
-			this.messenger.Register<TodayViewModel, DatesChangedMessage>(this, (r, m) => r.OnDatesChanged(m));
+			this.messenger.Register<TodayViewModel, DatesChangedMessage>(this, (r, m) => _ = r.OnDatesChangedMessageAsync(m));
 		}
 
 		public string Title { get => this.title; private set => SetProperty(ref this.title, value); }
@@ -40,27 +40,10 @@ namespace Ona.App.Features.Today
 	
 		public CalendarViewModel CalendarViewModel { get; }
 
-		public async Task InititalizeAsync()
+		protected override async Task RefreshAsync()
 		{
-			if (this.isInitialized)
-				return;
-
-			this.isInitialized = true;
-
 			await this.mainModel.OnInitializedAsync();
 
-			RefreshTitles();
-
-			await CalendarViewModel.RefreshAsync();
-		}
-
-		private void OnDatesChanged(DatesChangedMessage e)
-		{
-			RefreshTitles();
-		}
-
-		private void RefreshTitles()
-		{
 			if (this.mainModel.MarkedDates.Count == 0)
 			{
 				Title = "Tap";
@@ -89,5 +72,8 @@ namespace Ona.App.Features.Today
 				}
 			}
 		}
+
+		private async Task OnDatesChangedMessageAsync(DatesChangedMessage message)
+			=> await RequestRefreshAsync();
 	}
 }
