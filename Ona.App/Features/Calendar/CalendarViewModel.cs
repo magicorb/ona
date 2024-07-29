@@ -24,8 +24,6 @@ namespace Ona.App.Features.Calendar
 		private SpinnerViewModel topSpinner;
 		private SpinnerViewModel bottomSpinner;
 
-		private DateViewModel? selectionStart;
-		
 		public CalendarViewModel(
 			IDateTimeProvider dateTimeProvider,
 			IDispatcher dispatcher,
@@ -142,40 +140,20 @@ namespace Ona.App.Features.Calendar
 
 			var dateViewModel = months.First(m => m.Year == date.Year && m.Month == date.Month).Dates.First(d => d.Date == date);
 
-			if (IsSelectingRange)
+			if (dateViewModel.IsMarked)
 			{
-				if (selectionStart.Date > dateViewModel.Date)
-				{
-					for (var d = dateViewModel; d != selectionStart; d = GetNextDateViewModel(d))
-						await MarkDateAsync(d);
-				}
-				else if (selectionStart.Date < dateViewModel.Date)
-				{
-					for (var d = GetNextDateViewModel(selectionStart); true; d = GetNextDateViewModel(d))
-					{
-						await MarkDateAsync(d);
-
-						if (d == dateViewModel)
-							break;
-					}
-				}
-				else
-					await UnmarkDateAsync(dateViewModel);
-
-				selectionStart = null;
+				dateViewModel.IsMarked = false;
+				await this.mainModel.DeleteDateAsync(dateViewModel.Date);
 			}
 			else
 			{
-				if (dateViewModel.IsMarked)
-					await UnmarkDateAsync(dateViewModel);
-				else
-				{
-					await MarkDateAsync(dateViewModel);
-					selectionStart = dateViewModel;
-				}
+				dateViewModel.IsMarked = true;
+				await this.mainModel.AddDateAsync(dateViewModel.Date);
 			}
 
-			_ = RefreshExpectedDatesAsync();
+			this.messenger.Send(new DatesChangedMessage(this));
+
+			await RefreshExpectedDatesAsync();
 		}
 
 		private async Task OnDatesChangedMessageAsync(DatesChangedMessage message)
@@ -183,31 +161,6 @@ namespace Ona.App.Features.Calendar
 			if (message.Sender != this)
 				await RequestRefreshAsync();
 		}
-
-		private async Task MarkDateAsync(DateViewModel dateViewModel)
-		{
-			if (dateViewModel.IsMarked)
-				return;
-
-			dateViewModel.IsMarked = true;
-			await this.mainModel.AddDateAsync(dateViewModel.Date);
-
-			this.messenger.Send(new DatesChangedMessage(this));
-		}
-
-		private async Task UnmarkDateAsync(DateViewModel dateViewModel)
-		{
-			if (!dateViewModel.IsMarked)
-				return;
-
-			dateViewModel.IsMarked = false;
-			await this.mainModel.DeleteDateAsync(dateViewModel.Date);
-
-			this.messenger.Send(new DatesChangedMessage(this));
-		}
-
-		private bool IsSelectingRange
-			=> selectionStart != null;
 
 		private DateViewModel GetNextDateViewModel(DateViewModel dateViewModel)
 			=> dateViewModel == dateViewModel.MonthViewModel.MonthDates.Last()
