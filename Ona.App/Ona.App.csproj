@@ -1,19 +1,5 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<!-- Use timestamp to generate version number.
-		Some background build process related to IntelliSense requires version not to change while it is running,
-		otherwise it loops indefinately. This takes place when version is based on seconds, so instead it is based on minutes.
-		Number of minutes is split in 2 parts of version number, becasuse in Windows a part of version number is Int16.-->
-		<Now>$([System.DateTime]::Now.Ticks)</Now>
-		<StartTime>$([System.DateTime]::new(2024, 1, 1).Ticks)</StartTime>
-		<DiffTicks>$([MSBuild]::Subtract($(Now), $(StartTime)))</DiffTicks>
-		<DiffMinutes>$([MSBuild]::Divide($(DiffTicks), 600000000))</DiffMinutes>
-		<UpperDiff>$([MSBuild]::Divide($(DiffMinutes), $([System.Uint16]::MaxValue)))</UpperDiff>
-		<VersionMinor>$([System.Convert]::ToUInt16($(UpperDiff)))</VersionMinor>
-		<VersionRevision>$([MSBuild]::Modulo($(DiffMinutes), $([System.Uint16]::MaxValue)))</VersionRevision>
-	</PropertyGroup>
-	
-	<PropertyGroup>
 		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
@@ -40,7 +26,7 @@
 		<ApplicationId>com.natalianaumova.ona</ApplicationId>
 
 		<!-- Versions -->
-		<ApplicationDisplayVersion>1.$(VersionMinor).$(VersionRevision)</ApplicationDisplayVersion>
+		<ApplicationDisplayVersion>1.0.0</ApplicationDisplayVersion>
 		<ApplicationVersion>1</ApplicationVersion>
 
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'ios'">11.0</SupportedOSPlatformVersion>
