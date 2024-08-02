@@ -114,6 +114,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <AdditionalAppExtensions Include="$(MSBuildProjectDirectory)/../Ona.Widget/Build">
+      <Name>counterExtension</Name>
+      <BuildOutput Condition="'$(ComputedPlatform)' == 'iPhoneSimulator'">Intermediates.noindex/Previews/iphonesimulator/counterExtension/Products/Debug-iphonesimulator</BuildOutput>
+    </AdditionalAppExtensions>
+	</ItemGroup>
+
+	<ItemGroup>
 		<MauiXaml Update="Features\Calendar\CalendarView.xaml">
 		<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>
