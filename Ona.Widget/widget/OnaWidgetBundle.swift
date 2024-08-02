@@ -1,8 +1,8 @@
 //
-//  counterBundle.swift
-//  counter
+//  OnaWidgetBundle.swift
+//  widget
 //
-//  Created by Natalia Naumova on 29/07/2024.
+//  Created by Natalia Naumova on 02/08/2024.
 //
 
 import WidgetKit

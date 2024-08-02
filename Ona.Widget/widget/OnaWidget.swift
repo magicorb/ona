@@ -1,8 +1,8 @@
 //
-//  counter.swift
-//  counter
+//  OnaWidget.swift
+//  widget
 //
-//  Created by Natalia Naumova on 29/07/2024.
+//  Created by Natalia Naumova on 02/08/2024.
 //
 
 import WidgetKit
@@ -45,7 +45,7 @@ struct OnaWidgetEntryView : View {
 
     var body: some View {
         VStack {
-            Text("Time:")
+            Text("Now:")
             Text(entry.date, style: .time)
 
             Text("Emoji:")
