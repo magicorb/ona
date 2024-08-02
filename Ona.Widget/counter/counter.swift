@@ -39,9 +39,9 @@ struct SimpleEntry: TimelineEntry {
     let emoji: String
 }
 
-struct counterEntryView : View {
+struct OnaWidgetEntryView : View {
     var entry: Provider.Entry
-    @State private var counter = UserDefaults(suiteName: "group.com.natalianaumova.ona")!.integer(forKey: "Counter");
+    @State private var count = UserDefaults(suiteName: "group.com.natalianaumova.ona")!.integer(forKey: "Count");
 
     var body: some View {
         VStack {
@@ -51,22 +51,22 @@ struct counterEntryView : View {
             Text("Emoji:")
             Text(entry.emoji)
             
-            Text("Counter:")
-            Text("\(counter)")
+            Text("Count:")
+            Text("\(count)")
         }
     }
 }
 
-struct counter: Widget {
-    let kind: String = "counter"
+struct OnaWidget: Widget {
+    let kind: String = "PeriodTimes"
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: Provider()) { entry in
             if #available(iOS 17.0, *) {
-                counterEntryView(entry: entry)
+                OnaWidgetEntryView(entry: entry)
                     .containerBackground(.fill.tertiary, for: .widget)
             } else {
-                counterEntryView(entry: entry)
+                OnaWidgetEntryView(entry: entry)
                     .padding()
                     .background()
             }
@@ -77,7 +77,7 @@ struct counter: Widget {
 }
 
 #Preview(as: .systemSmall) {
-    counter()
+    OnaWidget()
 } timeline: {
     SimpleEntry(date: .now, emoji: "😀")
     SimpleEntry(date: .now, emoji: "🤩")

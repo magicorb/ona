@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct onaApp: App {
+struct OnaWidgetApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()

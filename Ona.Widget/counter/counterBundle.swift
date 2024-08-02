@@ -9,8 +9,8 @@ import WidgetKit
 import SwiftUI
 
 @main
-struct counterBundle: WidgetBundle {
+struct OnaWidgetBundle: WidgetBundle {
     var body: some Widget {
-        counter()
+        OnaWidget()
     }
 }
