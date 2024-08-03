@@ -116,7 +116,7 @@
 	<ItemGroup>
 	  <AdditionalAppExtensions Include="$(MSBuildProjectDirectory)/../Ona.Widget/Build">
       <Name>widgetExtension</Name>
-      <BuildOutput Condition="'$(ComputedPlatform)' == 'iPhoneSimulator'">Intermediates.noindex/Previews/iphonesimulator/widgetExtension/Products/Debug-iphonesimulator</BuildOutput>
+      <BuildOutput Condition="'$(ComputedPlatform)' == 'iPhoneSimulator'">Products/Debug-iphonesimulator</BuildOutput>
     </AdditionalAppExtensions>
 	</ItemGroup>
 
