@@ -8,50 +8,63 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var count = UserDefaults(suiteName: "group.com.natalianaumova.ona")!.integer(forKey: "Count");
-    //@Binding private var periodState: PeriodState
-    //@Binding private var start: String
-    //@Binding private var duration: String
-    //@Binding private var interval: String
+    @State private var startString: String
+    @State private var durationString: String
+    @State private var intervalString: String
     
     var body: some View {
-        //periodState = getPeriodState()
-        //start = periodState.start
-        //duration = "\(periodState.duration)"
-        //interval = "\(periodState.interval)"
-
         return VStack {
             Image(systemName: "globe")
                 .imageScale(.large)
                 .foregroundStyle(.tint)
             HStack {
-                Text("Count: \(count)")
-                Button("Increment") {
-                    count += 1;
-                    UserDefaults(suiteName: "group.com.natalianaumova.ona")!.set(count, forKey: "Count");
-                }
+                Text("Start:")
+                TextField("Start", text: $startString)
             }
-            //TextField("Start", text: $start)
-            //TextField("Duration", text: $duration)
-            //TextField("Interval", text: $interval)
+            HStack {
+                Text("Duration:")
+                TextField("Duration", text: $durationString)
+            }
+            HStack {
+                Text("Interval:")
+                TextField("Interval", text: $intervalString)
+            }
+            Button("Save") {
+                let dateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "yyyy'-'MM'-'dd"
+                
+                let periodState = PeriodState(start: dateFormatter.date(from: startString)!, duration: Int(durationString)!, interval: Int(intervalString)!)
+                let encodedPeriodState = try! JSONEncoder().encode(periodState)
+                UserDefaults(suiteName: "group.com.natalianaumova.ona")!.set(encodedPeriodState, forKey: "PeriodState")
+            }
         }
         .padding()
     }
     
-    func getPeriodState() -> PeriodState {
-        let fallback = PeriodState(start: "N/A", duration: 0, interval: 0)
+    init(periodState: PeriodState = getPeriodState()) {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy'-'MM'-'dd"
         
-        guard let userDefaults = UserDefaults(suiteName: "group.com.natalianaumova.ona") else {
+        self.startString = dateFormatter.string(from: periodState.start)
+        self.durationString = "\(periodState.duration)"
+        self.intervalString = "\(periodState.interval)"
+    }
+    
+    static func getPeriodState() -> PeriodState {
+        let fallback = PeriodState(start: Date(), duration: 0, interval: 0)
+        
+        guard let userDefault = UserDefaults(suiteName: "group.com.natalianaumova.ona")?.object(forKey: "PeriodState") else {
             return fallback
         }
-        return userDefaults.object(forKey: "PeriodState") as? PeriodState ?? fallback
+        let periodState = try? JSONDecoder().decode(PeriodState.self, from: userDefault as! Data)
+        return periodState ?? fallback
     }
 }
 
-struct PeriodState {
-    let start: String
-    let duration: Int
-    let interval: Int
+struct PeriodState : Codable {
+    var start: Date
+    var duration: Int
+    var interval: Int
 }
 
 #Preview {
