@@ -116,11 +116,13 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <AdditionalAppExtensions Include="$(MSBuildProjectDirectory)/../Ona.Widget/Build">
-      <Name>widgetExtension</Name>
-      <BuildOutput Condition="'$(ComputedPlatform)' == 'iPhoneSimulator'">Products/Debug-iphonesimulator</BuildOutput>
-    </AdditionalAppExtensions>
+		<AdditionalAppExtensions Include="$(MSBuildProjectDirectory)/../Ona.Widget/Build">
+			<Name>widgetExtension</Name>
+			<BuildOutput Condition="'$(ComputedPlatform)' == 'iPhoneSimulator'">Products/Debug-iphonesimulator</BuildOutput>
+		</AdditionalAppExtensions>
 	</ItemGroup>
+
+	<Import Project="$(MSBuildThisFileDirectory)CompileSwift.targets" />
 
 	<ItemGroup>
 		<MauiXaml Update="Features\Calendar\CalendarView.xaml">

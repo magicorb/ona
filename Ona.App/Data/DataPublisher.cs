@@ -3,6 +3,7 @@ using Ona.App.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -12,6 +13,11 @@ namespace Ona.App.Data
 {
 	public class DataPublisher : IDataPublisher
 	{
+#if IOS
+		[DllImport("__Internal", EntryPoint = "ReloadWidgets")]
+		public extern static int ReloadWidgets();
+#endif
+
 		private const string SharedName = "group.com.natalianaumova.ona";
 		private const string Key = "PeriodState";
 
@@ -56,6 +62,9 @@ namespace Ona.App.Data
 
 				var periodStateString = JsonSerializer.Serialize(periodState);
 				Preferences.Set(Key, periodStateString, SharedName);
+#if IOS
+				ReloadWidgets();
+#endif
 			});
 	}
 }
