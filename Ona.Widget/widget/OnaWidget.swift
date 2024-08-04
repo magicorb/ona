@@ -10,33 +10,36 @@ import SwiftUI
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> PeriodStateEntry {
-        PeriodStateEntry(date: Date(), startDate: Date(), duration: 0, interval: 0)
+        PeriodStateEntry(date: Date(), daysToNext: 28)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (PeriodStateEntry) -> ()) {
-        let entry = PeriodStateEntry(date: Date(), startDate: Date(), duration: 0, interval: 0)
+        let entry = PeriodStateEntry(date: Date(), daysToNext: 28)
         completion(entry)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         let periodState = getPeriodState();
+        let entry = periodState == nil ? PeriodStateEntry(date: Date(), daysToNext: 28) : getEntry(periodState: periodState!)
         
-        var entry: PeriodStateEntry
-        
-        if (periodState == nil) {
-            entry = PeriodStateEntry(date: Date(), startDate: Date(), duration: 0, interval: 0)
-        }
-        else {
-            let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "yyyy'-'MM'-'dd"
-            let startDate = dateFormatter.date(from: periodState!.startDate)
-            
-            entry = PeriodStateEntry(date: Date(), startDate: startDate!, duration: Int(periodState!.duration), interval: Int(periodState!.interval))
-        }
-        
-        let timeline = Timeline(entries: [entry], policy: .atEnd)
+        let calendar = Calendar.current
+        let tomorrow = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: Date()))
+
+        let timeline = Timeline(entries: [entry], policy: .after(tomorrow!))
         
         completion(timeline)
+    }
+    
+    func getEntry(periodState: PeriodState) -> PeriodStateEntry {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy'-'MM'-'dd"
+        let currentPeriodStart = dateFormatter.date(from: periodState.startDate)!
+        
+        let calendar = Calendar.current
+        let nextPeriodStart = calendar.date(byAdding: .day, value: periodState.interval, to: currentPeriodStart)!
+        let difference = calendar.dateComponents([.day], from: Date(), to: nextPeriodStart)
+
+        return PeriodStateEntry(date: Date(), daysToNext: difference.day! + 1)
     }
     
     func getPeriodState() -> PeriodState? {
@@ -51,9 +54,7 @@ struct Provider: TimelineProvider {
 
 struct PeriodStateEntry: TimelineEntry {
     let date: Date
-    let startDate: Date
-    let duration: Int
-    let interval: Int
+    let daysToNext: Int
 }
 
 struct OnaWidgetEntryView : View {
@@ -61,22 +62,10 @@ struct OnaWidgetEntryView : View {
 
     var body: some View {
         VStack {
-            HStack {
-                Text("Today:")
-                Text(entry.date, style: .date)
-            }
-            HStack {
-                Text("Start:")
-                Text(entry.startDate, style: .date)
-            }
-            HStack {
-                Text("Duration:")
-                Text(String(entry.duration))
-            }
-            HStack {
-                Text("Interval:")
-                Text(String(entry.interval))
-            }
+            Text("Days To Next Period")
+                .font(.caption)
+            Text(String(entry.daysToNext))
+                .font(.body)
         }
     }
 }
@@ -109,5 +98,5 @@ struct PeriodState : Codable {
 #Preview(as: .systemSmall) {
     OnaWidget()
 } timeline: {
-    PeriodStateEntry(date: .now, startDate: Date(), duration: 0, interval: 0)
+    PeriodStateEntry(date: .now, daysToNext: 28)
 }
