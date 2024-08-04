@@ -30,28 +30,23 @@ struct ContentView: View {
                 TextField("Interval", text: $intervalString)
             }
             Button("Save") {
-                let dateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "yyyy'-'MM'-'dd"
-                
-                let periodState = PeriodState(start: dateFormatter.date(from: startString)!, duration: Int(durationString)!, interval: Int(intervalString)!)
-                let encodedPeriodState = try! JSONEncoder().encode(periodState)
-                UserDefaults(suiteName: "group.com.natalianaumova.ona")!.set(encodedPeriodState, forKey: "PeriodState")
+                let periodState = PeriodState(startDate: startString, duration: Int(durationString)!, interval: Int(intervalString)!)
+                let periodStateData = try! JSONEncoder().encode(periodState)
+                let periodStateString = String(data: periodStateData, encoding: .utf8)
+                UserDefaults(suiteName: "group.com.natalianaumova.ona")!.set(periodStateString, forKey: "PeriodState")
             }
         }
         .padding()
     }
     
     init(periodState: PeriodState = getPeriodState()) {
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy'-'MM'-'dd"
-        
-        self.startString = dateFormatter.string(from: periodState.start)
+        self.startString = periodState.startDate
         self.durationString = "\(periodState.duration)"
         self.intervalString = "\(periodState.interval)"
     }
     
     static func getPeriodState() -> PeriodState {
-        let fallback = PeriodState(start: Date(), duration: 0, interval: 0)
+        let fallback = PeriodState(startDate: "2001-01-01", duration: 0, interval: 0)
         
         guard let userDefault = UserDefaults(suiteName: "group.com.natalianaumova.ona")?.object(forKey: "PeriodState") else {
             return fallback
@@ -62,7 +57,7 @@ struct ContentView: View {
 }
 
 struct PeriodState : Codable {
-    var start: Date
+    var startDate: String
     var duration: Int
     var interval: Int
 }

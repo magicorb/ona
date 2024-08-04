@@ -12,6 +12,9 @@ namespace Ona.App.Data
 {
 	public class DataPublisher : IDataPublisher
 	{
+		private const string SharedName = "group.com.natalianaumova.ona";
+		private const string Key = "PeriodState";
+
 		private readonly IMainModel mainModel;
 		private readonly IMessenger messenger;
 
@@ -35,21 +38,24 @@ namespace Ona.App.Data
 		private async Task PublishAsync()
 			=> await Task.Run(() =>
 			{
-				var periodState = CreatePeriodState();
-				var periodStateString = JsonSerializer.Serialize(periodState);
-				Preferences.Set("PeriodState", periodStateString, "group.com.natalianaumova.ona");
-			});
+				var periods = this.mainModel.MarkedPeriods;
+				if (!periods.Any())
+				{
+					Preferences.Remove(Key, SharedName);
+					return;
+				}
 
-		private PeriodState CreatePeriodState()
-		{
-			var lastPeriodStart = this.mainModel.MarkedPeriods.Last().Start;
-			var currentStats = this.mainModel.CurrentStats;
-			return new PeriodState
-			{
-				start = lastPeriodStart,
-				duration = currentStats.Duration,
-				interval = currentStats.Interval
-			};
-		}
+				var lastPeriodStart = periods.Last().Start;
+				var currentStats = this.mainModel.CurrentStats;
+				var periodState = new PeriodState
+				{
+					startDate = lastPeriodStart.ToString("yyyy-MM-dd"),
+					duration = currentStats.Duration,
+					interval = currentStats.Interval
+				};
+
+				var periodStateString = JsonSerializer.Serialize(periodState);
+				Preferences.Set(Key, periodStateString, SharedName);
+			});
 	}
 }
