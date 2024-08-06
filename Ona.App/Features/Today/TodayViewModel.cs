@@ -17,8 +17,8 @@ namespace Ona.App.Features.Today
 		private readonly IMessenger messenger;
 		private readonly IMainModel mainModel;
 
-		private string title;
-		private string subtitle;
+		private string? title;
+		private string? subtitle;
 
 		public TodayViewModel(
 			IDateTimeProvider timeProvider,
@@ -34,9 +34,9 @@ namespace Ona.App.Features.Today
 			this.messenger.Register<TodayViewModel, DatesChangedMessage>(this, (r, m) => _ = r.OnDatesChangedMessageAsync(m));
 		}
 
-		public string Title { get => this.title; private set => SetProperty(ref this.title, value); }
+		public string? Title { get => this.title; private set => SetProperty(ref this.title, value); }
 
-		public string Subtitle { get => this.subtitle; private set => SetProperty(ref this.subtitle, value); }
+		public string? Subtitle { get => this.subtitle; private set => SetProperty(ref this.subtitle, value); }
 	
 		public CalendarViewModel CalendarViewModel { get; }
 

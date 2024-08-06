@@ -11,7 +11,7 @@ namespace Ona.App.Controls
 	{
 		public static void RegisterViewModel(this VisualElement element)
 		{
-			object bindingContext = null;
+			var bindingContext = default(object);
 
 			element.BindingContextChanged += (sender, __) =>
 			{

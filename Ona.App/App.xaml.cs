@@ -24,7 +24,7 @@ namespace Ona.App
 		{
 			base.OnStart();
 
-			var dataPublisher = Handler.MauiContext.Services.GetService<IDataPublisher>();
+			var dataPublisher = Handler.MauiContext!.Services.GetService<IDataPublisher>()!;
 			_ = dataPublisher.StartAsync();
 		}
 

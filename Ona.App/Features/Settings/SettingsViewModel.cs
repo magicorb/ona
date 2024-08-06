@@ -37,7 +37,7 @@ namespace Ona.App.Features.Settings
 			ImportDataCommand = new RelayCommand(ExecuteImportData, CanExecuteImportData);
 		}
 
-		public IUserNotificationService UserNotificationService { get; set; }
+		public IUserNotificationService UserNotificationService { get; set; } = null!;
 
 		public string VersionNumber { get; }
 

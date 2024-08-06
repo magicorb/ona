@@ -15,7 +15,7 @@ namespace Ona.App.Controls
 			var typeName = item.GetType().Name;
 			if (Templates.TryGetValue(typeName, out var template))
 				return (DataTemplate)template;
-			return null;
+			return null!;
 		}
 	}
 }

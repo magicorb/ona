@@ -10,7 +10,7 @@ namespace Ona.App.Data
 	public class SQLiteDateRepository : IDateRepository
 	{
 		private readonly SemaphoreSlim initializeSemaphore = new SemaphoreSlim(1);
-		private SQLiteAsyncConnection connection;
+		private SQLiteAsyncConnection connection = null!;
 		private bool isInitialized;
 
 		public async Task<DateRecord> AddDateRecordAsync(DateTime date)

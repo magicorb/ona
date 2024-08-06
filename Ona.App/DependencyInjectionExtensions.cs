@@ -45,14 +45,14 @@ namespace Ona.App
 			
 			services.AddSingleton<MonthViewModelFactory>(sp => (year, month, currentYear)
 				=> new MonthViewModel(
-					sp.GetService<ICultureInfoProvider>(),
-					sp.GetService<DateViewModelFactory>(),
+					sp.GetService<ICultureInfoProvider>()!,
+					sp.GetService<DateViewModelFactory>()!,
 					year,
 					month,
 					currentYear));
 			
 			services.AddSingleton<DateViewModelFactory>(sp => (date, monthViewModel, currentYear, currentMonth)
-				=> new DateViewModel(sp.GetService<IDateTimeProvider>(), sp.GetService<IMessenger>(), date, monthViewModel, currentYear, currentMonth));
+				=> new DateViewModel(sp.GetService<IDateTimeProvider>()!, sp.GetService<IMessenger>()!, date, monthViewModel, currentYear, currentMonth));
 
 			services.AddTransient<InsightsViewModel>();
 

@@ -65,9 +65,9 @@ public partial class ListViewLite : ContentView
 	public async Task ScrollToOffsetAsync(double offset, bool animated)
 		=> await ItemsScrollView.ScrollToAsync(0, offset, animated);
 
-	public event EventHandler<ScrolledEventArgs> Scrolled;
+	public event EventHandler<ScrolledEventArgs>? Scrolled;
 
-	public event EventHandler<ListItemAddedEventArgs> ItemAdded;
+	public event EventHandler<ListItemAddedEventArgs>? ItemAdded;
 
 	private static void OnItemsSourceChanged(BindableObject bindable, object oldValue, object newValue)
 		=> ((ListViewLite)bindable).OnItemsSourceChanged(oldValue, newValue);
@@ -88,16 +88,16 @@ public partial class ListViewLite : ContentView
 		switch (e.Action)
 		{
 			case NotifyCollectionChangedAction.Add:
-				for (int i = 0; i < e.NewItems.Count; i++)
+				for (int i = 0; i < e.NewItems!.Count; i++)
 				{
-					var newView = CreateItemView(e.NewItems[i]);
+					var newView = CreateItemView(e.NewItems[i]!);
 					var index = e.NewStartingIndex + i;
 					ItemsPanel.Insert(index, newView);
 					ItemAdded?.Invoke(this, new ListItemAddedEventArgs(index, newView));
 				}
 				break;
 			case NotifyCollectionChangedAction.Remove:
-				for (int i = 0; i < e.OldItems.Count; i++)
+				for (int i = 0; i < e.OldItems!.Count; i++)
 					ItemsPanel.RemoveAt(e.OldStartingIndex);
 				break;
 			default:

@@ -29,7 +29,9 @@ namespace Ona.App.Model
 
 			public T Current => this.enumerated[position];
 
+#pragma warning disable CS8603 // Possible null reference return.
 			object IEnumerator.Current => Current;
+#pragma warning restore CS8603 // Possible null reference return.
 
 			public void Dispose()
 			{

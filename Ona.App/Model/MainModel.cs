@@ -17,14 +17,14 @@ namespace Ona.App.Model
 		private readonly IDateRepository dateRepository;
 		private readonly IPeriodStatsProvider periodStatsProvider;
 
-		private Task initializeTask;
+		private Task? initializeTask;
 
-		private List<DateTime> markedDates;
+		private List<DateTime> markedDates = null!;
 		private IReadOnlyList<DateTimePeriod>? markedPeriods;
 		private List<DateTimePeriod>? expectedPeriods;
-		private PeriodStats currentStats;
-		private PeriodStats previousStats;
-		private DateTime endDate;
+		private PeriodStats? currentStats;
+		private PeriodStats? previousStats;
+		private DateTime? endDate;
 
 		public MainModel(
 			IDateRepository dateRepository,
@@ -38,7 +38,7 @@ namespace Ona.App.Model
 
 		public DateTime ObservedEnd
 		{
-			get => this.endDate;
+			get => this.endDate!.Value;
 			set
 			{
 				this.endDate = value;
@@ -54,7 +54,7 @@ namespace Ona.App.Model
 		}
 
 		public async Task OnInitializedAsync()
-			=> await this.initializeTask;
+			=> await this.initializeTask!;
 
 		public async Task AddDateAsync(DateTime date)
 		{
@@ -145,7 +145,7 @@ namespace Ona.App.Model
 
 		private async Task InitializeInternalAsync()
 		{
-			this.markedDates = (await dateRepository.GetDateRecordsAsync()).Select(d => d.Date).ToList();
+			this.markedDates = (await this.dateRepository.GetDateRecordsAsync()).Select(d => d.Date).ToList();
 		}
 
 		private void UpdateExpectedPeriods()

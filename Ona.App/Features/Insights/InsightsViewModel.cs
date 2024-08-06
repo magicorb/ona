@@ -16,9 +16,9 @@ namespace Ona.App.Features.Insights
 		private readonly IMainModel mainModel;
 		private readonly IMessenger messenger;
 
-		private string lastPeriodStart;
-		private string averageCycleLength;
-		private string averagePeriodLength;
+		private string? lastPeriodStart;
+		private string? averageCycleLength;
+		private string? averagePeriodLength;
 
 		public InsightsViewModel(
 			IMainModel mainModel,

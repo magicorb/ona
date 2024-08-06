@@ -20,9 +20,9 @@ namespace Ona.App.Features.Calendar
 		private readonly IMainModel mainModel;
 		private readonly MonthViewModelFactory monthViewModelFactory;
 
-		private ObservableCollection<MonthViewModel> months;
-		private SpinnerViewModel topSpinner;
-		private SpinnerViewModel bottomSpinner;
+		private ObservableCollection<MonthViewModel> months = null!;
+		private SpinnerViewModel topSpinner = null!;
+		private SpinnerViewModel bottomSpinner = null!;
 
 		public CalendarViewModel(
 			IDateTimeProvider dateTimeProvider,
@@ -43,9 +43,9 @@ namespace Ona.App.Features.Calendar
 			this.messenger.Register<CalendarViewModel, DatesChangedMessage>(this, (r, m) => _ = r.OnDatesChangedMessageAsync(m));
 		}
 
-		public ObservableCollection<object> Items { get; private set; }
+		public ObservableCollection<object> Items { get; private set; } = null!;
 
-		public MonthViewModel CurentMonth { get; private set; }
+		public MonthViewModel CurentMonth { get; private set; } = null!;
 
 		public void ShowHiddenMonths()
 		{
@@ -108,17 +108,17 @@ namespace Ona.App.Features.Calendar
 
 		private void Initialize()
 		{
-			months = new ObservableCollection<MonthViewModel>();
+			this.months = new ObservableCollection<MonthViewModel>();
 
 			var now = dateTimeProvider.Now;
 			var currentMonthStart = new DateTime(now.Year, now.Month, 1);
 
 			CurentMonth = CreateMonthViewModel(currentMonthStart);
 
-			months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(-2)));
-			months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(-1)));
-			months.Add(CurentMonth);
-			months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(1)));
+			this.months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(-2)));
+			this.months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(-1)));
+			this.months.Add(CurentMonth);
+			this.months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(1)));
 
 			Items = new ObservableCollection<object>(this.months);
 
