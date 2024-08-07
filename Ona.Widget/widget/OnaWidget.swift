@@ -95,8 +95,9 @@ struct PeriodState : Codable {
     var interval: Int
 }
 
-#Preview(as: .systemSmall) {
-    OnaWidget()
-} timeline: {
-    PeriodStateEntry(date: .now, daysToNext: 28)
-}
+//'Preview(_:as:widget:timeline:)' is only available in application extensions for iOS 17.0 or newer
+//#Preview(as: .systemSmall) {
+//    OnaWidget()
+//} timeline: {
+//    PeriodStateEntry(date: .now, daysToNext: 28)
+//}
