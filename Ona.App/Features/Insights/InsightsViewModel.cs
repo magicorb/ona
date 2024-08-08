@@ -41,15 +41,21 @@ namespace Ona.App.Features.Insights
 			await this.mainModel.OnInitializedAsync();
 
 			var periods = await Task.Run(() => this.mainModel.MarkedPeriods);
-			var periodStats = await Task.Run(() => this.mainModel.CurrentStats);
+			int duration = default;
+			int interval = default;
+			await Task.Run(() =>
+			{
+				duration = this.mainModel.CurrentAverageDuration;
+				interval = this.mainModel.AverageInterval;
+			});
 
 			LastPeriodStart = periods.Any()
 				? periods.Last().Start.ToString("dd MMM yyyy")
 				: "No data";
 
-			AverageCycleLength = $"{periodStats.Duration} days";
+			AverageCycleLength = $"{duration} days";
 
-			AveragePeriodLength = $"{periodStats.Interval} days";
+			AveragePeriodLength = $"{interval} days";
 		}
 
 		private async Task OnDatesChangedMessageAsync(DatesChangedMessage m)

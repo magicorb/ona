@@ -46,12 +46,11 @@ namespace Ona.App.Data
 				}
 
 				var lastPeriodStart = periods.Last().Start;
-				var currentStats = this.mainModel.CurrentStats;
 				var periodState = new PeriodState
 				{
 					startDate = lastPeriodStart.ToString("yyyy-MM-dd"),
-					duration = currentStats.Duration,
-					interval = currentStats.Interval
+					duration = this.mainModel.CurrentAverageDuration,
+					interval = this.mainModel.AverageInterval
 				};
 
 				var periodStateString = JsonSerializer.Serialize(periodState);

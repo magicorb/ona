@@ -49,23 +49,20 @@ namespace Ona.App.Model
 			return periods;
 		}
 
-		public PeriodStats GetAveragePeriodStats(IReadOnlyList<DateTimePeriod> orderedPeriods)
+		public int GetAverageDuration(IEnumerable<DateTimePeriod> orderedPeriods)
+			=> orderedPeriods.Any()
+			? (int)Math.Round(orderedPeriods.Average(GetDays), MidpointRounding.AwayFromZero)
+			: DefaultDuration;
+
+		public int GetAverageInterval(IReadOnlyList<DateTimePeriod> orderedPeriods)
 		{
-			if (orderedPeriods.Count == 0)
-				return new PeriodStats(duration: DefaultDuration, interval: DefaultInterval);
-
-			if (orderedPeriods.Count == 1)
-				return new PeriodStats(duration: GetDays(orderedPeriods[0]), interval: DefaultInterval);
-
 			var intervals = new List<int>();
 			for (var i = 0; i < orderedPeriods.Count - 1; i++)
 				intervals.Add((orderedPeriods[i + 1].Start - orderedPeriods[i].Start).Days);
 
-			var result = new PeriodStats(
-				duration: (int)Math.Round(orderedPeriods.Average(GetDays), MidpointRounding.AwayFromZero),
-				interval: (int)Math.Round(intervals.Average(), MidpointRounding.AwayFromZero));
-
-			return result;
+			return intervals.Any()
+				? (int)Math.Round(intervals.Average(), MidpointRounding.AwayFromZero)
+				: DefaultInterval;
 		}
 
 		private int GetDays(DateTimePeriod period)
@@ -76,10 +73,11 @@ namespace Ona.App.Model
 			if (orderedPeriods.Count == 0)
 				yield break;
 
-			var average = GetAveragePeriodStats(orderedPeriods);
-			var durationDayDifference = average.Duration - 1;
+			var durationDayDifference = GetAverageDuration(orderedPeriods) - 1;
 
-			var start = orderedPeriods.Last().Start.AddDays(average.Interval);
+			var interval = GetAverageInterval(orderedPeriods);
+
+			var start = orderedPeriods.Last().Start.AddDays(interval);
 			do
 			{
 				yield return new DateTimePeriod
@@ -87,7 +85,7 @@ namespace Ona.App.Model
 					Start = start.Date,
 					End = start.AddDays(durationDayDifference).Date
 				};
-				start = start.AddDays(average.Interval);
+				start = start.AddDays(interval);
 			} while (true);
 		}
 	}
