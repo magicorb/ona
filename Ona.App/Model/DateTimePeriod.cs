@@ -13,5 +13,7 @@ namespace Ona.App.Model
 		public DateTime End { get; set; }
 
 		public TimeSpan Length => End - Start;
+
+		public int Days => (End - Start).Days + 1;
 	}
 }
