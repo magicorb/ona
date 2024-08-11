@@ -124,7 +124,7 @@
 		</AdditionalAppExtensions>
 	</ItemGroup>
 
-	<Import Condition="'$(TargetFramework)'=='net8.0-ios'" Project="$(MSBuildThisFileDirectory)CompileSwift.targets" />
+	<Import Condition="'$(_PlatformName)' == 'iOS'" Project="$(MSBuildThisFileDirectory)CompileSwift.targets" />
 
 	<ItemGroup>
 		<MauiXaml Update="Features\Calendar\CalendarView.xaml">
