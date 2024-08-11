@@ -4,11 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Messaging;
 using Ona.App.Data;
-using Ona.App.Model;
-
 
 namespace Ona.App.Model
 {
@@ -24,7 +20,6 @@ namespace Ona.App.Model
 		private List<DateTime> markedDates = null!;
 		private HashSet<DateTime> draftDates = new HashSet<DateTime>();
 		private IReadOnlyList<DateTimePeriod>? markedPeriods;
-		private IReadOnlyList<DateTimePeriod>? nonDraftMarkedPeriods;
 		private List<DateTimePeriod>? expectedPeriods;
 		private int? expectedDuration;
 		private int? expectedInterval;
@@ -99,11 +94,7 @@ namespace Ona.App.Model
 
 		public IReadOnlyList<DateTimePeriod> MarkedPeriods
 			=> this.markedPeriods
-			?? (this.markedPeriods = this.markedDates.Select(d => d.Date).GetDatePeriods());
-
-		public IReadOnlyList<DateTimePeriod> NonDraftMarkedPeriods
-			=> this.nonDraftMarkedPeriods
-			?? (this.markedDates.Where(d => !this.draftDates.Contains(d)).Select(d => d.Date).GetDatePeriods());
+			?? (this.markedPeriods = this.markedDates.GetDatePeriods());
 
 		public IReadOnlyList<DateTimePeriod> ExpectedPeriods
 			=> this.expectedPeriods
@@ -155,22 +146,21 @@ namespace Ona.App.Model
 
 		private int GetExpectedDuration()
 		{
-			if (NonDraftMarkedPeriods.Count == 0)
+			var nonDraftPeriods = this.markedDates.Where(d => !IsDraft(d)).GetDatePeriods();
+
+			if (nonDraftPeriods.Count == 0)
 				return DefaultDuration;
 
-			if (NonDraftMarkedPeriods.Count == 1)
-				return NonDraftMarkedPeriods[0].Days;
-
-			var previousAverageDuration = GetAverageDuration(NonDraftMarkedPeriods.Take(NonDraftMarkedPeriods.Count - 1));
 			var lastPeriod = MarkedPeriods.Last();
-			var expectedLastPeriodEnd = lastPeriod.Start.AddDays(previousAverageDuration - 1);
-			var ignoreLastPeriod =
-				lastPeriod.End < expectedLastPeriodEnd
-				&& this.dateTimeProvider.Now.Date <= expectedLastPeriodEnd;
+			var averageDuration = GetAverageDuration(nonDraftPeriods);
 
-			return ignoreLastPeriod
-				? previousAverageDuration
-				: GetAverageDuration(NonDraftMarkedPeriods);
+			if (lastPeriod.Dates().All(IsDraft))
+				return averageDuration;
+
+			var previousAverageDuration = GetAverageDuration(nonDraftPeriods.SkipLast(1));
+			var isLastPeriodInProgress = lastPeriod.Start.AddDays(previousAverageDuration - 1) > this.dateTimeProvider.Now.Date;
+
+			return isLastPeriodInProgress ? previousAverageDuration : averageDuration;
 		}
 
 		private IEnumerable<DateTimePeriod> GetExpectedPeriods()
@@ -179,34 +169,27 @@ namespace Ona.App.Model
 				yield break;
 
 			var lastPeriod = MarkedPeriods.Last();
+			var isLastPeriodInProgress = lastPeriod.Start.AddDays(ExpectedDuration - 1) > this.dateTimeProvider.Now.Date;
 
-			var previousAverageDuration = NonDraftMarkedPeriods.Count > 1
-				? GetAverageDuration(NonDraftMarkedPeriods.Take(NonDraftMarkedPeriods.Count - 1))
-				: DefaultDuration;
-
-			yield return new DateTimePeriod
-			{
-				Start = lastPeriod.Start,
-				End = lastPeriod.Start.AddDays(previousAverageDuration - 1)
-			};
-
-			var start = lastPeriod.Start.AddDays(ExpectedInterval);
-			var durationDiff = ExpectedDuration - 1;
-			do
+			for (var start = isLastPeriodInProgress ? lastPeriod.Start : lastPeriod.Start.AddDays(ExpectedInterval);
+				start <= ObservedEnd;
+				start = start.AddDays(ExpectedInterval))
 			{
 				yield return new DateTimePeriod
 				{
-					Start = start.Date,
-					End = start.AddDays(durationDiff).Date
+					Start = start,
+					End = start.AddDays(ExpectedDuration - 1)
 				};
-				start = start.AddDays(ExpectedInterval);
-			} while (start <= ObservedEnd);
+			}
 		}
 		
-		private int GetAverageDuration(IEnumerable<DateTimePeriod> orderedPeriods)
-			=> orderedPeriods.Any()
-			? (int)Math.Round(orderedPeriods.Average(p => p.Days), MidpointRounding.AwayFromZero)
+		private int GetAverageDuration(IEnumerable<DateTimePeriod> periods)
+			=> periods.Any()
+			? (int)Math.Round(periods.Average(p => p.DayCount()), MidpointRounding.AwayFromZero)
 			: DefaultDuration;
+
+		private bool IsDraft(DateTime date)
+			=> this.draftDates.Contains(date);
 
 		private void OnDatesChanged()
 		{
