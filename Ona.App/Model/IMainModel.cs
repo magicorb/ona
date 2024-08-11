@@ -16,9 +16,9 @@ namespace Ona.App.Model
 
 		IReadOnlyList<DateTimePeriod> ExpectedPeriods { get; }
 
-		int AverageDuration { get; }
+		int ExpectedDuration { get; }
 
-		int AverageInterval { get; }
+		int ExpectedInterval { get; }
 
 		Task InitializeAsync();
 
@@ -27,6 +27,10 @@ namespace Ona.App.Model
 		Task AddDateAsync(DateTime date);
 
 		Task DeleteDateAsync(DateTime date);
+
+		Task AddDraftDateAsync(DateTime date);
+
+		void CompleteDraftDate(DateTime date);
 
 		Task DeleteAllAsync();
 

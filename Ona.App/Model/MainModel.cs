@@ -22,10 +22,12 @@ namespace Ona.App.Model
 		private Task? initializeTask;
 
 		private List<DateTime> markedDates = null!;
+		private HashSet<DateTime> draftDates = new HashSet<DateTime>();
 		private IReadOnlyList<DateTimePeriod>? markedPeriods;
+		private IReadOnlyList<DateTimePeriod>? nonDraftMarkedPeriods;
 		private List<DateTimePeriod>? expectedPeriods;
-		private int? averageDuration;
-		private int? averageInterval;
+		private int? expectedDuration;
+		private int? expectedInterval;
 		private DateTime? endDate;
 
 		public MainModel(
@@ -83,28 +85,37 @@ namespace Ona.App.Model
 			OnDatesChanged();
 		}
 
-		public IReadOnlyList<DateTimePeriod> MarkedPeriods
+		public async Task AddDraftDateAsync(DateTime date)
 		{
-			get
-			{
-				if (this.markedPeriods == null)
-					this.markedPeriods = this.markedDates.Select(d => d.Date).GetDatePeriods();
-
-				return this.markedPeriods!;
-			}
+			this.draftDates.Add(date);
+			await AddDateAsync(date);
 		}
+
+		public void CompleteDraftDate(DateTime date)
+		{
+			this.draftDates.Remove(date);
+			OnDatesChanged();
+		}
+
+		public IReadOnlyList<DateTimePeriod> MarkedPeriods
+			=> this.markedPeriods
+			?? (this.markedPeriods = this.markedDates.Select(d => d.Date).GetDatePeriods());
+
+		public IReadOnlyList<DateTimePeriod> NonDraftMarkedPeriods
+			=> this.nonDraftMarkedPeriods
+			?? (this.markedDates.Where(d => !this.draftDates.Contains(d)).Select(d => d.Date).GetDatePeriods());
 
 		public IReadOnlyList<DateTimePeriod> ExpectedPeriods
 			=> this.expectedPeriods
 			?? (this.expectedPeriods = GetExpectedPeriods().ToList());
 
-		public int AverageInterval
-			=> this.averageInterval
-			?? (this.averageInterval = GetAverageInterval()).Value;
+		public int ExpectedInterval
+			=> this.expectedInterval
+			?? (this.expectedInterval = GetExpectedInterval()).Value;
 
-		public int AverageDuration
-			=> this.averageDuration
-			?? (this.averageDuration = GetAverageDuration()).Value;
+		public int ExpectedDuration
+			=> this.expectedDuration
+			?? (this.expectedDuration = GetExpectedDuration()).Value;
 
 		public async Task DeleteAllAsync()
 		{
@@ -131,7 +142,7 @@ namespace Ona.App.Model
 			this.markedDates = (await this.dateRepository.GetDateRecordsAsync()).Select(d => d.Date).ToList();
 		}
 
-		private int GetAverageInterval()
+		private int GetExpectedInterval()
 		{
 			var intervals = new List<int>();
 			for (var i = 0; i < MarkedPeriods.Count - 1; i++)
@@ -142,15 +153,15 @@ namespace Ona.App.Model
 				: DefaultInterval;
 		}
 
-		private int GetAverageDuration()
+		private int GetExpectedDuration()
 		{
-			if (MarkedPeriods.Count == 0)
+			if (NonDraftMarkedPeriods.Count == 0)
 				return DefaultDuration;
 
-			if (MarkedPeriods.Count == 1)
-				return MarkedPeriods[0].Days;
+			if (NonDraftMarkedPeriods.Count == 1)
+				return NonDraftMarkedPeriods[0].Days;
 
-			var previousAverageDuration = GetAverageDuration(MarkedPeriods.Take(MarkedPeriods.Count - 1));
+			var previousAverageDuration = GetAverageDuration(NonDraftMarkedPeriods.Take(NonDraftMarkedPeriods.Count - 1));
 			var lastPeriod = MarkedPeriods.Last();
 			var expectedLastPeriodEnd = lastPeriod.Start.AddDays(previousAverageDuration - 1);
 			var ignoreLastPeriod =
@@ -159,7 +170,7 @@ namespace Ona.App.Model
 
 			return ignoreLastPeriod
 				? previousAverageDuration
-				: GetAverageDuration(MarkedPeriods);
+				: GetAverageDuration(NonDraftMarkedPeriods);
 		}
 
 		private IEnumerable<DateTimePeriod> GetExpectedPeriods()
@@ -169,8 +180,8 @@ namespace Ona.App.Model
 
 			var lastPeriod = MarkedPeriods.Last();
 
-			var previousAverageDuration = MarkedPeriods.Count > 1
-				? GetAverageDuration(MarkedPeriods.Take(MarkedPeriods.Count - 1))
+			var previousAverageDuration = NonDraftMarkedPeriods.Count > 1
+				? GetAverageDuration(NonDraftMarkedPeriods.Take(NonDraftMarkedPeriods.Count - 1))
 				: DefaultDuration;
 
 			yield return new DateTimePeriod
@@ -179,8 +190,8 @@ namespace Ona.App.Model
 				End = lastPeriod.Start.AddDays(previousAverageDuration - 1)
 			};
 
-			var start = lastPeriod.Start.AddDays(AverageInterval);
-			var durationDiff = AverageDuration - 1;
+			var start = lastPeriod.Start.AddDays(ExpectedInterval);
+			var durationDiff = ExpectedDuration - 1;
 			do
 			{
 				yield return new DateTimePeriod
@@ -188,11 +199,11 @@ namespace Ona.App.Model
 					Start = start.Date,
 					End = start.AddDays(durationDiff).Date
 				};
-				start = start.AddDays(AverageInterval);
+				start = start.AddDays(ExpectedInterval);
 			} while (start <= ObservedEnd);
 		}
 		
-		public int GetAverageDuration(IEnumerable<DateTimePeriod> orderedPeriods)
+		private int GetAverageDuration(IEnumerable<DateTimePeriod> orderedPeriods)
 			=> orderedPeriods.Any()
 			? (int)Math.Round(orderedPeriods.Average(p => p.Days), MidpointRounding.AwayFromZero)
 			: DefaultDuration;
@@ -201,8 +212,8 @@ namespace Ona.App.Model
 		{
 			this.expectedPeriods = null;
 			this.markedPeriods = null;
-			this.averageDuration = null;
-			this.averageInterval = null;
+			this.expectedDuration = null;
+			this.expectedInterval = null;
 		}
 	}
 }

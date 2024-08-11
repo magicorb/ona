@@ -23,6 +23,7 @@ namespace Ona.App.Features.Calendar
 		private ObservableCollection<MonthViewModel> months = null!;
 		private SpinnerViewModel topSpinner = null!;
 		private SpinnerViewModel bottomSpinner = null!;
+		private DateViewModel? selectionStart;
 
 		public CalendarViewModel(
 			IDateTimeProvider dateTimeProvider,
@@ -144,16 +145,65 @@ namespace Ona.App.Features.Calendar
 			{
 				dateViewModel.IsMarked = false;
 				await this.mainModel.DeleteDateAsync(dateViewModel.Date);
+				this.selectionStart = null;
+			}
+			else if (this.selectionStart == null)
+			{
+				var isAdjacent = GetNextDateViewModel(dateViewModel).IsMarked || GetPreviousDateViewModel(dateViewModel).IsMarked;
+				if (isAdjacent)
+					await MarkDateAsync(dateViewModel);
+				else
+				{
+					dateViewModel.IsMarked = true;
+					await this.mainModel.AddDraftDateAsync(dateViewModel.Date);
+				}
+
+				this.selectionStart = dateViewModel;
 			}
 			else
 			{
-				dateViewModel.IsMarked = true;
-				await this.mainModel.AddDateAsync(dateViewModel.Date);
+				var isWithinExpectedDuration = Math.Abs((this.selectionStart.Date - dateViewModel.Date).Days) < this.mainModel.ExpectedDuration;
+				if (isWithinExpectedDuration)
+					await MarkRangeAsync(dateViewModel);
+				else
+					await MarkDateAsync(dateViewModel);
+
+				this.mainModel.CompleteDraftDate(this.selectionStart.Date);
+				this.selectionStart = null;
 			}
 
 			this.messenger.Send(new DatesChangedMessage(this));
 
 			await RefreshExpectedDatesAsync();
+		}
+
+		public void ClearSelection()
+		{
+			if (this.selectionStart != null)
+			{
+				this.mainModel.CompleteDraftDate(this.selectionStart.Date);
+				this.selectionStart = null;
+			}
+		}
+
+		private async Task MarkDateAsync(DateViewModel dateViewModel)
+		{
+			dateViewModel.IsMarked = true;
+			await this.mainModel.AddDateAsync(dateViewModel.Date);
+		}
+
+		private async Task MarkRangeAsync(DateViewModel selectionEnd)
+		{
+			if (this.selectionStart!.Date > selectionEnd.Date)
+			{
+				for (var d = selectionEnd; d != this.selectionStart; d = GetNextDateViewModel(d))
+					await MarkDateAsync(d);
+			}
+			else if (this.selectionStart.Date < selectionEnd.Date)
+			{
+				for (var d = selectionEnd; d != this.selectionStart; d = GetPreviousDateViewModel(d))
+					await MarkDateAsync(d);
+			}
 		}
 
 		private async Task OnDatesChangedMessageAsync(DatesChangedMessage message)
@@ -166,6 +216,11 @@ namespace Ona.App.Features.Calendar
 			=> dateViewModel == dateViewModel.MonthViewModel.MonthDates.Last()
 			? this.months[this.months.IndexOf(dateViewModel.MonthViewModel) + 1].MonthDates.First()
 			: dateViewModel.MonthViewModel.Dates[dateViewModel.MonthViewModel.Dates.IndexOf(dateViewModel) + 1];
+
+		private DateViewModel GetPreviousDateViewModel(DateViewModel dateViewModel)
+			=> dateViewModel == dateViewModel.MonthViewModel.MonthDates.First()
+			? this.months[this.months.IndexOf(dateViewModel.MonthViewModel) - 1].MonthDates.Last()
+			: dateViewModel.MonthViewModel.Dates[dateViewModel.MonthViewModel.Dates.IndexOf(dateViewModel) - 1];
 
 		private async Task RefreshMarkedDatesAsync()
 		{
