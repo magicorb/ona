@@ -117,14 +117,14 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
-		<AdditionalAppExtensions Include="$(MSBuildProjectDirectory)/../Ona.Widget/Build">
+		<AdditionalAppExtensions Include="$(MSBuildProjectDirectory)/../Ona.Widget">
 			<Name>widgetExtension</Name>
-      <BuildOutput Condition="'$(ComputedPlatform)' == 'iPhone'">Products/Release-iphoneos</BuildOutput>
-			<BuildOutput Condition="'$(ComputedPlatform)' == 'iPhoneSimulator'">Products/Debug-iphonesimulator</BuildOutput>
+      <BuildOutput Condition="'$(ComputedPlatform)' == 'iPhone'">Build/Products/Release-iphoneos</BuildOutput>
+			<BuildOutput Condition="'$(ComputedPlatform)' == 'iPhoneSimulator'">Build/Products/Debug-iphonesimulator</BuildOutput>
 		</AdditionalAppExtensions>
 	</ItemGroup>
 
-	<Import Condition="'$(_PlatformName)' == 'iOS'" Project="$(MSBuildThisFileDirectory)CompileSwift.targets" />
+	<Import Project="$(MSBuildThisFileDirectory)CompileSwift.targets" />
 
 	<ItemGroup>
 		<MauiXaml Update="Features\Calendar\CalendarView.xaml">
