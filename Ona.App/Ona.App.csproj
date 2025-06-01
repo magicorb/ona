@@ -104,52 +104,19 @@
 	<ItemGroup>
 		<PackageReference Include="CommunityToolkit.Maui" Version="9.0.2" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.2.2" />
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.60" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.60" />
-		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
+		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.1" />
 		<PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
 	</ItemGroup>
 
-	<ItemGroup>
-		<Compile Update="Features\Calendar\CalendarView.xaml.cs">
-		<DependentUpon>CalendarView.xaml</DependentUpon>
-		</Compile>
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
+	<!--<ItemGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
 		<AdditionalAppExtensions Include="$(MSBuildProjectDirectory)/../Ona.Widget">
 			<Name>widgetExtension</Name>
       <BuildOutput Condition="'$(ComputedPlatform)' == 'iPhone'">Build/Products/Release-iphoneos</BuildOutput>
 			<BuildOutput Condition="'$(ComputedPlatform)' == 'iPhoneSimulator'">Build/Products/Debug-iphonesimulator</BuildOutput>
 		</AdditionalAppExtensions>
-	</ItemGroup>
+	</ItemGroup>-->
 
 	<Import Project="$(MSBuildThisFileDirectory)CompileSwift.targets" />
-
-	<ItemGroup>
-		<MauiXaml Update="Features\Calendar\CalendarView.xaml">
-		<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Features\Calendar\DateView.xaml">
-		<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Features\Calendar\MonthView.xaml">
-		<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Controls\ListViewLite.xaml">
-		<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Features\Insights\InsightsPage.xaml">
-		<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Features\Settings\SettingsPage.xaml">
-		<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Features\Today\NewContent1.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-		<MauiXaml Update="Features\Today\TodayPage.xaml">
-		<Generator>MSBuild:Compile</Generator>
-		</MauiXaml>
-	</ItemGroup>
 </Project>
