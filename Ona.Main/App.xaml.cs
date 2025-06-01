@@ -2,38 +2,37 @@
 using System;
 using System.Runtime.InteropServices;
 
-namespace Ona.Main
+namespace Ona.Main;
+
+public partial class App : Application
 {
-	public partial class App : Application
+#if IOS
+	[DllImport("__Internal", EntryPoint = "ReloadWidgets")]
+	public extern static int ReloadWidgets();
+#endif
+
+	public App(AppShell appShell)
 	{
+		InitializeComponent();
+
+		PropertyMapperConfigurator.Configure();
+
+		MainPage = appShell;
+	}
+
+	protected override void OnStart()
+	{
+		base.OnStart();
+
+		var dataPublisher = Handler.MauiContext!.Services.GetService<IDataPublisher>()!;
+		_ = dataPublisher.StartAsync();
+	}
+
+	protected override void OnSleep()
+	{
+		base.OnSleep();
 #if IOS
-		[DllImport("__Internal", EntryPoint = "ReloadWidgets")]
-		public extern static int ReloadWidgets();
+		ReloadWidgets();
 #endif
-
-		public App(AppShell appShell)
-		{
-			InitializeComponent();
-
-			PropertyMapperConfigurator.Configure();
-
-			MainPage = appShell;
-		}
-
-		protected override void OnStart()
-		{
-			base.OnStart();
-
-			var dataPublisher = Handler.MauiContext!.Services.GetService<IDataPublisher>()!;
-			_ = dataPublisher.StartAsync();
-		}
-
-		protected override void OnSleep()
-		{
-			base.OnSleep();
-#if IOS
-			ReloadWidgets();
-#endif
-		}
 	}
 }

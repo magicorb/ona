@@ -4,16 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ona.Main.Data
+namespace Ona.Main.Data;
+
+public interface IDateRepository
 {
-	public interface IDateRepository
-	{
-		Task<DateRecord[]> GetDateRecordsAsync();
+	Task<DateRecord[]> GetDateRecordsAsync();
 
-		Task<DateRecord> AddDateRecordAsync(DateTime date);
+	Task<DateRecord> AddDateRecordAsync(DateTime date);
 
-		Task DeleteDateRecordAsync(DateTime date);
+	Task DeleteDateRecordAsync(DateTime date);
 
-		Task DeleteAllDateRecordsAsync();
-	}
+	Task DeleteAllDateRecordsAsync();
 }

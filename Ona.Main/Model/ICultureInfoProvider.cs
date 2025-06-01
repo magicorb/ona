@@ -5,10 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ona.Main.Model
+namespace Ona.Main.Model;
+
+public interface ICultureInfoProvider
 {
-	public interface ICultureInfoProvider
-	{
-		CultureInfo CurrentUICulture { get; }
-	}
+	CultureInfo CurrentUICulture { get; }
 }

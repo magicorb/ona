@@ -5,13 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using SQLite;
 
-namespace Ona.Main.Data
-{
-	public class DateRecord
-	{
-		[PrimaryKey]
-		public Guid Id { get; set; }
+namespace Ona.Main.Data;
 
-		public DateTime Date { get; set; }
-	}
+public class DateRecord
+{
+	[PrimaryKey]
+	public Guid Id { get; set; }
+
+	public DateTime Date { get; set; }
 }

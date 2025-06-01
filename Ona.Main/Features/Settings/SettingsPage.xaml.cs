@@ -7,15 +7,15 @@ namespace Ona.Main.Features.Settings;
 
 public partial class SettingsPage : ContentPage
 {
-	public SettingsPage()
-	{
-		InitializeComponent();
-	}
+public SettingsPage()
+{
+	InitializeComponent();
+}
 
-	private void ContentPage_Loaded(object sender, EventArgs e)
-	{
-		var userConfirmationServiceFactory = Handler!.MauiContext!.Services.GetService<Func<Page, IUserNotificationService>>()!;
+private void ContentPage_Loaded(object sender, EventArgs e)
+{
+	var userConfirmationServiceFactory = Handler!.MauiContext!.Services.GetService<Func<Page, IUserNotificationService>>()!;
 
-		((SettingsViewModel)BindingContext).UserNotificationService = userConfirmationServiceFactory(this);
-	}
+	((SettingsViewModel)BindingContext).UserNotificationService = userConfirmationServiceFactory(this);
+}
 }

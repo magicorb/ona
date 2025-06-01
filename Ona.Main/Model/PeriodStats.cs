@@ -4,18 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ona.Main.Model
+namespace Ona.Main.Model;
+
+public class PeriodStats
 {
-	public class PeriodStats
+	public PeriodStats(int duration, int interval)
 	{
-		public PeriodStats(int duration, int interval)
-		{
-			Duration = duration;
-			Interval = interval;
-		}
-
-		public int Duration { get; }
-
-		public int Interval { get; }
+		Duration = duration;
+		Interval = interval;
 	}
+
+	public int Duration { get; }
+
+	public int Interval { get; }
 }

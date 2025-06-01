@@ -4,36 +4,35 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ona.Main.Model
+namespace Ona.Main.Model;
+
+public interface IMainModel
 {
-	public interface IMainModel
-	{
-		IReadOnlyList<DateTime> MarkedDates { get; }
+	IReadOnlyList<DateTime> MarkedDates { get; }
 
-		DateTime ObservedEnd { get; set; }
+	DateTime ObservedEnd { get; set; }
 
-		IReadOnlyList<DateTimePeriod> MarkedPeriods { get; }
+	IReadOnlyList<DateTimePeriod> MarkedPeriods { get; }
 
-		IReadOnlyList<DateTimePeriod> ExpectedPeriods { get; }
+	IReadOnlyList<DateTimePeriod> ExpectedPeriods { get; }
 
-		int ExpectedDuration { get; }
+	int ExpectedDuration { get; }
 
-		int ExpectedInterval { get; }
+	int ExpectedInterval { get; }
 
-		Task InitializeAsync();
+	Task InitializeAsync();
 
-		Task OnInitializedAsync();
+	Task OnInitializedAsync();
 
-		Task AddDateAsync(DateTime date);
+	Task AddDateAsync(DateTime date);
 
-		Task DeleteDateAsync(DateTime date);
+	Task DeleteDateAsync(DateTime date);
 
-		Task AddDraftDateAsync(DateTime date);
+	Task AddDraftDateAsync(DateTime date);
 
-		void CompleteDraftDate(DateTime date);
+	void CompleteDraftDate(DateTime date);
 
-		Task DeleteAllAsync();
+	Task DeleteAllAsync();
 
-		Task ImportAsync(IEnumerable<DateTime> dates);
-	}
+	Task ImportAsync(IEnumerable<DateTime> dates);
 }

@@ -9,33 +9,32 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ona.Main
+namespace Ona.Main;
+
+public class AppShellViewModel : ObservableObject
 {
-	public class AppShellViewModel : ObservableObject
+	private readonly IMainModel mainModel;
+
+	public AppShellViewModel(
+		IMainModel mainModel,
+		TodayViewModel todayViewModel,
+		InsightsViewModel insightsViewModel,
+		SettingsViewModel settingsViewModel)
 	{
-		private readonly IMainModel mainModel;
+		this.mainModel = mainModel;
+		TodayViewModel = todayViewModel;
+		InsightsViewModel = insightsViewModel;
+		SettingsViewModel = settingsViewModel;
+	}
 
-		public AppShellViewModel(
-			IMainModel mainModel,
-			TodayViewModel todayViewModel,
-			InsightsViewModel insightsViewModel,
-			SettingsViewModel settingsViewModel)
-		{
-			this.mainModel = mainModel;
-			TodayViewModel = todayViewModel;
-			InsightsViewModel = insightsViewModel;
-			SettingsViewModel = settingsViewModel;
-		}
+	public TodayViewModel TodayViewModel { get; }
 
-		public TodayViewModel TodayViewModel { get; }
+	public InsightsViewModel InsightsViewModel { get; }
 
-		public InsightsViewModel InsightsViewModel { get; }
+	public SettingsViewModel SettingsViewModel { get; }
 
-		public SettingsViewModel SettingsViewModel { get; }
-
-		internal async Task InitializeAsync()
-		{
-			await this.mainModel.InitializeAsync();
-		}
+	internal async Task InitializeAsync()
+	{
+		await this.mainModel.InitializeAsync();
 	}
 }

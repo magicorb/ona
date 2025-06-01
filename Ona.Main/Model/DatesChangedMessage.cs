@@ -4,15 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ona.Main.Model
-{
-	public class DatesChangedMessage
-	{
-		public DatesChangedMessage(object sender)
-		{
-			Sender = sender;
-		}
+namespace Ona.Main.Model;
 
-		public object Sender { get; }
+public class DatesChangedMessage
+{
+	public DatesChangedMessage(object sender)
+	{
+		Sender = sender;
 	}
+
+	public object Sender { get; }
 }
