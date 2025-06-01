@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	x:Class="Ona.Main.Features.Settings.SettingsPage"
+	Title="Settings"
+	Loaded="ContentPage_Loaded">
+	<ContentPage.Resources>
+		<Style TargetType="Label" x:Key="FieldNameStyle">
+			<Setter Property="FontSize" Value="18"/>
+		</Style>
+
+		<Style TargetType="Label" x:Key="FieldValueStyle">
+			<Setter Property="FontSize" Value="32"/>
+		</Style>
+	</ContentPage.Resources>
+
+	<Grid Padding="16,12">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		<VerticalStackLayout Grid.Row="0">
+			<Label Text="Settings" Style="{StaticResource Title}" />
+
+			<BoxView Style="{StaticResource HorizontalSeparatorStyle}" Margin="0,64,0,0"/>
+
+			<Label Text="Delete data→" Style="{StaticResource FieldValueStyle}" Margin="0,12,0,0">
+				<Label.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding DeleteDataCommand}"/>
+				</Label.GestureRecognizers>
+			</Label>
+
+			<BoxView Style="{StaticResource HorizontalSeparatorStyle}" Margin="0,64,0,0"/>
+
+			<Label Text="Export data→" Style="{StaticResource FieldValueStyle}" Margin="0,12,0,0">
+				<Label.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding ExportDataCommand}"/>
+				</Label.GestureRecognizers>
+			</Label>
+
+			<BoxView Style="{StaticResource HorizontalSeparatorStyle}" Margin="0,64,0,0"/>
+
+			<Label Text="Import data→" Style="{StaticResource FieldValueStyle}" Margin="0,12,0,0">
+				<Label.GestureRecognizers>
+					<TapGestureRecognizer Command="{Binding ImportDataCommand}"/>
+				</Label.GestureRecognizers>
+			</Label>
+		</VerticalStackLayout>
+		
+		<HorizontalStackLayout Grid.Row="1" HorizontalOptions="Center" VerticalOptions="End">
+			<Label Text="App Version" />
+			<Label Text="{Binding VersionNumber}" Margin="4,0,0,0" />
+		</HorizontalStackLayout>
+	</Grid>
+</ContentPage>
