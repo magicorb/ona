@@ -14,6 +14,8 @@ namespace Ona.App.Model
 
 		Task InitializeAsync();
 
+		Task OnInititalizedAsync();
+
 		Task AddDateAsync(DateTime date);
 
 		Task DeleteDateAsync(DateTime date);

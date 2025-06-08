@@ -34,20 +34,24 @@ namespace Ona.App.Features.Calendar
 			this.mainModel = mainModel;
 			this.monthViewModelFactory = monthViewModelFactory;
 
-            _ = InitializeMonths();
-
-			Items = new ObservableCollection<object>(this.months);
-			Items.Insert(0, new SpinnerViewModel());
-			Items.Add(new SpinnerViewModel());
+            Initialize();
 
 			this.messenger.Register<DateToggledMessage>(this, (recipient, message) => _ = OnDateToggledMessageAsync(message));
         }
 
-		public ObservableCollection<object> Items { get; }
+		public ObservableCollection<object> Items { get; private set; }
 
 		public MonthViewModel CurentMonth { get; private set; }
 
-        public void ShowHiddenMonths()
+        public async Task RefreshAsync()
+        {
+            await this.mainModel.OnInititalizedAsync();
+
+			RefreshMarkedDates();
+			await RefreshExpectedDatesAsync();
+		}
+
+		public void ShowHiddenMonths()
         {
 			for (var i = 0; i < this.months.Count; i++)
 				this.months[i].IsVisible = true;
@@ -67,9 +71,9 @@ namespace Ona.App.Features.Calendar
 
 			RefreshMarkedDates();
 			await RefreshExpectedDatesAsync();
-        }
+		}
 
-        internal async Task InsertMonthAsync()
+		internal async Task InsertMonthAsync()
         {
             var monthStart = this.months[0].MonthStart.AddMonths(-1);
 			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month);
@@ -78,9 +82,9 @@ namespace Ona.App.Features.Calendar
 
 			RefreshMarkedDates();
 			await RefreshExpectedDatesAsync();
-        }
+		}
 
-        private async Task InitializeMonths()
+		private void Initialize()
         {
             months = new ObservableCollection<MonthViewModel>();
 
@@ -99,11 +103,9 @@ namespace Ona.App.Features.Calendar
 
             CurentMonth.IsVisible = true;
 
-			await this.mainModel.InitializeAsync();
-
-			RefreshMarkedDates();
-
-            await RefreshExpectedDatesAsync();
+			Items = new ObservableCollection<object>(this.months);
+			Items.Insert(0, new SpinnerViewModel());
+			Items.Add(new SpinnerViewModel());
         }
 
         private MonthViewModel CreateMonthViewModel(DateTime monthStart)

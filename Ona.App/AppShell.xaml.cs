@@ -8,5 +8,12 @@
 
 			BindingContext = viewModel;
 		}
+
+		protected override async void OnAppearing()
+		{
+			base.OnAppearing();
+
+			await ((AppShellViewModel)BindingContext).InitializeAsync();
+		}
 	}
 }

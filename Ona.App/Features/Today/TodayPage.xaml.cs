@@ -6,4 +6,11 @@ public partial class TodayPage : ContentPage
 	{
 		InitializeComponent();
 	}
+
+	protected override async void OnAppearing()
+	{
+		base.OnAppearing();
+
+		await ((TodayViewModel)BindingContext).CalendarViewModel.RefreshAsync();
+	}
 }
