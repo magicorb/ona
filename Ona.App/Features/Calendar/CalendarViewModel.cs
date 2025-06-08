@@ -70,6 +70,8 @@ namespace Ona.App.Features.Calendar
 			this.months.Add(newItem);
 			Items.Insert(Items.Count - 1, newItem);
 
+			this.mainModel.ObservedEnd = this.months.Last().MonthDates.Last().Date;
+
 			await RefreshMarkedDatesAsync();
 			await RefreshExpectedDatesAsync();
 
@@ -87,8 +89,6 @@ namespace Ona.App.Features.Calendar
 			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month, this.dateTimeProvider.Now.Year);
 			this.months.Insert(0, newItem);
 			Items.Insert(1, newItem);
-
-			this.mainModel.ObservedEnd = this.months.Last().MonthDates.Last().Date;
 
 			await RefreshMarkedDatesAsync();
 			await RefreshExpectedDatesAsync();
