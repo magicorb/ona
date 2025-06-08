@@ -17,6 +17,8 @@ namespace Ona.App
 			var services = builder.Services;
 
 			services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+
+			services.AddSingleton<ICultureInfoProvider, CultureInfoProvider>();
 			
 			services.AddSingleton<SQLiteDateRepository>();
 			
@@ -40,7 +42,12 @@ namespace Ona.App
 			services.AddTransient<CalendarViewModel>();
 			
 			services.AddSingleton<MonthViewModelFactory>(sp => (year, month, currentYear)
-				=> new MonthViewModel(sp.GetService<DateViewModelFactory>(), year, month, currentYear));
+				=> new MonthViewModel(
+					sp.GetService<ICultureInfoProvider>(),
+					sp.GetService<DateViewModelFactory>(),
+					year,
+					month,
+					currentYear));
 			
 			services.AddSingleton<DateViewModelFactory>(sp => (date, monthViewModel, currentYear, currentMonth)
 				=> new DateViewModel(sp.GetService<IDateTimeProvider>(), sp.GetService<IMessenger>(), date, monthViewModel, currentYear, currentMonth));

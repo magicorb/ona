@@ -14,17 +14,20 @@ namespace Ona.App.Features.Calendar
 {
 	public class MonthViewModel : ObservableObject
 	{
-		private readonly DateViewModelFactory dateViewModelFactory;
+        private readonly ICultureInfoProvider cultureProvider;
+        private readonly DateViewModelFactory dateViewModelFactory;
 
 		private bool isVisible = true;
 
 		public MonthViewModel(
+			ICultureInfoProvider cultureProvider,
 			DateViewModelFactory dateViewModelFactory,
 			int year,
 			int month,
 			int currentYear)
 		{
-			this.dateViewModelFactory = dateViewModelFactory;
+            this.cultureProvider = cultureProvider;
+            this.dateViewModelFactory = dateViewModelFactory;
 
 			Year = year;
 			Month = month;
@@ -52,7 +55,7 @@ namespace Ona.App.Features.Calendar
 
 		private ReadOnlyCollection<DateViewModel> GenerateDates()
 			=> new ReadOnlyCollection<DateViewModel>(
-				MonthStart.StartOfWeek(CultureInfo.CurrentUICulture.DateTimeFormat.FirstDayOfWeek)
+				MonthStart.StartOfWeek(this.cultureProvider.CurrentUICulture.DateTimeFormat.FirstDayOfWeek)
 					.DateRange(MonthStart.AddMonths(1).AddDays(-1))
 					.Select(d => dateViewModelFactory(d, this, Year, Month))
 					.ToList());
