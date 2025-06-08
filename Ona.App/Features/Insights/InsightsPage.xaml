@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	x:Class="Ona.App.Features.Insights.InsightsPage"
-	Title="Insights" Appearing="ContentPage_Appearing">
+	Title="Insights">
 	<ContentPage.Resources>
 		<Style TargetType="Label" x:Key="FieldNameStyle">
 			<Setter Property="FontSize" Value="18"/>
