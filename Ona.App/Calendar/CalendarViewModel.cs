@@ -83,6 +83,8 @@ namespace Ona.App.Calendar
 			Months = new ReadOnlyObservableCollection<MonthViewModel>(this.months);
 
 			await LoadDatesAsync();
+
+			await UpdateForecastAsync();
 		}
 
 		private MonthViewModel CreateMonthViewModel(DateTime monthStart)
