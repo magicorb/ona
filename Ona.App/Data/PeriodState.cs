@@ -8,7 +8,7 @@ namespace Ona.App.Data
 {
 	public class PeriodState
 	{
-		public DateTime start { get; set; }
+		public string startDate { get; set; }
 
 		public int duration { get; set; }
 

@@ -10,38 +10,48 @@ import SwiftUI
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> PeriodStateEntry {
-        PeriodStateEntry(date: Date(), start: Date(), duration: 0, interval: 0)
+        PeriodStateEntry(date: Date(), startDate: Date(), duration: 0, interval: 0)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (PeriodStateEntry) -> ()) {
-        let entry = PeriodStateEntry(date: Date(), start: Date(), duration: 0, interval: 0)
+        let entry = PeriodStateEntry(date: Date(), startDate: Date(), duration: 0, interval: 0)
         completion(entry)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
         let periodState = getPeriodState();
         
-        let entry = PeriodStateEntry(date: Date(), start: periodState.start, duration: Int(periodState.duration), interval: Int(periodState.interval))
-
+        var entry: PeriodStateEntry
+        
+        if (periodState == nil) {
+            entry = PeriodStateEntry(date: Date(), startDate: Date(), duration: 0, interval: 0)
+        }
+        else {
+            let dateFormatter = DateFormatter()
+            dateFormatter.dateFormat = "yyyy'-'MM'-'dd"
+            let startDate = dateFormatter.date(from: periodState!.startDate)
+            
+            entry = PeriodStateEntry(date: Date(), startDate: startDate!, duration: Int(periodState!.duration), interval: Int(periodState!.interval))
+        }
+        
         let timeline = Timeline(entries: [entry], policy: .atEnd)
         
         completion(timeline)
     }
     
-    func getPeriodState() -> PeriodState {
-        let fallback = PeriodState(start: Date(), duration: 0, interval: 0)
-        
-        guard let userDefault = UserDefaults(suiteName: "group.com.natalianaumova.ona")?.object(forKey: "PeriodState") else {
-            return fallback
+    func getPeriodState() -> PeriodState? {
+        guard let userDefault = UserDefaults(suiteName: "group.com.natalianaumova.ona")?.string(forKey: "PeriodState") else {
+            return nil
         }
-        let periodState = try? JSONDecoder().decode(PeriodState.self, from: userDefault as! Data)
-        return periodState ?? fallback
+        let data = Data(userDefault.utf8)
+        let periodState = try? JSONDecoder().decode(PeriodState.self, from: data)
+        return periodState ?? nil
     }
 }
 
 struct PeriodStateEntry: TimelineEntry {
     let date: Date
-    let start: Date
+    let startDate: Date
     let duration: Int
     let interval: Int
 }
@@ -57,7 +67,7 @@ struct OnaWidgetEntryView : View {
             }
             HStack {
                 Text("Start:")
-                Text(entry.start, style: .date)
+                Text(entry.startDate, style: .date)
             }
             HStack {
                 Text("Duration:")
@@ -91,7 +101,7 @@ struct OnaWidget: Widget {
 }
 
 struct PeriodState : Codable {
-    var start: Date
+    var startDate: String
     var duration: Int
     var interval: Int
 }
@@ -99,5 +109,5 @@ struct PeriodState : Codable {
 #Preview(as: .systemSmall) {
     OnaWidget()
 } timeline: {
-    PeriodStateEntry(date: .now, start: Date(), duration: 0, interval: 0)
+    PeriodStateEntry(date: .now, startDate: Date(), duration: 0, interval: 0)
 }
