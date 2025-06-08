@@ -26,4 +26,9 @@ public partial class TodayPage : ContentPage
 
 	private TodayViewModel ViewModel
 		=> (TodayViewModel)BindingContext;
+
+	private void ContentPage_Unloaded(object sender, EventArgs e)
+	{
+		ViewModel.CalendarViewModel.ClearSelection();
+	}
 }
