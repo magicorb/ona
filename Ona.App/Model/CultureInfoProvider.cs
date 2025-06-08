@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Ona.App.Model
 {
-    public class CultureInfoProvider : ICultureInfoProvider
-    {
-        public CultureInfo CurrentUICulture
-            => CultureInfo.CurrentUICulture;
-    }
+	public class CultureInfoProvider : ICultureInfoProvider
+	{
+		public CultureInfo CurrentUICulture
+			=> CultureInfo.CurrentUICulture;
+	}
 }

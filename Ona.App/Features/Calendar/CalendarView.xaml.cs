@@ -14,6 +14,15 @@ public partial class CalendarView : ContentView
 		InitializeComponent();
 	}
 
+	public void InitializeScrolling()
+	{
+		Dispatcher.Dispatch(async () =>
+		{
+			await MonthListViewLite.ScrollToIndexAsync(3, ScrollToPosition.End, false);
+			MonthListViewLite.Scrolled += MonthListViewLite_FirstScrolled;
+		});
+	}
+
 	private CalendarViewModel ViewModel
 		=> (CalendarViewModel)BindingContext;
 
@@ -46,14 +55,5 @@ public partial class CalendarView : ContentView
 	{
 		if (e.Index == 1)
 			MonthListViewLite.ScrollToOffsetAsync(MonthListViewLite.ScrollY + ((View)e.Item).DesiredSize.Height, false).Wait();
-	}
-
-	private void ContentView_Loaded(object sender, EventArgs e)
-	{
-		Dispatcher.Dispatch(async () =>
-		{
-			await MonthListViewLite.ScrollToIndexAsync(3, ScrollToPosition.End, false);
-			MonthListViewLite.Scrolled += MonthListViewLite_FirstScrolled;
-		});
 	}
 }

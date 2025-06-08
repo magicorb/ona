@@ -14,6 +14,8 @@ namespace Ona.App.Features.Today
 		private readonly IDateTimeProvider timeProvider;
 		private readonly IMainModel mainModel;
 
+		private Task initializeTask;
+
 		private string title;
 		private string subtitle;
 
@@ -36,6 +38,15 @@ namespace Ona.App.Features.Today
 		public CalendarViewModel CalendarViewModel { get; }
 
 		public async Task InititalizeAsync()
+		{
+			this.initializeTask = InitializeInternalAsync();
+			await this.initializeTask;
+		}
+
+		public async Task OnInitializedAsync()
+			=> await this.initializeTask;
+
+		private async Task InitializeInternalAsync()
 		{
 			await this.mainModel.OnInitializedAsync();
 
