@@ -1,3 +1,5 @@
 .vs
 bin
 obj
+Ona.Widget/Build
+**/.DS_Store
