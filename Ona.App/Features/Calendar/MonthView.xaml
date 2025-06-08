@@ -22,7 +22,7 @@
 				<DataTemplate>
 					<Label
 						Text="{Binding}" HorizontalOptions="Center"
-						TextColor="Gray" FontSize="Small" HeightRequest="24"/>
+						TextColor="{StaticResource Grayscale500}" FontSize="Small" HeightRequest="24"/>
 				</DataTemplate>
 			</CollectionView.ItemTemplate>
 		</CollectionView>
