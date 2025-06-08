@@ -4,15 +4,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ona.Main.Features.Calendar
-{
-	public class DateTappedMessage
-	{
-		public DateTappedMessage(DateTime date)
-		{
-			Date = date;
-		}
+namespace Ona.Main.Features.Calendar;
 
-		public DateTime Date { get; }
+public class DateTappedMessage
+{
+	public DateTappedMessage(DateTime date)
+	{
+		Date = date;
 	}
+
+	public DateTime Date { get; }
 }

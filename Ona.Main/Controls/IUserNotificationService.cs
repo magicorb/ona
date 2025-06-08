@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ona.Main.Controls
-{
-	public interface IUserNotificationService
-	{
-		Task<bool> ConfirmAsync(string title, string message, string accept, string cancel);
+namespace Ona.Main.Controls;
 
-		Task NotifyAsync(string message);
-	}
+public interface IUserNotificationService
+{
+	Task<bool> ConfirmAsync(string title, string message, string accept, string cancel);
+
+	Task NotifyAsync(string message);
 }

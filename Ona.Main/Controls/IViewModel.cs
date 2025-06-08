@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ona.Main.Controls
-{
-	public interface IViewModel
-	{
-		Task OnLoadedAsync();
+namespace Ona.Main.Controls;
 
-		Task OnUnloadedAsync();
-	}
+public interface IViewModel
+{
+	Task OnLoadedAsync();
+
+	Task OnUnloadedAsync();
 }

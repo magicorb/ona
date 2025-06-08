@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Ona.Main.Data
+namespace Ona.Main.Data;
+
+public interface IDataPublisher
 {
-	public interface IDataPublisher
-	{
-		Task StartAsync();
-	}
+	Task StartAsync();
 }

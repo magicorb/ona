@@ -1,19 +1,18 @@
-﻿namespace Ona.Main
+﻿namespace Ona.Main;
+
+public partial class AppShell : Shell
 {
-	public partial class AppShell : Shell
+	public AppShell(AppShellViewModel viewModel)
 	{
-		public AppShell(AppShellViewModel viewModel)
-		{
-			InitializeComponent();
+		InitializeComponent();
 
-			BindingContext = viewModel;
-		}
+		BindingContext = viewModel;
+	}
 
-		protected override async void OnAppearing()
-		{
-			base.OnAppearing();
+	protected override async void OnAppearing()
+	{
+		base.OnAppearing();
 
-			await ((AppShellViewModel)BindingContext).InitializeAsync();
-		}
+		await ((AppShellViewModel)BindingContext).InitializeAsync();
 	}
 }
