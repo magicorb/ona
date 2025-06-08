@@ -1,30 +1,38 @@
-﻿using Ona.App.Model;
+﻿using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Ona.App.Model;
 using Ona.App.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace Ona.App.Calendar
 {
 	public class DateViewModel : ViewModelBase
 	{
 		private readonly IDateTimeProvider dateTimeProvider;
+		private readonly IMessenger messenger;
 
 		private bool isMarked;
 		private bool isExpected;
 
 		public DateViewModel(
 			IDateTimeProvider dateTimeProvider,
+			IMessenger messenger,
 			DateTime date,
 			int currentYear,
 			int currentMonth)
 		{
 			this.dateTimeProvider = dateTimeProvider;
+			this.messenger = messenger;
 
 			Date = date;
 			IsCurrentMonth = date.Year == currentYear && date.Month == currentMonth;
+
+			ToggleCommand = new RelayCommand(ExecuteToggle);
 		}
 
 		public DateTime Date { get; }
@@ -67,5 +75,10 @@ namespace Ona.App.Calendar
 				return Colors.Gray;
 			}
 		}
+
+		public ICommand ToggleCommand { get; }
+
+		private void ExecuteToggle()
+			=> this.messenger.Send(new DateToggledMessage(Date));
 	}
 }

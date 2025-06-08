@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace Ona.App.Mvvm
 {
+	// TODO: try to use community toolkit class
 	public class ViewModelBase : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler? PropertyChanged;

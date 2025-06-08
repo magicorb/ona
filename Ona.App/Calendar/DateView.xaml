@@ -4,6 +4,11 @@
              x:Class="Ona.App.Calendar.DateView">
     <Grid
 		RowSpacing="0" ColumnSpacing="0" Margin="0" Padding="0">
+		<Grid.GestureRecognizers>
+			<TapGestureRecognizer
+				Command="{Binding ToggleCommand}"
+                NumberOfTapsRequired="1" />
+		</Grid.GestureRecognizers>
 		<Ellipse
 			Fill="{Binding BackgroundColor}"
 			HorizontalOptions="Center" VerticalOptions="Center"

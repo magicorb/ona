@@ -1,4 +1,5 @@
-﻿using Ona.App.Model;
+﻿using CommunityToolkit.Mvvm.Messaging;
+using Ona.App.Model;
 using Ona.App.Mvvm;
 using System;
 using System.Collections.Generic;
@@ -12,15 +13,19 @@ namespace Ona.App.Calendar
 	public class MonthViewModel : ViewModelBase
 	{
 		private readonly IDateTimeProvider dateTimeProvider;
+		private readonly IMessenger messenger;
 
 		private bool isVisible = true;
 
 		public MonthViewModel(
 			IDateTimeProvider dateTimeProvider,
+			IMessenger messenger,
 			int year,
 			int month)
 		{
 			this.dateTimeProvider = dateTimeProvider;
+			this.messenger = messenger;
+
 			Year = year;
 			Month = month;
 
@@ -45,7 +50,12 @@ namespace Ona.App.Calendar
 			var firstDate = MonthStart.StartOfWeek(DayOfWeek.Monday);
 
 			return firstDate.DateRange(MonthStart.AddMonths(1).AddDays(-1))
-				.Select(d => new DateViewModel(this.dateTimeProvider, d, Year, Month))
+				.Select(d => new DateViewModel(
+					this.dateTimeProvider,
+					this.messenger,
+					d,
+					Year,
+					Month))
 				.ToArray();
 		}
 
