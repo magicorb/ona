@@ -17,32 +17,27 @@
 			HorizontalOptions="Center" VerticalOptions="Center"
 			Aspect="UniformToFill">
 			<Ellipse.Triggers>
+				<DataTrigger TargetType="Ellipse" Binding="{Binding IsFuture}" Value="True">
+					<Setter Property="Fill" Value="{StaticResource Grayscale700}"/>
+				</DataTrigger>
+
+				<DataTrigger TargetType="Ellipse" Binding="{Binding IsExpected}" Value="True">
+					<Setter Property="Fill" Value="{StaticResource AccentPrimaryDisabled}"/>
+				</DataTrigger>
+				
 				<DataTrigger TargetType="Ellipse" Binding="{Binding IsMarked}" Value="True">
 					<Setter Property="Fill" Value="{StaticResource AccentPrimary}"/>
 				</DataTrigger>
-
-				<DataTrigger TargetType="Ellipse" Binding="{Binding IsFuture}" Value="True">
-					<Setter Property="Opacity" Value="0.5"/>
-				</DataTrigger>
-
-				<MultiTrigger TargetType="Ellipse">
-					<MultiTrigger.Conditions>
-						<BindingCondition Binding="{Binding IsExpected}" Value="True"/>
-						<BindingCondition Binding="{Binding IsMarked}" Value="False"/>
-					</MultiTrigger.Conditions>
-					<Setter Property="Fill" Value="{StaticResource AccentPrimary}"/>
-					<Setter Property="Opacity" Value="0.5"/>
-				</MultiTrigger>
 			</Ellipse.Triggers>
 		</Ellipse>
 
 		<Label 
 	        Text="{Binding Date.Day}"
-			FontSize="32" TextColor="{StaticResource Grayscale800}"
+			FontSize="32" TextColor="{StaticResource Grayscale700}"
 			HorizontalOptions="Center" VerticalOptions="Center">
 			<Label.Triggers>
 				<DataTrigger TargetType="Label" Binding="{Binding IsFuture}" Value="True">
-					<Setter Property="Opacity" Value="0.5"/>
+					<Setter Property="TextColor" Value="{StaticResource Grayscale300}"/>
 				</DataTrigger>
 			</Label.Triggers>
 		</Label>
