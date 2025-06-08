@@ -48,10 +48,11 @@ struct ContentView: View {
     static func getPeriodState() -> PeriodState {
         let fallback = PeriodState(startDate: "2001-01-01", duration: 0, interval: 0)
         
-        guard let userDefault = UserDefaults(suiteName: "group.com.natalianaumova.ona")?.object(forKey: "PeriodState") else {
+        guard let userDefault = UserDefaults(suiteName: "group.com.natalianaumova.ona")?.string(forKey: "PeriodState") else {
             return fallback
         }
-        let periodState = try? JSONDecoder().decode(PeriodState.self, from: userDefault as! Data)
+        let data = Data(userDefault.utf8)
+        let periodState = try? JSONDecoder().decode(PeriodState.self, from: data)
         return periodState ?? fallback
     }
 }
