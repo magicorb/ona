@@ -5,7 +5,7 @@
 	xmlns:controls="clr-namespace:Ona.App.Controls"
 	xmlns:calendar="clr-namespace:Ona.App.Features.Calendar"
     x:Class="Ona.App.Features.Calendar.CalendarView"
-	Loaded="ContentView_Loaded" Unloaded="ContentView_Unloaded">
+	Loaded="ContentView_Loaded">
 	<controls:ListViewLite
 		x:Name="MonthListViewLite"
 		ItemsSource="{Binding Items}"

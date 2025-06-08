@@ -13,14 +13,14 @@
 	<TabBar>
 		<ShellContent
 			Title="Today" Icon="today.png"
-			ContentTemplate="{DataTemplate today:TodayPage}"/>
+			BindingContext="{Binding TodayViewModel}" ContentTemplate="{DataTemplate today:TodayPage}"/>
 
 		<ShellContent
 			Title="Insights" Icon="insights.png"
-			ContentTemplate="{DataTemplate insights:InsightsPage}"/>
-		
+			BindingContext="{Binding InsightsViewModel}" ContentTemplate="{DataTemplate insights:InsightsPage}"/>
+
 		<ShellContent
 			Title="Settings" Icon="settings.png"
-			ContentTemplate="{DataTemplate settings:SettingsPage}"/>
+			BindingContext="{Binding SettingsViewModel}" ContentTemplate="{DataTemplate settings:SettingsPage}"/>
 	</TabBar>
 </Shell>

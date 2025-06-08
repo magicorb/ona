@@ -16,10 +16,6 @@ public partial class SettingsPage : ContentPage
 	{
 		var userConfirmationServiceFactory = Handler.MauiContext.Services.GetService<Func<Page, IUserNotificationService>>();
 
-		BindingContext = new SettingsViewModel(
-			Handler.MauiContext.Services.GetService<IDateRepository>(),
-			userConfirmationServiceFactory(this),
-			Handler.MauiContext.Services.GetService<IFileSaver>(),
-			Handler.MauiContext.Services.GetService<IFilePicker>());
+		((SettingsViewModel)BindingContext).UserNotificationService = userConfirmationServiceFactory(this);
 	}
 }

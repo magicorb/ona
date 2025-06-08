@@ -4,6 +4,7 @@ using Ona.App.Controls;
 using Ona.App.Data;
 using Ona.App.Features.Calendar;
 using Ona.App.Features.Insights;
+using Ona.App.Features.Settings;
 using Ona.App.Features.Today;
 using Ona.App.Model;
 
@@ -45,6 +46,12 @@ namespace Ona.App
 				=> new DateViewModel(sp.GetService<IDateTimeProvider>(), sp.GetService<IMessenger>(), date, monthViewModel, currentYear, currentMonth));
 
 			services.AddTransient<InsightsViewModel>();
+
+			services.AddTransient<SettingsViewModel>();
+
+			services.AddSingleton<AppShellViewModel>();
+
+			services.AddSingleton<AppShell>();
 
 			return builder;
 		}
