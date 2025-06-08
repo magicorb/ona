@@ -54,7 +54,12 @@ namespace Ona.App.Features.Insights
 			var datesRecords = await dateRepository.GetDateRecordsAsync();
 
 			if (datesRecords.Length == 0)
+			{
+				LastPeriodStart = "No data";
+				AverageCycleLength = "No data";
+				AveragePeriodLength = "No data";
 				return;
+			}
 
 			IReadOnlyList<DateTimePeriod> periods = null;
 			PeriodStats periodStats = null;

@@ -21,18 +21,18 @@
 
 		<BoxView Style="{StaticResource HorizontalSeparatorStyle}" Margin="0,12,0,0"/>
 
-		<Label Text="{Binding LastPeriodStart, TargetNullValue='No data'}" Style="{StaticResource FieldValueStyle}" Margin="0,12,0,0"/>
+		<Label Text="{Binding LastPeriodStart}" Style="{StaticResource FieldValueStyle}" Margin="0,12,0,0"/>
 
 		<Label Text="Average cycle length" Style="{StaticResource FieldNameStyle}" Margin="0,48,0,0"/>
 
 		<BoxView Style="{StaticResource HorizontalSeparatorStyle}" Margin="0,12,0,0"/>
 
-		<Label Text="{Binding AverageCycleLength, TargetNullValue='No data'}" Style="{StaticResource FieldValueStyle}" Margin="0,12,0,0"/>
+		<Label Text="{Binding AverageCycleLength}" Style="{StaticResource FieldValueStyle}" Margin="0,12,0,0"/>
 
 		<Label Text="Average period length" Style="{StaticResource FieldNameStyle}" Margin="0,48,0,0"/>
 
 		<BoxView Style="{StaticResource HorizontalSeparatorStyle}" Margin="0,12,0,0"/>
 
-		<Label Text="{Binding AveragePeriodLength, TargetNullValue='No data'}" Style="{StaticResource FieldValueStyle}" Margin="0,12,0,0"/>
+		<Label Text="{Binding AveragePeriodLength}" Style="{StaticResource FieldValueStyle}" Margin="0,12,0,0"/>
 	</VerticalStackLayout>
 </ContentPage>
