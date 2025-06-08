@@ -22,8 +22,9 @@ namespace Ona.App.Model
 		private List<DateTime> markedDates = null!;
 		private IReadOnlyList<DateTimePeriod>? markedPeriods;
 		private List<DateTimePeriod>? expectedPeriods;
-		private PeriodStats? currentStats;
-		private PeriodStats? previousStats;
+		private int? currentDuration;
+		private int? averageInterval;
+		private int? previousDuration;
 		private DateTime? endDate;
 
 		public MainModel(
@@ -103,25 +104,17 @@ namespace Ona.App.Model
 			}
 		}
 
-		public PeriodStats CurrentStats
-		{
-			get
-			{
-				if (this.currentStats == null)
-					this.currentStats = this.periodStatsProvider.GetAveragePeriodStats(MarkedPeriods);
-				return this.currentStats;
-			}
-		}
+		public int CurrentAverageDuration
+			=> this.currentDuration
+			?? (this.currentDuration = this.periodStatsProvider.GetAverageDuration(MarkedPeriods)).Value;
 
-		public PeriodStats PreviousStats
-		{
-			get
-			{
-				if (this.previousStats == null)
-					this.previousStats = this.periodStatsProvider.GetAveragePeriodStats(MarkedPeriods.Take(MarkedPeriods.Count - 1).ToList());
-				return this.previousStats;
-			}
-		}
+		public int AverageInterval
+			=> this.averageInterval
+			?? (this.averageInterval = this.periodStatsProvider.GetAverageInterval(MarkedPeriods)).Value;
+
+		public int PreviousAverageDuration
+			=> this.previousDuration
+			?? (this.previousDuration = this.periodStatsProvider.GetAverageDuration(MarkedPeriods.Take(MarkedPeriods.Count - 1).ToList())).Value;
 
 		public async Task DeleteAllAsync()
 		{
@@ -198,8 +191,9 @@ namespace Ona.App.Model
 		{
 			this.expectedPeriods = null;
 			this.markedPeriods = null;
-			this.currentStats = null;
-			this.previousStats = null;
+			this.currentDuration = null;
+			this.averageInterval = null;
+			this.previousDuration = null;
 		}
 	}
 }

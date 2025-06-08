@@ -12,6 +12,8 @@ namespace Ona.App.Model
 
 		IReadOnlyList<DateTimePeriod> GetDatePeriods(IEnumerable<DateTime> orderedDates);
 
-		PeriodStats GetAveragePeriodStats(IReadOnlyList<DateTimePeriod> orderedPeriods);
+		int GetAverageDuration(IEnumerable<DateTimePeriod> orderedPeriods);
+
+		int GetAverageInterval(IReadOnlyList<DateTimePeriod> orderedPeriods);
 	}
 }
