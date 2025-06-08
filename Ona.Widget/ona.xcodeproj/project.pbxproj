@@ -7,25 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6DE611A12C5D781B009977D9 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF3F5A02C582BC500A05F0E /* WidgetKit.framework */; };
+		6DE611A22C5D781B009977D9 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF3F5A22C582BC500A05F0E /* SwiftUI.framework */; };
+		6DE611A52C5D781B009977D9 /* OnaWidgetBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE611A42C5D781B009977D9 /* OnaWidgetBundle.swift */; };
+		6DE611A72C5D781B009977D9 /* OnaWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE611A62C5D781B009977D9 /* OnaWidget.swift */; };
+		6DE611A92C5D781E009977D9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DE611A82C5D781E009977D9 /* Assets.xcassets */; };
+		6DE611AD2C5D781E009977D9 /* widgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6DE611A02C5D781B009977D9 /* widgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6DF3F58D2C582BA600A05F0E /* OnaWidgetApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF3F58C2C582BA600A05F0E /* OnaWidgetApp.swift */; };
 		6DF3F58F2C582BA600A05F0E /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF3F58E2C582BA600A05F0E /* ContentView.swift */; };
 		6DF3F5912C582BA800A05F0E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DF3F5902C582BA800A05F0E /* Assets.xcassets */; };
 		6DF3F5942C582BA800A05F0E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DF3F5932C582BA800A05F0E /* Preview Assets.xcassets */; };
-		6DF3F5A12C582BC500A05F0E /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF3F5A02C582BC500A05F0E /* WidgetKit.framework */; };
-		6DF3F5A32C582BC500A05F0E /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DF3F5A22C582BC500A05F0E /* SwiftUI.framework */; };
-		6DF3F5A62C582BC500A05F0E /* counterBundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF3F5A52C582BC500A05F0E /* counterBundle.swift */; };
-		6DF3F5A82C582BC500A05F0E /* counter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DF3F5A72C582BC500A05F0E /* counter.swift */; };
-		6DF3F5AA2C582BC800A05F0E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6DF3F5A92C582BC800A05F0E /* Assets.xcassets */; };
-		6DF3F5AE2C582BC800A05F0E /* counterExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6DF3F59E2C582BC500A05F0E /* counterExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		6DF3F5AC2C582BC800A05F0E /* PBXContainerItemProxy */ = {
+		6DE611AB2C5D781E009977D9 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 6DF3F5812C582BA600A05F0E /* Project object */;
 			proxyType = 1;
-			remoteGlobalIDString = 6DF3F59D2C582BC500A05F0E;
-			remoteInfo = counterExtension;
+			remoteGlobalIDString = 6DE6119F2C5D781B009977D9;
+			remoteInfo = widgetExtension;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -36,7 +36,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 13;
 			files = (
-				6DF3F5AE2C582BC800A05F0E /* counterExtension.appex in Embed Foundation Extensions */,
+				6DE611AD2C5D781E009977D9 /* widgetExtension.appex in Embed Foundation Extensions */,
 			);
 			name = "Embed Foundation Extensions";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -44,23 +44,32 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		6DE611A02C5D781B009977D9 /* widgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = widgetExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		6DE611A42C5D781B009977D9 /* OnaWidgetBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnaWidgetBundle.swift; sourceTree = "<group>"; };
+		6DE611A62C5D781B009977D9 /* OnaWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnaWidget.swift; sourceTree = "<group>"; };
+		6DE611A82C5D781E009977D9 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		6DE611AA2C5D781E009977D9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		6DE611B12C5D7AC6009977D9 /* widgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = widgetExtension.entitlements; sourceTree = "<group>"; };
 		6DEC980C2C5844720092B27C /* ona.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = ona.entitlements; sourceTree = "<group>"; };
-		6DEC980D2C5845140092B27C /* counterExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = counterExtension.entitlements; sourceTree = "<group>"; };
 		6DF3F5892C582BA600A05F0E /* ona.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ona.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DF3F58C2C582BA600A05F0E /* OnaWidgetApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnaWidgetApp.swift; sourceTree = "<group>"; };
 		6DF3F58E2C582BA600A05F0E /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		6DF3F5902C582BA800A05F0E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6DF3F5932C582BA800A05F0E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		6DF3F59E2C582BC500A05F0E /* counterExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = counterExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6DF3F5A02C582BC500A05F0E /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		6DF3F5A22C582BC500A05F0E /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
-		6DF3F5A52C582BC500A05F0E /* counterBundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = counterBundle.swift; sourceTree = "<group>"; };
-		6DF3F5A72C582BC500A05F0E /* counter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = counter.swift; sourceTree = "<group>"; };
-		6DF3F5A92C582BC800A05F0E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		6DF3F5AB2C582BC800A05F0E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		6DE6119D2C5D781B009977D9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6DE611A22C5D781B009977D9 /* SwiftUI.framework in Frameworks */,
+				6DE611A12C5D781B009977D9 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6DF3F5862C582BA600A05F0E /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -68,24 +77,26 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6DF3F59B2C582BC500A05F0E /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6DF3F5A32C582BC500A05F0E /* SwiftUI.framework in Frameworks */,
-				6DF3F5A12C582BC500A05F0E /* WidgetKit.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6DE611A32C5D781B009977D9 /* widget */ = {
+			isa = PBXGroup;
+			children = (
+				6DE611A42C5D781B009977D9 /* OnaWidgetBundle.swift */,
+				6DE611A62C5D781B009977D9 /* OnaWidget.swift */,
+				6DE611A82C5D781E009977D9 /* Assets.xcassets */,
+				6DE611AA2C5D781E009977D9 /* Info.plist */,
+			);
+			path = widget;
+			sourceTree = "<group>";
+		};
 		6DF3F5802C582BA600A05F0E = {
 			isa = PBXGroup;
 			children = (
-				6DEC980D2C5845140092B27C /* counterExtension.entitlements */,
+				6DE611B12C5D7AC6009977D9 /* widgetExtension.entitlements */,
 				6DF3F58B2C582BA600A05F0E /* ona */,
-				6DF3F5A42C582BC500A05F0E /* counter */,
+				6DE611A32C5D781B009977D9 /* widget */,
 				6DF3F59F2C582BC500A05F0E /* Frameworks */,
 				6DF3F58A2C582BA600A05F0E /* Products */,
 			);
@@ -95,7 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				6DF3F5892C582BA600A05F0E /* ona.app */,
-				6DF3F59E2C582BC500A05F0E /* counterExtension.appex */,
+				6DE611A02C5D781B009977D9 /* widgetExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -129,20 +140,26 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		6DF3F5A42C582BC500A05F0E /* counter */ = {
-			isa = PBXGroup;
-			children = (
-				6DF3F5A52C582BC500A05F0E /* counterBundle.swift */,
-				6DF3F5A72C582BC500A05F0E /* counter.swift */,
-				6DF3F5A92C582BC800A05F0E /* Assets.xcassets */,
-				6DF3F5AB2C582BC800A05F0E /* Info.plist */,
-			);
-			path = counter;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		6DE6119F2C5D781B009977D9 /* widgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 6DE611AE2C5D781E009977D9 /* Build configuration list for PBXNativeTarget "widgetExtension" */;
+			buildPhases = (
+				6DE6119C2C5D781B009977D9 /* Sources */,
+				6DE6119D2C5D781B009977D9 /* Frameworks */,
+				6DE6119E2C5D781B009977D9 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = widgetExtension;
+			productName = widgetExtension;
+			productReference = 6DE611A02C5D781B009977D9 /* widgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		6DF3F5882C582BA600A05F0E /* ona */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6DF3F5972C582BA800A05F0E /* Build configuration list for PBXNativeTarget "ona" */;
@@ -155,29 +172,12 @@
 			buildRules = (
 			);
 			dependencies = (
-				6DF3F5AD2C582BC800A05F0E /* PBXTargetDependency */,
+				6DE611AC2C5D781E009977D9 /* PBXTargetDependency */,
 			);
 			name = ona;
 			productName = ona;
 			productReference = 6DF3F5892C582BA600A05F0E /* ona.app */;
 			productType = "com.apple.product-type.application";
-		};
-		6DF3F59D2C582BC500A05F0E /* counterExtension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 6DF3F5AF2C582BC800A05F0E /* Build configuration list for PBXNativeTarget "counterExtension" */;
-			buildPhases = (
-				6DF3F59A2C582BC500A05F0E /* Sources */,
-				6DF3F59B2C582BC500A05F0E /* Frameworks */,
-				6DF3F59C2C582BC500A05F0E /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = counterExtension;
-			productName = counterExtension;
-			productReference = 6DF3F59E2C582BC500A05F0E /* counterExtension.appex */;
-			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -189,10 +189,10 @@
 				LastSwiftUpdateCheck = 1540;
 				LastUpgradeCheck = 1540;
 				TargetAttributes = {
-					6DF3F5882C582BA600A05F0E = {
+					6DE6119F2C5D781B009977D9 = {
 						CreatedOnToolsVersion = 15.4;
 					};
-					6DF3F59D2C582BC500A05F0E = {
+					6DF3F5882C582BA600A05F0E = {
 						CreatedOnToolsVersion = 15.4;
 					};
 				};
@@ -211,12 +211,20 @@
 			projectRoot = "";
 			targets = (
 				6DF3F5882C582BA600A05F0E /* ona */,
-				6DF3F59D2C582BC500A05F0E /* counterExtension */,
+				6DE6119F2C5D781B009977D9 /* widgetExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		6DE6119E2C5D781B009977D9 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6DE611A92C5D781E009977D9 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6DF3F5872C582BA600A05F0E /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -226,17 +234,18 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6DF3F59C2C582BC500A05F0E /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6DF3F5AA2C582BC800A05F0E /* Assets.xcassets in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		6DE6119C2C5D781B009977D9 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6DE611A52C5D781B009977D9 /* OnaWidgetBundle.swift in Sources */,
+				6DE611A72C5D781B009977D9 /* OnaWidget.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6DF3F5852C582BA600A05F0E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -246,26 +255,73 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		6DF3F59A2C582BC500A05F0E /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				6DF3F5A82C582BC500A05F0E /* counter.swift in Sources */,
-				6DF3F5A62C582BC500A05F0E /* counterBundle.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		6DF3F5AD2C582BC800A05F0E /* PBXTargetDependency */ = {
+		6DE611AC2C5D781E009977D9 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 6DF3F59D2C582BC500A05F0E /* counterExtension */;
-			targetProxy = 6DF3F5AC2C582BC800A05F0E /* PBXContainerItemProxy */;
+			target = 6DE6119F2C5D781B009977D9 /* widgetExtension */;
+			targetProxy = 6DE611AB2C5D781E009977D9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		6DE611AF2C5D781E009977D9 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = widgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 84LSMRR756;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = widget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = widget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.natalianaumova.ona.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6DE611B02C5D781E009977D9 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = widgetExtension.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 84LSMRR756;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = widget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = widget;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.natalianaumova.ona.widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 		6DF3F5952C582BA800A05F0E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -449,65 +505,18 @@
 			};
 			name = Release;
 		};
-		6DF3F5B02C582BC800A05F0E /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = counterExtension.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 84LSMRR756;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = counter/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = counter;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.natalianaumova.ona.counter;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Debug;
-		};
-		6DF3F5B12C582BC800A05F0E /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
-				CODE_SIGN_ENTITLEMENTS = counterExtension.entitlements;
-				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = 84LSMRR756;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = counter/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = counter;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.natalianaumova.ona.counter;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SKIP_INSTALL = YES;
-				SWIFT_EMIT_LOC_STRINGS = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		6DE611AE2C5D781E009977D9 /* Build configuration list for PBXNativeTarget "widgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				6DE611AF2C5D781E009977D9 /* Debug */,
+				6DE611B02C5D781E009977D9 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		6DF3F5842C582BA600A05F0E /* Build configuration list for PBXProject "ona" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -522,15 +531,6 @@
 			buildConfigurations = (
 				6DF3F5982C582BA800A05F0E /* Debug */,
 				6DF3F5992C582BA800A05F0E /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		6DF3F5AF2C582BC800A05F0E /* Build configuration list for PBXNativeTarget "counterExtension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				6DF3F5B02C582BC800A05F0E /* Debug */,
-				6DF3F5B12C582BC800A05F0E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
