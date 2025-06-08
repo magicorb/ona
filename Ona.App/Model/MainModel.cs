@@ -12,7 +12,7 @@ using Ona.App.Model;
 
 namespace Ona.App.Model
 {
-	public class MainModel
+	public class MainModel : IMainModel
 	{
 		private readonly IDateRepository dateRepository;
 		private readonly IPeriodStatsProvider periodStatsProvider;
@@ -31,7 +31,7 @@ namespace Ona.App.Model
 
 		public IReadOnlyList<DateTime> MarkedDates => this.markedDates;
 
-		public DateTime EndDate
+		public DateTime ObservedEnd
 		{
 			get => this.endDate;
 			set
@@ -72,20 +72,19 @@ namespace Ona.App.Model
 			await this.dateRepository.DeleteDateRecordAsync(date);
 		}
 
-		public async Task<IReadOnlyList<DateTimePeriod>> GetExpectedPeriodsAsync()
+		public IReadOnlyList<DateTimePeriod> GetExpectedPeriods()
 		{
 			if (this.expectedPeriods == null)
-				await UpdateExpectedPeriodsAsync();
+				UpdateExpectedPeriods();
 
 			return this.expectedPeriods;
 		}
 
-		private async Task UpdateExpectedPeriodsAsync()
+		private void UpdateExpectedPeriods()
 		{
 			var periods = this.periodStatsProvider.GetDatePeriods(this.markedDates.Select(d => d.Date));
 
-			var expectedPeriodsEnumerator = await Task.Run(()
-				=> this.periodStatsProvider.GetExpectedPeriodsEnumerator(periods));
+			var expectedPeriodsEnumerator = this.periodStatsProvider.GetExpectedPeriodsEnumerator(periods);
 
 			this.expectedPeriods = new List<DateTimePeriod>();
 			
@@ -95,8 +94,7 @@ namespace Ona.App.Model
 			{
 				var previousPeriods = new List<DateTimePeriod>(periods.Take(periods.Count - 1));
 
-				var previousExpectedPeriodsEnumerator = await Task.Run(()
-					=> this.periodStatsProvider.GetExpectedPeriodsEnumerator(previousPeriods));
+				var previousExpectedPeriodsEnumerator = this.periodStatsProvider.GetExpectedPeriodsEnumerator(previousPeriods);
 
 				if (previousExpectedPeriodsEnumerator.MoveNext())
 				{
@@ -121,7 +119,7 @@ namespace Ona.App.Model
 			{
 				var period = expectedPeriodsEnumerator.Current;
 
-				if (period.Start > EndDate)
+				if (period.Start > ObservedEnd)
 					break;
 
 				this.expectedPeriods.Add(period);

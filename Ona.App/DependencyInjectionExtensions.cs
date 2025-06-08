@@ -32,7 +32,7 @@ namespace Ona.App
 
 			services.AddSingleton(FileSaver.Default);
 
-			services.AddSingleton<MainModel>();
+			services.AddSingleton<IMainModel, MainModel>();
 
 			services.AddTransient<TodayViewModel>();
 			

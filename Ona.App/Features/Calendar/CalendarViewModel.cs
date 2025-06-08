@@ -15,7 +15,7 @@ namespace Ona.App.Features.Calendar
     {
         private readonly IDateTimeProvider dateTimeProvider;
         private readonly IMessenger messenger;
-		private readonly MainModel mainModel;
+		private readonly IMainModel mainModel;
 		private readonly MonthViewModelFactory monthViewModelFactory;
 
         private ObservableCollection<MonthViewModel> months;
@@ -26,7 +26,7 @@ namespace Ona.App.Features.Calendar
             IDateTimeProvider dateTimeProvider,
             IDateRepository dateRepository,
             IMessenger messenger,
-            MainModel mainModel,
+            IMainModel mainModel,
             MonthViewModelFactory monthViewModelFactory)
         {
             this.dateTimeProvider = dateTimeProvider;
@@ -194,9 +194,9 @@ namespace Ona.App.Features.Calendar
 		
         private async Task RefreshExpectedDatesAsync()
         {
-			this.mainModel.EndDate = this.months.Last().MonthDates.Last().Date;
+			this.mainModel.ObservedEnd = this.months.Last().MonthDates.Last().Date;
 
-            var expectedPeriods = await this.mainModel.GetExpectedPeriodsAsync();
+            var expectedPeriods = await Task.Run(this.mainModel.GetExpectedPeriods);
 
 			if (expectedPeriods.Count == 0)
             {
