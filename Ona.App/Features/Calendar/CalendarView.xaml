@@ -13,11 +13,11 @@
 		<controls:ListViewLite.ItemTemplate>
 			<controls:DictionaryDataTemplateSelector>
 				<controls:DictionaryDataTemplateSelector.Templates>
-					<DataTemplate x:Key="MonthViewModel">
+					<DataTemplate x:Key="MonthViewModel" x:DataType="calendar:MonthViewModel">
 						<calendar:MonthView Margin="0,0,0,12"/>
 					</DataTemplate>
 
-					<DataTemplate x:Key="SpinnerViewModel">
+					<DataTemplate x:Key="SpinnerViewModel" x:DataType="{x:Null}">
 						<ActivityIndicator IsRunning="True" HeightRequest="32" Color="{StaticResource Grayscale600}"/>
 					</DataTemplate>
 				</controls:DictionaryDataTemplateSelector.Templates>
