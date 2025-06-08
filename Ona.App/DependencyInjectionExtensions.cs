@@ -24,8 +24,8 @@ namespace Ona.App
 			
 			services.AddSingleton<IMessenger, WeakReferenceMessenger>();
 
-			services.AddSingleton<Func<Page, IUserConfirmationService>>(sp => page
-				=> new UserConfirmationService(page));
+			services.AddSingleton<Func<Page, IUserNotificationService>>(sp => page
+				=> new UserNotificationService(page));
 
 			services.AddTransient<TodayViewModel>();
 			

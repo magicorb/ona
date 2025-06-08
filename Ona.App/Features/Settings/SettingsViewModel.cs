@@ -14,16 +14,16 @@ namespace Ona.App.Features.Settings
     public class SettingsViewModel : ObservableObject
     {
         private readonly IDateRepository dateRepository;
-        private readonly IUserConfirmationService userConfirmationService;
+        private readonly IUserNotificationService userNotificationService;
 
         private Task? deleteTask;
 
         public SettingsViewModel(
             IDateRepository dateRepository,
-            IUserConfirmationService userConfirmationService)
+			IUserNotificationService userNotificationService)
         {
             this.dateRepository = dateRepository;
-            this.userConfirmationService = userConfirmationService;
+            this.userNotificationService = userNotificationService;
 
             VersionNumber = AppInfo.Current.VersionString;
 			DeleteDataCommand = new RelayCommand(ExecuteDeleteData, CanExecuteDeleteData);
@@ -35,7 +35,7 @@ namespace Ona.App.Features.Settings
 
         private async void ExecuteDeleteData()
         {
-            var isConfirmrd = await userConfirmationService.ConfirmAsync(
+            var isConfirmrd = await userNotificationService.ConfirmAsync(
                 title: "Confirm Data Deletion",
                 message: "This action can’t be undone.",
                 accept: "Confirm & Delete Data",
@@ -47,7 +47,9 @@ namespace Ona.App.Features.Settings
             deleteTask = dateRepository.DeleteAllDateRecordsAsync();
             await deleteTask;
             deleteTask = null;
-        }
+
+            await this.userNotificationService.NotifyAsync("Complete", "Data deleted", "OK");
+		}
 
         private bool CanExecuteDeleteData()
             => deleteTask == null;

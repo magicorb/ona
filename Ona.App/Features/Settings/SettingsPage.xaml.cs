@@ -13,7 +13,7 @@ public partial class SettingsPage : ContentPage
 
 	private void ContentPage_Loaded(object sender, EventArgs e)
 	{
-		var userConfirmationServiceFactory = Handler.MauiContext.Services.GetService<Func<Page, IUserConfirmationService>>();
+		var userConfirmationServiceFactory = Handler.MauiContext.Services.GetService<Func<Page, IUserNotificationService>>();
 
 		BindingContext = new SettingsViewModel(
 			Handler.MauiContext.Services.GetService<IDateRepository>(),
