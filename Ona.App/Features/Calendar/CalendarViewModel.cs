@@ -41,7 +41,7 @@ namespace Ona.App.Features.Calendar
 
 			Initialize();
 
-			this.messenger.Register<DateTappedMessage>(this, (recipient, message) => _ = OnDateTappedMessageAsync(message));
+			this.messenger.Register<CalendarViewModel, DateTappedMessage>(this, (r, m) => _ = r.OnDateTappedMessageAsync(m));
 		}
 
 		public ObservableCollection<object> Items { get; private set; }
@@ -180,6 +180,8 @@ namespace Ona.App.Features.Calendar
 
 			dateViewModel.IsMarked = true;
 			await this.mainModel.AddDateAsync(dateViewModel.Date);
+
+			this.messenger.Send<DatesChangedMessage>();
 		}
 
 		private async Task UnmarkDateAsync(DateViewModel dateViewModel)
@@ -189,6 +191,8 @@ namespace Ona.App.Features.Calendar
 
 			dateViewModel.IsMarked = false;
 			await this.mainModel.DeleteDateAsync(dateViewModel.Date);
+
+			this.messenger.Send<DatesChangedMessage>();
 		}
 
 		private bool IsSelectingRange
@@ -229,6 +233,8 @@ namespace Ona.App.Features.Calendar
 			foreach (var date in this.months.SelectMany(m => m.MonthDates))
 				date.IsExpected = date.Date > lastMarkedDate
 					&& expectedPeriods.Any(p => date.Date >= p.Start && date.Date <= p.End);
+
+			this.messenger.Send<DatesChangedMessage>();
 		}
 	}
 }
