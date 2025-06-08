@@ -57,7 +57,7 @@ namespace Ona.App.Features.Today
 
 				Title = $"Day {periodElapsedDays + 1} of your cycle";
 
-				var periodLeftDays = this.mainModel.PreviousAverageDuration - periodElapsedDays;
+				var periodLeftDays = this.mainModel.AverageDuration - periodElapsedDays;
 
 				if (periodLeftDays > 0)
 					Subtitle = $"This period ends in {periodLeftDays} days.\r\nTap on the day to adjust.";

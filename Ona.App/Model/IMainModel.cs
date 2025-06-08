@@ -16,11 +16,9 @@ namespace Ona.App.Model
 
 		IReadOnlyList<DateTimePeriod> ExpectedPeriods { get; }
 
-		int CurrentAverageDuration { get; }
+		int AverageDuration { get; }
 
 		int AverageInterval { get; }
-
-		int PreviousAverageDuration { get; }
 
 		Task InitializeAsync();
 

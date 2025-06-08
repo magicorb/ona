@@ -49,7 +49,7 @@ namespace Ona.App.Data
 				var periodState = new PeriodState
 				{
 					startDate = lastPeriodStart.ToString("yyyy-MM-dd"),
-					duration = this.mainModel.CurrentAverageDuration,
+					duration = this.mainModel.AverageDuration,
 					interval = this.mainModel.AverageInterval
 				};
 

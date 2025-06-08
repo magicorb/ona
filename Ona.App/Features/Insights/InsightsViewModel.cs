@@ -45,7 +45,7 @@ namespace Ona.App.Features.Insights
 			int interval = default;
 			await Task.Run(() =>
 			{
-				duration = this.mainModel.CurrentAverageDuration;
+				duration = this.mainModel.AverageDuration;
 				interval = this.mainModel.AverageInterval;
 			});
 

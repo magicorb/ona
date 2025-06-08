@@ -14,25 +14,29 @@ namespace Ona.App.Model
 {
 	public class MainModel : IMainModel
 	{
+		private const int DefaultDuration = 5;
+		private const int DefaultInterval = 28;
+
 		private readonly IDateRepository dateRepository;
 		private readonly IPeriodStatsProvider periodStatsProvider;
-
+		private readonly IDateTimeProvider dateTimeProvider;
 		private Task? initializeTask;
 
 		private List<DateTime> markedDates = null!;
 		private IReadOnlyList<DateTimePeriod>? markedPeriods;
 		private List<DateTimePeriod>? expectedPeriods;
-		private int? currentDuration;
+		private int? averageDuration;
 		private int? averageInterval;
-		private int? previousDuration;
 		private DateTime? endDate;
 
 		public MainModel(
 			IDateRepository dateRepository,
-			IPeriodStatsProvider periodStatsProvider)
+			IPeriodStatsProvider periodStatsProvider,
+			IDateTimeProvider dateTimeProvider)
 		{
 			this.dateRepository = dateRepository;
 			this.periodStatsProvider = periodStatsProvider;
+			this.dateTimeProvider = dateTimeProvider;
 		}
 
 		public IReadOnlyList<DateTime> MarkedDates => this.markedDates;
@@ -104,17 +108,13 @@ namespace Ona.App.Model
 			}
 		}
 
-		public int CurrentAverageDuration
-			=> this.currentDuration
-			?? (this.currentDuration = this.periodStatsProvider.GetAverageDuration(MarkedPeriods)).Value;
-
 		public int AverageInterval
 			=> this.averageInterval
-			?? (this.averageInterval = this.periodStatsProvider.GetAverageInterval(MarkedPeriods)).Value;
+			?? (this.averageInterval = GetAverageInterval()).Value;
 
-		public int PreviousAverageDuration
-			=> this.previousDuration
-			?? (this.previousDuration = this.periodStatsProvider.GetAverageDuration(MarkedPeriods.Take(MarkedPeriods.Count - 1).ToList())).Value;
+		public int AverageDuration
+			=> this.averageDuration
+			?? (this.averageDuration = GetAverageDuration()).Value;
 
 		public async Task DeleteAllAsync()
 		{
@@ -187,13 +187,43 @@ namespace Ona.App.Model
 			}
 		}
 
+		private int GetAverageInterval()
+		{
+			var intervals = new List<int>();
+			for (var i = 0; i < MarkedPeriods.Count - 1; i++)
+				intervals.Add((MarkedPeriods[i + 1].Start - MarkedPeriods[i].Start).Days);
+
+			return intervals.Any()
+				? (int)Math.Round(intervals.Average(), MidpointRounding.AwayFromZero)
+				: DefaultInterval;
+		}
+
+		private int GetAverageDuration()
+		{
+			if (MarkedPeriods.Count == 0)
+				return DefaultDuration;
+
+			if (MarkedPeriods.Count == 1)
+				return MarkedPeriods[0].Days;
+
+			var previousAverageDuration = this.periodStatsProvider.GetAverageDuration(MarkedPeriods.Take(MarkedPeriods.Count - 1).ToList());
+			var lastPeriod = MarkedPeriods.Last();
+			var expectedLastPeriodEnd = lastPeriod.Start.AddDays(previousAverageDuration);
+			var ignoreLastPeriod =
+				lastPeriod.End < expectedLastPeriodEnd
+				&& this.dateTimeProvider.Now.Date <= expectedLastPeriodEnd;
+
+			return ignoreLastPeriod
+				? previousAverageDuration
+				: this.periodStatsProvider.GetAverageDuration(MarkedPeriods);
+		}
+
 		private void OnDatesChanged()
 		{
 			this.expectedPeriods = null;
 			this.markedPeriods = null;
-			this.currentDuration = null;
+			this.averageDuration = null;
 			this.averageInterval = null;
-			this.previousDuration = null;
 		}
 	}
 }
