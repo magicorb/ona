@@ -93,6 +93,10 @@ namespace Ona.App.Calendar
 		private async Task OnDateToggledMessageAsync(DateToggledMessage message)
 		{
 			var date = message.Date;
+
+			if (date > dateTimeProvider.Now.Date)
+				return;
+
 			var dateViewModel = this.months.First(m => m.Year == date.Year && m.Month == date.Month).Dates.First(d => d.Date == date);
 
 			if (IsSelectingRange)
