@@ -41,7 +41,7 @@ namespace Ona.App.Features.Calendar
 
 			Initialize();
 
-			this.messenger.Register<DateToggledMessage>(this, (recipient, message) => _ = OnDateToggledMessageAsync(message));
+			this.messenger.Register<DateTappedMessage>(this, (recipient, message) => _ = OnDateTappedMessageAsync(message));
 		}
 
 		public ObservableCollection<object> Items { get; private set; }
@@ -71,7 +71,6 @@ namespace Ona.App.Features.Calendar
 		{
 			this.bottomSpinner.IsRunning = true;
 			await this.dispatcher.DoEventsAsync();
-			//await Task.Delay(1);
 
 			var monthStart = this.months.Last().MonthStart.AddMonths(1);
 			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month, this.dateTimeProvider.Now.Year);
@@ -90,7 +89,6 @@ namespace Ona.App.Features.Calendar
 		{
 			this.topSpinner.IsRunning = true;
 			await this.dispatcher.DoEventsAsync();
-			//await Task.Delay(1);
 
 			var monthStart = this.months[0].MonthStart.AddMonths(-1);
 			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month, this.dateTimeProvider.Now.Year);
@@ -130,7 +128,7 @@ namespace Ona.App.Features.Calendar
 		private MonthViewModel CreateMonthViewModel(DateTime monthStart)
 			=> monthViewModelFactory(monthStart.Year, monthStart.Month, this.dateTimeProvider.Now.Year);
 
-		private async Task OnDateToggledMessageAsync(DateToggledMessage message)
+		private async Task OnDateTappedMessageAsync(DateTappedMessage message)
 		{
 			var date = message.Date;
 

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Ona.App.Features.Calendar
 {
-	public class DateToggledMessage
+	public class DateTappedMessage
 	{
-		public DateToggledMessage(DateTime date)
+		public DateTappedMessage(DateTime date)
 		{
 			Date = date;
 		}
