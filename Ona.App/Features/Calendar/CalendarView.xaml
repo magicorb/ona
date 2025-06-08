@@ -13,11 +13,13 @@
 			<controls:DictionaryDataTemplateSelector>
 				<controls:DictionaryDataTemplateSelector.Templates>
 					<DataTemplate x:Key="MonthViewModel" x:DataType="calendar:MonthViewModel">
-						<calendar:MonthView Margin="0,0,0,12"/>
+						<calendar:MonthView Margin="0,6"/>
 					</DataTemplate>
 
 					<DataTemplate x:Key="SpinnerViewModel" x:DataType="calendar:SpinnerViewModel">
-						<ActivityIndicator IsRunning="True" HeightRequest="32" Color="{StaticResource Grayscale600}"/>
+						<ActivityIndicator
+							IsRunning="{Binding IsRunning}"
+							HeightRequest="32" Color="{StaticResource Grayscale600}" Margin="0,6"/>
 					</DataTemplate>
 				</controls:DictionaryDataTemplateSelector.Templates>
 			</controls:DictionaryDataTemplateSelector>
