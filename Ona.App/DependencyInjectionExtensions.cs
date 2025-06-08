@@ -24,8 +24,6 @@ namespace Ona.App
 			
 			services.AddSingleton<IDateRepository, SQLiteDateRepository>();
 			
-			services.AddSingleton<IPeriodStatsProvider, PeriodStatsProvider>();
-			
 			services.AddSingleton<IMessenger, WeakReferenceMessenger>();
 
 			services.AddSingleton<Func<Page, IUserNotificationService>>(sp => page
