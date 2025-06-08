@@ -25,6 +25,7 @@ namespace Ona.App.Calendar
 			var now = dateTimeProvider.Now;
 			this.months.Add(new MonthViewModel(this.dateTimeProvider, now.Year, now.Month));
 			InsertMonth();
+			InsertMonth();
 			AppendMonth();
 		}
 
