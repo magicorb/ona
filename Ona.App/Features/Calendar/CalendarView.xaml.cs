@@ -18,7 +18,10 @@ public partial class CalendarView : ContentView
 	{
 		Dispatcher.Dispatch(async () =>
 		{
-			await MonthListViewLite.ScrollToIndexAsync(3, ScrollToPosition.End, false);
+			var index = ViewModel.Items.IndexOf(ViewModel.CurentMonth);
+			await MonthListViewLite.ScrollToIndexAsync(index, ScrollToPosition.End, false);
+			ViewModel.CurentMonth.Show();
+
 			MonthListViewLite.Scrolled += MonthListViewLite_FirstScrolled;
 		});
 	}

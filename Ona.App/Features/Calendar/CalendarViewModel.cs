@@ -53,7 +53,7 @@ namespace Ona.App.Features.Calendar
 		public void ShowHiddenMonths()
 		{
 			for (var i = 0; i < this.months.Count; i++)
-				this.months[i].IsVisible = true;
+				this.months[i].Show();
 		}
 
 		public void Dispose()
@@ -70,6 +70,8 @@ namespace Ona.App.Features.Calendar
 
 			RefreshMarkedDates();
 			await RefreshExpectedDatesAsync();
+
+			newItem.Show();
 		}
 
 		internal async Task InsertMonthAsync()
@@ -81,6 +83,8 @@ namespace Ona.App.Features.Calendar
 
 			RefreshMarkedDates();
 			await RefreshExpectedDatesAsync();
+
+			newItem.Show();
 		}
 
 		private void Initialize()
@@ -96,11 +100,6 @@ namespace Ona.App.Features.Calendar
 			months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(-1)));
 			months.Add(CurentMonth);
 			months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(1)));
-
-			foreach (var month in months)
-				month.IsVisible = false;
-
-			CurentMonth.IsVisible = true;
 
 			Items = new ObservableCollection<object>(this.months);
 			Items.Insert(0, new SpinnerViewModel());

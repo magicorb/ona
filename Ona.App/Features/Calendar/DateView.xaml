@@ -19,14 +19,17 @@
 			<Ellipse.Triggers>
 				<DataTrigger TargetType="Ellipse" Binding="{Binding IsFuture}" Value="True">
 					<Setter Property="Fill" Value="{StaticResource Grayscale700}"/>
+					<Setter Property="Stroke" Value="{StaticResource Grayscale700}"/>
 				</DataTrigger>
 
 				<DataTrigger TargetType="Ellipse" Binding="{Binding IsExpected}" Value="True">
 					<Setter Property="Fill" Value="{StaticResource AccentPrimaryDisabled}"/>
+					<Setter Property="Stroke" Value="{StaticResource AccentPrimaryDisabled}"/>
 				</DataTrigger>
 				
 				<DataTrigger TargetType="Ellipse" Binding="{Binding IsMarked}" Value="True">
 					<Setter Property="Fill" Value="{StaticResource AccentPrimary}"/>
+					<Setter Property="Stroke" Value="{StaticResource AccentPrimary}"/>
 				</DataTrigger>
 			</Ellipse.Triggers>
 		</Ellipse>
