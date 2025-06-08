@@ -6,10 +6,12 @@
     <VerticalStackLayout>
         <Label 
             Text="{Binding MonthName}"
-            HorizontalOptions="Start" />
+            HorizontalOptions="Start" HeightRequest="24"
+			FontSize="Subtitle"/>
 
 		<CollectionView
-			ItemsSource="{Binding DaysOfWeek}">
+			ItemsSource="{Binding DaysOfWeek}"
+			Margin="0,12,0,0">
 			<CollectionView.ItemsLayout>
 				<GridItemsLayout
 					Orientation="Vertical"
@@ -17,7 +19,9 @@
 			</CollectionView.ItemsLayout>
 			<CollectionView.ItemTemplate>
 				<DataTemplate>
-					<Label Text="{Binding}" HorizontalOptions="Center"/>
+					<Label
+						Text="{Binding}" HorizontalOptions="Center"
+						TextColor="Gray" FontSize="Small" HeightRequest="24"/>
 				</DataTemplate>
 			</CollectionView.ItemTemplate>
 		</CollectionView>
