@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentView
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:controls="clr-namespace:Ona.Main.Controls"
+	x:Class="Ona.Main.Features.Calendar.DateView">
+	<Grid
+		RowSpacing="0" ColumnSpacing="0" Margin="0" Padding="0">
+		<Grid.GestureRecognizers>
+			<TapGestureRecognizer
+				Command="{Binding TapCommand}"
+				NumberOfTapsRequired="1" />
+		</Grid.GestureRecognizers>
+		
+		<Ellipse
+			Fill="{StaticResource Grayscale900}" Stroke="{StaticResource Grayscale900}"
+			HorizontalOptions="Center" VerticalOptions="Center"
+			Aspect="UniformToFill">
+			<Ellipse.Triggers>
+				<DataTrigger TargetType="Ellipse" Binding="{Binding IsFuture}" Value="True">
+					<Setter Property="Fill" Value="{StaticResource Grayscale700}"/>
+					<Setter Property="Stroke" Value="{StaticResource Grayscale700}"/>
+				</DataTrigger>
+
+				<DataTrigger TargetType="Ellipse" Binding="{Binding IsExpected}" Value="True">
+					<Setter Property="Fill" Value="{StaticResource AccentPrimaryDisabled}"/>
+					<Setter Property="Stroke" Value="{StaticResource AccentPrimaryDisabled}"/>
+				</DataTrigger>
+				
+				<DataTrigger TargetType="Ellipse" Binding="{Binding IsMarked}" Value="True">
+					<Setter Property="Fill" Value="{StaticResource AccentPrimary}"/>
+					<Setter Property="Stroke" Value="{StaticResource AccentPrimary}"/>
+				</DataTrigger>
+			</Ellipse.Triggers>
+		</Ellipse>
+
+		<Label 
+			Text="{Binding Date.Day}"
+			FontSize="32" TextColor="{StaticResource Grayscale700}"
+			HorizontalOptions="Center" VerticalOptions="Center">
+			<Label.Triggers>
+				<DataTrigger TargetType="Label" Binding="{Binding IsFuture}" Value="True">
+					<Setter Property="TextColor" Value="{StaticResource Grayscale300}"/>
+				</DataTrigger>
+			</Label.Triggers>
+		</Label>
+		
+		<Ellipse
+			Fill="{StaticResource AccentSecondary}"
+			WidthRequest="12" HeightRequest="12"
+			HorizontalOptions="End"	VerticalOptions="Start"
+			IsVisible="{Binding IsToday}"/>
+	</Grid>
+</ContentView>
