@@ -9,39 +9,51 @@ import WidgetKit
 import SwiftUI
 
 struct Provider: TimelineProvider {
-    func placeholder(in context: Context) -> SimpleEntry {
-        SimpleEntry(date: Date(), emoji: "😀")
+    func placeholder(in context: Context) -> PeriodStateEntry {
+        PeriodStateEntry(date: Date(), emoji: "😀", count: 0)
     }
 
-    func getSnapshot(in context: Context, completion: @escaping (SimpleEntry) -> ()) {
-        let entry = SimpleEntry(date: Date(), emoji: "😀")
+    func getSnapshot(in context: Context, completion: @escaping (PeriodStateEntry) -> ()) {
+        let entry = PeriodStateEntry(date: Date(), emoji: "😀", count: 0)
         completion(entry)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        var entries: [SimpleEntry] = []
+        var entries: [PeriodStateEntry] = []
 
+        let count = getCount()
+                
         // Generate a timeline consisting of five entries an hour apart, starting from the current date.
         let currentDate = Date()
         for hourOffset in 0 ..< 5 {
             let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = SimpleEntry(date: entryDate, emoji: "😀")
+            let entry = PeriodStateEntry(date: entryDate, emoji: "😀", count: count)
             entries.append(entry)
         }
 
         let timeline = Timeline(entries: entries, policy: .atEnd)
         completion(timeline)
     }
+    
+    func getCount() -> Int {
+        let fallback = 0;
+        
+        guard let userDefaults = UserDefaults(suiteName: "group.com.natalianaumova.ona") else {
+            return fallback
+        }
+        return userDefaults.integer(forKey: "Count")// ?? fallback
+        //return 4
+    }
 }
 
-struct SimpleEntry: TimelineEntry {
+struct PeriodStateEntry: TimelineEntry {
     let date: Date
     let emoji: String
+    let count: Int
 }
 
 struct OnaWidgetEntryView : View {
     var entry: Provider.Entry
-    @State private var count = UserDefaults(suiteName: "group.com.natalianaumova.ona")!.integer(forKey: "Count");
 
     var body: some View {
         VStack {
@@ -52,7 +64,7 @@ struct OnaWidgetEntryView : View {
             Text(entry.emoji)
             
             Text("Count:")
-            Text("\(count)")
+            Text("\(entry.count)")
         }
     }
 }
@@ -79,6 +91,6 @@ struct OnaWidget: Widget {
 #Preview(as: .systemSmall) {
     OnaWidget()
 } timeline: {
-    SimpleEntry(date: .now, emoji: "😀")
-    SimpleEntry(date: .now, emoji: "🤩")
+    PeriodStateEntry(date: .now, emoji: "😀", count: 0)
+    PeriodStateEntry(date: .now, emoji: "🤩", count: 0)
 }
