@@ -9,6 +9,7 @@ namespace Ona.App.Model
 {
 	public class PeriodStatsProvider : IPeriodStatsProvider
 	{
+		private const int DefaultDuration = 5;
 		private const int DefaultInterval = 28;
 
 		public IEnumerator<DateTimePeriod> GetExpectedPeriodsEnumerator(IReadOnlyList<DateTimePeriod> orderedPeriods)
@@ -50,6 +51,13 @@ namespace Ona.App.Model
 
 		public PeriodStats GetAveragePeriodStats(IReadOnlyList<DateTimePeriod> orderedPeriods)
 		{
+			if (orderedPeriods.Count == 0)
+				return new PeriodStats
+				{
+					Duration = DefaultDuration,
+					Interval = DefaultInterval
+				};
+
 			if (orderedPeriods.Count == 1)
 			{
 				var datePeriod = orderedPeriods[0];
@@ -72,7 +80,6 @@ namespace Ona.App.Model
 			};
 
 			return result;
-
 		}
 
 		private int GetDays(DateTimePeriod period)
