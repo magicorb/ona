@@ -70,31 +70,31 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Calendar\CalendarView.xaml.cs">
+	  <Compile Update="Features\Calendar\CalendarView.xaml.cs">
 	    <DependentUpon>CalendarView.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Calendar\CalendarView.xaml">
+	  <MauiXaml Update="Features\Calendar\CalendarView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Calendar\DateView.xaml">
+	  <MauiXaml Update="Features\Calendar\DateView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Calendar\MonthView.xaml">
+	  <MauiXaml Update="Features\Calendar\MonthView.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Controls\ListViewLite.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Insights\InsightsPage.xaml">
+	  <MauiXaml Update="Features\Insights\InsightsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Settings\SettingsPage.xaml">
+	  <MauiXaml Update="Features\Settings\SettingsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Today\TodayPage.xaml">
+	  <MauiXaml Update="Features\Today\TodayPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

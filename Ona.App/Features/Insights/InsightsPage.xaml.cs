@@ -1,4 +1,4 @@
-namespace Ona.App.Insights;
+namespace Ona.App.Features.Insights;
 
 public partial class InsightsPage : ContentPage
 {

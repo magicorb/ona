@@ -1,7 +1,8 @@
 using CommunityToolkit.Mvvm.Messaging;
+using Ona.App.Features.Calendar;
 using Ona.App.Model;
 
-namespace Ona.App.Calendar;
+namespace Ona.App.Features.Calendar;
 
 public partial class CalendarView : ContentView
 {
