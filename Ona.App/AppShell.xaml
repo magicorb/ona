@@ -18,7 +18,7 @@
 		<ShellContent
 			Title="Insights" Icon="insights.png"
 			ContentTemplate="{DataTemplate insights:InsightsPage}"/>
-
+		
 		<ShellContent
 			Title="Settings" Icon="settings.png"
 			ContentTemplate="{DataTemplate settings:SettingsPage}"/>
