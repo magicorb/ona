@@ -1,3 +1,4 @@
+using Microsoft.Maui.Controls;
 using Ona.App.Model;
 
 namespace Ona.App.Calendar;
@@ -14,16 +15,26 @@ public partial class CalendarView : ContentView
 		BindingContext = this.viewModel = new CalendarViewModel(new DateTimeProvider());
 
 		this.isLoading = true;
-		Dispatcher.DispatchDelayed(TimeSpan.FromSeconds(4), () => this.isLoading = false);
+		Dispatcher.DispatchDelayed(
+			TimeSpan.FromSeconds(2),
+			() =>
+			{
+				MonthCollectionView.ScrollTo(2, -1, ScrollToPosition.End, false);
+				viewModel.Months[2].IsVisible = true;
+			});
+		Dispatcher.DispatchDelayed(
+			TimeSpan.FromSeconds(4),
+			() => this.isLoading = false);
 	}
 
 	private void CollectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e)
 	{
-		var collectionView = (CollectionView)sender;
+		if (!this.isLoading)
+			this.viewModel.ShowAllMonths();
 
-		if (e.LastVisibleItemIndex >= this.viewModel.Months.Count - 2)
+		if (e.LastVisibleItemIndex == this.viewModel.Months.Count - 1)
 			AppendMonth();
-		else if (e.FirstVisibleItemIndex <= 1)
+		else if (e.FirstVisibleItemIndex == 0)
 			InsertMonth();
 	}
 

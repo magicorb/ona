@@ -23,10 +23,14 @@ namespace Ona.App.Calendar
 			Months = new ReadOnlyObservableCollection<MonthViewModel>(this.months);
 
 			var now = dateTimeProvider.Now;
-			this.months.Add(new MonthViewModel(this.dateTimeProvider, now.Year, now.Month));
+			var currentMonth = new MonthViewModel(this.dateTimeProvider, now.Year, now.Month);
+			this.months.Add(currentMonth);
 			InsertMonth();
 			InsertMonth();
 			AppendMonth();
+
+			foreach (var month in Months)
+				month.IsVisible = false;
 		}
 
 		public ReadOnlyObservableCollection<MonthViewModel> Months { get; }
@@ -41,6 +45,12 @@ namespace Ona.App.Calendar
 		{
 			var monthStart = Months[0].MonthStart.AddMonths(-1);
 			this.months.Insert(0, new MonthViewModel(this.dateTimeProvider, monthStart.Year, monthStart.Month));
+		}
+
+		internal void ShowAllMonths()
+		{
+			foreach (var month in Months)
+				month.IsVisible = true;
 		}
 	}
 }

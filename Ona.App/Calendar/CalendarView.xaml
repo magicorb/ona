@@ -4,11 +4,13 @@
 			 xmlns:calendar="clr-namespace:Ona.App.Calendar"
              x:Class="Ona.App.Calendar.CalendarView">
 	<CollectionView
+		x:Name="MonthCollectionView"
 		ItemsSource="{Binding Months}"
 		SelectionMode="None" Scrolled="CollectionView_Scrolled">
 		<CollectionView.ItemTemplate>
 			<DataTemplate>
-				<calendar:MonthView/>
+				<calendar:MonthView
+					IsVisible="{Binding IsVisible}"/>
 			</DataTemplate>
 		</CollectionView.ItemTemplate>
 	</CollectionView>
