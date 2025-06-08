@@ -1,3 +1,4 @@
+using Java.Time;
 using Microsoft.Maui.Controls;
 using Ona.App.Model;
 
@@ -30,7 +31,20 @@ public partial class CalendarView : ContentView
 	private void CollectionView_Scrolled(object sender, ItemsViewScrolledEventArgs e)
 	{
 		if (!this.isLoading)
-			this.viewModel.ShowAllMonths();
+		{
+			var curentMonthIndex = this.viewModel.Months.IndexOf(this.viewModel.CurentMonth);
+
+			if (e.VerticalDelta > 0)
+			{
+				for (var i = curentMonthIndex + 1; i < this.viewModel.Months.Count; i++)
+					this.viewModel.Months[i].IsVisible = true;
+			}
+			else if (e.VerticalDelta < 0)
+			{
+				for (var i = curentMonthIndex - 1; i > 0; i--)
+					this.viewModel.Months[i].IsVisible = true;
+			}
+		}
 
 		if (e.LastVisibleItemIndex == this.viewModel.Months.Count - 1)
 			AppendMonth();
