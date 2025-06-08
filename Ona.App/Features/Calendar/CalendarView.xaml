@@ -9,7 +9,7 @@
 	<controls:ListViewLite
 		x:Name="MonthListViewLite"
 		ItemsSource="{Binding Items}"
-		Scrolled="MonthListViewLite_Scrolled" ItemAdded="MonthListViewLite_ItemAdded">
+		ItemAdded="MonthListViewLite_ItemAdded">
 		<controls:ListViewLite.ItemTemplate>
 			<controls:DictionaryDataTemplateSelector>
 				<controls:DictionaryDataTemplateSelector.Templates>

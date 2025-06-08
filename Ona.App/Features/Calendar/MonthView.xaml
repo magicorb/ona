@@ -3,8 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 			 xmlns:calendar="clr-namespace:Ona.App.Features.Calendar"
              x:Class="Ona.App.Features.Calendar.MonthView">
-    <VerticalStackLayout
-		IsVisible="{Binding IsVisible}">
+	<ContentView.Triggers>
+		<DataTrigger TargetType="ContentView" Binding="{Binding IsVisible}" Value="False">
+			<Setter Property="Opacity" Value="0.01"/>
+		</DataTrigger>
+	</ContentView.Triggers>
+    <VerticalStackLayout>
         <Label 
             Text="{Binding MonthName}"
             HorizontalOptions="Start" HeightRequest="24"
