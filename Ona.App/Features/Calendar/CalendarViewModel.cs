@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Ona.App.Features.Calendar
 {
-	public class CalendarViewModel : ObservableObject, IDisposable
+	public class CalendarViewModel : ViewModelBase, IDisposable
 	{
 		private readonly IDateTimeProvider dateTimeProvider;
 		private readonly IDispatcher dispatcher;
@@ -48,16 +48,6 @@ namespace Ona.App.Features.Calendar
 		public ObservableCollection<object> Items { get; private set; }
 
 		public MonthViewModel CurentMonth { get; private set; }
-
-		public async Task RefreshAsync()
-		{
-			await this.mainModel.OnInitializedAsync();
-
-			this.mainModel.ObservedEnd = this.months.Last().MonthDates.Last().Date;
-
-			await RefreshMarkedDatesAsync();
-			await RefreshExpectedDatesAsync();
-		}
 
 		public void ShowHiddenMonths()
 		{
@@ -106,6 +96,16 @@ namespace Ona.App.Features.Calendar
 			newItem.Show();
 
 			this.topSpinner.IsRunning = false;
+		}
+
+		protected override async Task RefreshAsync()
+		{
+			await this.mainModel.OnInitializedAsync();
+
+			this.mainModel.ObservedEnd = this.months.Last().MonthDates.Last().Date;
+
+			await RefreshMarkedDatesAsync();
+			await RefreshExpectedDatesAsync();
 		}
 
 		private void Initialize()
@@ -181,7 +181,7 @@ namespace Ona.App.Features.Calendar
 		private async Task OnDatesChangedMessageAsync(DatesChangedMessage message)
 		{
 			if (message.Sender != this)
-				await RefreshAsync();
+				await RequestRefreshAsync();
 		}
 
 		private async Task MarkDateAsync(DateViewModel dateViewModel)
