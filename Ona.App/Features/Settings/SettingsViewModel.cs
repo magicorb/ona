@@ -24,10 +24,14 @@ namespace Ona.App.Features.Settings
         {
             this.dateRepository = dateRepository;
             this.userConfirmationService = userConfirmationService;
-            DeleteDataCommand = new RelayCommand(ExecuteDeleteData, CanExecuteDeleteData);
+
+            VersionNumber = AppInfo.Current.VersionString;
+			DeleteDataCommand = new RelayCommand(ExecuteDeleteData, CanExecuteDeleteData);
         }
 
-        public ICommand DeleteDataCommand { get; }
+        public string VersionNumber { get; }
+
+		public ICommand DeleteDataCommand { get; }
 
         private async void ExecuteDeleteData()
         {
