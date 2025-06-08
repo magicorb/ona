@@ -12,15 +12,15 @@
     Title="Ona.App">
 	<TabBar>
 		<ShellContent
-			Title="Settings" Icon="settings.png"
-			ContentTemplate="{DataTemplate settings:SettingsPage}"/>
-		
-		<ShellContent
 			Title="Today" Icon="today.png"
 			ContentTemplate="{DataTemplate today:TodayPage}"/>
 
 		<ShellContent
 			Title="Insights" Icon="insights.png"
 			ContentTemplate="{DataTemplate insights:InsightsPage}"/>
+
+		<ShellContent
+			Title="Settings" Icon="settings.png"
+			ContentTemplate="{DataTemplate settings:SettingsPage}"/>
 	</TabBar>
 </Shell>
