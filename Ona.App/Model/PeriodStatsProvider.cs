@@ -52,32 +52,18 @@ namespace Ona.App.Model
 		public PeriodStats GetAveragePeriodStats(IReadOnlyList<DateTimePeriod> orderedPeriods)
 		{
 			if (orderedPeriods.Count == 0)
-				return new PeriodStats
-				{
-					Duration = DefaultDuration,
-					Interval = DefaultInterval
-				};
+				return new PeriodStats(duration: DefaultDuration, interval: DefaultInterval);
 
 			if (orderedPeriods.Count == 1)
-			{
-				var datePeriod = orderedPeriods[0];
-
-				return new PeriodStats
-				{
-					Duration = GetDays(datePeriod),
-					Interval = DefaultInterval
-				};
-			}
+				return new PeriodStats(duration: GetDays(orderedPeriods[0]), interval: DefaultInterval);
 
 			var intervals = new List<int>();
 			for (var i = 0; i < orderedPeriods.Count - 1; i++)
 				intervals.Add((orderedPeriods[i + 1].Start - orderedPeriods[i].Start).Days);
 
-			var result = new PeriodStats()
-			{
-				Duration = (int)Math.Round(orderedPeriods.Average(GetDays), MidpointRounding.AwayFromZero),
-				Interval = (int)Math.Round(intervals.Average(), MidpointRounding.AwayFromZero)
-			};
+			var result = new PeriodStats(
+				duration: (int)Math.Round(orderedPeriods.Average(GetDays), MidpointRounding.AwayFromZero),
+				interval: (int)Math.Round(intervals.Average(), MidpointRounding.AwayFromZero));
 
 			return result;
 		}
@@ -91,20 +77,17 @@ namespace Ona.App.Model
 				yield break;
 
 			var average = GetAveragePeriodStats(orderedPeriods);
-			var interval = average.Interval == null
-				? DefaultInterval
-				: average.Interval.Value;
-			var duration = average.Duration.Value - 1;
+			var durationDayDifference = average.Duration - 1;
 
-			var start = orderedPeriods.Last().Start.AddDays(interval);
+			var start = orderedPeriods.Last().Start.AddDays(average.Interval);
 			do
 			{
 				yield return new DateTimePeriod
 				{
 					Start = start.Date,
-					End = start.AddDays(duration).Date
+					End = start.AddDays(durationDayDifference).Date
 				};
-				start = start.AddDays(interval);
+				start = start.AddDays(average.Interval);
 			} while (true);
 		}
 	}

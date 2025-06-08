@@ -13,23 +13,19 @@ namespace Ona.App.Features.Insights
 {
 	public class InsightsViewModel : ViewModelBase
 	{
-		private readonly IDateRepository dateRepository;
+		private readonly IMainModel mainModel;
 		private readonly IMessenger messenger;
-		private readonly IPeriodStatsProvider periodStatsProvider;
 
-		private bool isInitialized;
 		private string lastPeriodStart;
 		private string averageCycleLength;
 		private string averagePeriodLength;
 
 		public InsightsViewModel(
-			IDateRepository dateRepository,
-			IMessenger messenger,
-			IPeriodStatsProvider periodStatsProvider)
+			IMainModel mainModel,
+			IMessenger messenger)
 		{
-			this.dateRepository = dateRepository;
+			this.mainModel = mainModel;
 			this.messenger = messenger;
-			this.periodStatsProvider = periodStatsProvider;
 
 			this.messenger.Register<InsightsViewModel, DatesChangedMessage>(this, (r, m) => _ = r.OnDatesChangedMessageAsync(m));
 		}
@@ -42,34 +38,18 @@ namespace Ona.App.Features.Insights
 
 		protected override async Task RefreshAsync()
 		{
-			this.isInitialized = true;
+			await this.mainModel.OnInitializedAsync();
 
-			var datesRecords = await dateRepository.GetDateRecordsAsync();
+			var periods = await Task.Run(() => this.mainModel.MarkedPeriods);
+			var periodStats = await Task.Run(() => this.mainModel.CurrentStats);
 
-			if (datesRecords.Length == 0)
-			{
-				LastPeriodStart = "No data";
-				AverageCycleLength = "No data";
-				AveragePeriodLength = "No data";
-				return;
-			}
+			LastPeriodStart = periods.Any()
+				? periods.Last().Start.ToString("dd MMM yyyy")
+				: "No data";
 
-			IReadOnlyList<DateTimePeriod> periods = null;
-			PeriodStats periodStats = null;
+			AverageCycleLength = $"{periodStats.Duration} days";
 
-			await Task.Run(() =>
-			{
-				periods = periodStatsProvider.GetDatePeriods(datesRecords.Select(d => d.Date));
-				periodStats = periodStatsProvider.GetAveragePeriodStats(periods);
-			});
-
-			LastPeriodStart = periods!.Last().Start.ToString("dd MMM yyyy");
-
-			AverageCycleLength = $"{periodStats!.Duration!.Value} days";
-
-			AveragePeriodLength = periodStats!.Interval != null
-				? $"{periodStats!.Interval.Value} days"
-				: null;
+			AveragePeriodLength = $"{periodStats.Interval} days";
 		}
 
 		private async Task OnDatesChangedMessageAsync(DatesChangedMessage m)
