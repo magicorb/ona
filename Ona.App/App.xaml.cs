@@ -1,4 +1,6 @@
-﻿namespace Ona.App
+﻿using Ona.App.Data;
+
+namespace Ona.App
 {
 	public partial class App : Application
 	{
@@ -9,6 +11,14 @@
 			PropertyMapperConfigurator.Configure();
 
 			MainPage = appShell;
+		}
+
+		protected override void OnStart()
+		{
+			base.OnStart();
+
+			var dataPublisher = Handler.MauiContext.Services.GetService<IDataPublisher>();
+			_ = dataPublisher.StartAsync();
 		}
 	}
 }

@@ -37,6 +37,8 @@ namespace Ona.App
 
 			services.AddSingleton<IMainModel, MainModel>();
 
+			services.AddSingleton<IDataPublisher, DataPublisher>();
+
 			services.AddTransient<TodayViewModel>();
 			
 			services.AddTransient<CalendarViewModel>();
