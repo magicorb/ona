@@ -32,7 +32,7 @@
 			<CollectionView.ItemTemplate>
 				<DataTemplate x:DataType="x:String">
 					<Label
-						Text="{Binding}" HorizontalOptions="Center"
+						Text="{Binding}" HorizontalTextAlignment="Center"
 						TextColor="{StaticResource Grayscale500}" FontSize="Small" HeightRequest="24"/>
 				</DataTemplate>
 			</CollectionView.ItemTemplate>
