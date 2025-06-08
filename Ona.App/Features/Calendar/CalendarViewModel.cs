@@ -64,7 +64,7 @@ namespace Ona.App.Features.Calendar
 		internal async Task AppendMonthAsync()
 		{
 			var monthStart = this.months.Last().MonthStart.AddMonths(1);
-			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month);
+			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month, this.dateTimeProvider.Now.Year);
 			this.months.Add(newItem);
 			Items.Insert(Items.Count - 1, newItem);
 
@@ -75,7 +75,7 @@ namespace Ona.App.Features.Calendar
 		internal async Task InsertMonthAsync()
 		{
 			var monthStart = this.months[0].MonthStart.AddMonths(-1);
-			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month);
+			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month, this.dateTimeProvider.Now.Year);
 			this.months.Insert(0, newItem);
 			Items.Insert(1, newItem);
 
@@ -108,7 +108,7 @@ namespace Ona.App.Features.Calendar
 		}
 
 		private MonthViewModel CreateMonthViewModel(DateTime monthStart)
-			=> monthViewModelFactory(monthStart.Year, monthStart.Month);
+			=> monthViewModelFactory(monthStart.Year, monthStart.Month, this.dateTimeProvider.Now.Year);
 
 		private async Task OnDateToggledMessageAsync(DateToggledMessage message)
 		{
