@@ -16,17 +16,17 @@ namespace Ona.App.Calendar
 		private bool isExpected;
 
 		public DateViewModel(
-			DateOnly date,
+			DateTime date,
 			IDateTimeProvider dateTimeProvider)
 		{
 			Date = date;
 			this.dateTimeProvider = dateTimeProvider;
 		}
 
-		public DateOnly Date { get; }
+		public DateTime Date { get; }
 
 		public bool IsToday
-			=> DateOnly.FromDateTime(this.dateTimeProvider.Now) == Date;
+			=> Date.Date == this.dateTimeProvider.Now.Date;
 
 		public bool IsMarked
 		{
@@ -48,6 +48,15 @@ namespace Ona.App.Calendar
 			}
 		}
 
+		public bool IsCurrentMonth
+		{
+			get
+			{
+				var now = this.dateTimeProvider.Now;
+				return Date.Year == now.Year && Date.Month == now.Month;
+			}
+		}
+
 		public Color BackgroundColor
 		{
 			get
@@ -56,7 +65,7 @@ namespace Ona.App.Calendar
 					return Colors.Yellow;
 				if (isExpected)
 					return Colors.LightYellow;
-				if (DateOnly.FromDateTime(this.dateTimeProvider.Now) >= Date)
+				if (this.dateTimeProvider.Now >= Date)
 					return Colors.Black;
 				return Colors.Gray;
 			}
