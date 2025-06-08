@@ -1,6 +1,6 @@
-﻿using CommunityToolkit.Mvvm.Messaging;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Messaging;
 using Ona.App.Model;
-using Ona.App.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Ona.App.Calendar
 {
-	public class MonthViewModel : ViewModelBase
+	public class MonthViewModel : ObservableObject
 	{
 		private readonly IDateTimeProvider dateTimeProvider;
 		private readonly IMessenger messenger;

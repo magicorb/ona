@@ -1,7 +1,7 @@
-﻿using CommunityToolkit.Mvvm.Input;
+﻿using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using Ona.App.Model;
-using Ona.App.Mvvm;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,7 @@ using System.Windows.Input;
 
 namespace Ona.App.Calendar
 {
-	public class DateViewModel : ViewModelBase
+	public class DateViewModel : ObservableObject
 	{
 		private readonly IDateTimeProvider dateTimeProvider;
 		private readonly IMessenger messenger;
