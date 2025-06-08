@@ -12,7 +12,7 @@ public partial class ListViewLite : ContentView
 	}
 
 	public static readonly BindableProperty ItemsSourceProperty =
-		BindableProperty.Create(nameof(ItemsSource), typeof(IEnumerable), typeof(ItemsView), null, propertyChanged: OnItemsSourceChanged);
+		BindableProperty.Create(nameof(ItemsSource), typeof(IEnumerable), typeof(ListViewLite), null, propertyChanged: OnItemsSourceChanged);
 
 	public IEnumerable ItemsSource
 	{
@@ -21,13 +21,31 @@ public partial class ListViewLite : ContentView
 	}
 
 	public static readonly BindableProperty ItemTemplateProperty =
-		BindableProperty.Create(nameof(ItemTemplate), typeof(DataTemplate), typeof(ItemsView), propertyChanged: OnItemTemplateChanged);
+		BindableProperty.Create(nameof(ItemTemplate), typeof(DataTemplate), typeof(ListViewLite), propertyChanged: OnItemTemplateChanged);
 
 	public DataTemplate ItemTemplate
 	{
 		get => (DataTemplate)GetValue(ItemTemplateProperty);
 		set => SetValue(ItemTemplateProperty, value);
 	}
+
+	public static readonly BindableProperty HorizontalScrollBarVisibilityProperty =
+	BindableProperty.Create(nameof(HorizontalScrollBarVisibility), typeof(ScrollBarVisibility), typeof(ListViewLite));
+
+	public ScrollBarVisibility HorizontalScrollBarVisibility
+	{
+		get => (ScrollBarVisibility)GetValue(HorizontalScrollBarVisibilityProperty);
+		set => SetValue(HorizontalScrollBarVisibilityProperty, value);
+	}
+
+	public static readonly BindableProperty VerticalScrollBarVisibilityProperty =
+		BindableProperty.Create(nameof(VerticalScrollBarVisibility), typeof(ScrollBarVisibility), typeof(ListViewLite));
+
+	public ScrollBarVisibility VerticalScrollBarVisibility
+	{
+		get => (ScrollBarVisibility)GetValue(VerticalScrollBarVisibilityProperty);
+		set => SetValue(VerticalScrollBarVisibilityProperty, value);
+	}	
 
 	public double ContentWidth
 		=> ItemsPanel.Width;

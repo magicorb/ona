@@ -7,7 +7,7 @@
 	x:Class="Ona.App.Features.Calendar.CalendarView">
 	<controls:ListViewLite
 		x:Name="MonthListViewLite"
-		ItemsSource="{Binding Items}"
+		ItemsSource="{Binding Items}" VerticalScrollBarVisibility="Never"
 		ItemAdded="MonthListViewLite_ItemAdded">
 		<controls:ListViewLite.ItemTemplate>
 			<controls:DictionaryDataTemplateSelector>
@@ -16,7 +16,7 @@
 						<calendar:MonthView Margin="0,0,0,12"/>
 					</DataTemplate>
 
-					<DataTemplate x:Key="SpinnerViewModel" x:DataType="{x:Null}">
+					<DataTemplate x:Key="SpinnerViewModel" x:DataType="calendar:SpinnerViewModel">
 						<ActivityIndicator IsRunning="True" HeightRequest="32" Color="{StaticResource Grayscale600}"/>
 					</DataTemplate>
 				</controls:DictionaryDataTemplateSelector.Templates>
