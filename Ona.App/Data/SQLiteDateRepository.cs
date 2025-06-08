@@ -9,6 +9,7 @@ namespace Ona.App.Data
 {
 	public class SQLiteDateRepository : IDateRepository
 	{
+		private readonly SemaphoreSlim initializeSemaphore = new SemaphoreSlim(1);
 		private SQLiteAsyncConnection connection;
 		private bool isInitialized;
 
@@ -43,16 +44,27 @@ namespace Ona.App.Data
 
 		private async Task EnsureInitializeAsync()
 		{
-			if (this.isInitialized)
-				return;
+			await initializeSemaphore.WaitAsync();
 
-			this.connection = new SQLiteAsyncConnection(
-				Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Database.db3"),
-				SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
+			try
+			{
+				if (this.isInitialized)
+					return;
 
-			await this.connection.CreateTablesAsync(CreateFlags.None, typeof(DateRecord));
-			
-			this.isInitialized = true;
+				this.connection = new SQLiteAsyncConnection(
+					Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Database.db3"),
+					SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
+
+				await this.connection.CreateTablesAsync(CreateFlags.None, typeof(DateRecord));
+
+				await this.connection.Table<DateRecord>().DeleteAsync(d => true);
+
+				this.isInitialized = true;
+			}
+			finally
+			{
+				initializeSemaphore.Release();
+			}
 		}
 	}
 }
