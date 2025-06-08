@@ -20,7 +20,7 @@
 		<Nullable>enable</Nullable>
 
 		<!-- Display name -->
-		<ApplicationTitle>Ona</ApplicationTitle>
+		<ApplicationTitle>Ovela</ApplicationTitle>
 
 		<!-- App Identifier -->
 		<ApplicationId>com.natalianaumova.ona</ApplicationId>
