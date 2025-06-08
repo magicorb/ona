@@ -50,14 +50,14 @@ namespace Ona.App.Features.Calendar
 		public DateTime MonthStart
 			=> new DateTime(Year, Month, 1);
 
-		public ICommand TriggerShowCommand { get; set; }
+		public ICommand? TriggerShowCommand { get; set; }
 
 		public void Show()
 		{
 			if (this.isVisible)
 				return;
 			this.isVisible = true;
-			TriggerShowCommand.Execute(CancellationToken.None);
+			TriggerShowCommand?.Execute(CancellationToken.None);
 		}
 
 		private ReadOnlyCollection<DateViewModel> GenerateDates()

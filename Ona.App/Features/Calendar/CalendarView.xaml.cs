@@ -28,7 +28,7 @@ public partial class CalendarView : ContentView
 	private CalendarViewModel ViewModel
 		=> (CalendarViewModel)BindingContext;
 
-	private void MonthListViewLite_FirstScrolled(object sender, ScrolledEventArgs e)
+	private void MonthListViewLite_FirstScrolled(object? sender, ScrolledEventArgs e)
 	{
 		Dispatcher.Dispatch(() =>
 		{
@@ -39,7 +39,7 @@ public partial class CalendarView : ContentView
 		});
 	}
 
-	private void MonthListViewLite_Scrolled(object sender, ScrolledEventArgs e)
+	private void MonthListViewLite_Scrolled(object? sender, ScrolledEventArgs e)
 	{
 		Dispatcher.Dispatch(() =>
 		{
