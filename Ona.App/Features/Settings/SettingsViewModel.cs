@@ -49,13 +49,13 @@ namespace Ona.App.Features.Settings
 
 		private async void ExecuteDeleteData()
 		{
-			var isConfirmrd = await UserNotificationService.ConfirmAsync(
+			var isConfirmed = await UserNotificationService.ConfirmAsync(
 				title: "Confirm Data Deletion",
 				message: "This action can’t be undone.",
 				accept: "Confirm & Delete Data",
 				cancel: "Cancel");
 
-			if (!isConfirmrd)
+			if (!isConfirmed)
 				return;
 
 			this.deleteDataTask = this.mainModel.DeleteAllAsync();
@@ -72,6 +72,15 @@ namespace Ona.App.Features.Settings
 
 		private async void ExecuteExportData()
 		{
+			var isConfirmed = await UserNotificationService.ConfirmAsync(
+				title: "Confirm Data Export",
+				message: "The data will be saved in an unencrypted text file.",
+				accept: "Continue",
+				cancel: "Cancel");
+
+			if (!isConfirmed)
+				return;
+
 			this.exportDataTask = ExportDataAsync();
 			var taskResult = await this.exportDataTask;
 			this.exportDataTask = null;
