@@ -24,7 +24,7 @@ namespace Ona.App.Model
 			var currentPeriod = new DateTimePeriod()
 			{
 				Start = enumerator.Current.Date,
-				End = enumerator.Current
+				End = enumerator.Current.Date
 			};
 			periods.Add(currentPeriod);
 
@@ -37,7 +37,7 @@ namespace Ona.App.Model
 					currentPeriod = new DateTimePeriod()
 					{
 						Start = enumerator.Current.Date,
-						End = enumerator.Current
+						End = enumerator.Current.Date
 					};
 					periods.Add(currentPeriod);
 				}
