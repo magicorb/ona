@@ -32,6 +32,8 @@ namespace Ona.App
 
 			services.AddSingleton(FileSaver.Default);
 
+			services.AddSingleton<MainModel>();
+
 			services.AddTransient<TodayViewModel>();
 			
 			services.AddTransient<CalendarViewModel>();
