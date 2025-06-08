@@ -42,6 +42,7 @@ namespace Ona.App.Features.Calendar
 			Initialize();
 
 			this.messenger.Register<CalendarViewModel, DateTappedMessage>(this, (r, m) => _ = r.OnDateTappedMessageAsync(m));
+			this.messenger.Register<CalendarViewModel, DatesChangedMessage>(this, (r, m) => _ = r.OnDatesChangedMessageAsync(m));
 		}
 
 		public ObservableCollection<object> Items { get; private set; }
@@ -52,7 +53,9 @@ namespace Ona.App.Features.Calendar
 		{
 			await this.mainModel.OnInitializedAsync();
 
-			RefreshMarkedDates();
+			this.mainModel.ObservedEnd = this.months.Last().MonthDates.Last().Date;
+
+			await RefreshMarkedDatesAsync();
 			await RefreshExpectedDatesAsync();
 		}
 
@@ -77,7 +80,7 @@ namespace Ona.App.Features.Calendar
 			this.months.Add(newItem);
 			Items.Insert(Items.Count - 1, newItem);
 
-			RefreshMarkedDates();
+			await RefreshMarkedDatesAsync();
 			await RefreshExpectedDatesAsync();
 
 			newItem.Show();
@@ -95,7 +98,9 @@ namespace Ona.App.Features.Calendar
 			this.months.Insert(0, newItem);
 			Items.Insert(1, newItem);
 
-			RefreshMarkedDates();
+			this.mainModel.ObservedEnd = this.months.Last().MonthDates.Last().Date;
+
+			await RefreshMarkedDatesAsync();
 			await RefreshExpectedDatesAsync();
 
 			newItem.Show();
@@ -173,6 +178,12 @@ namespace Ona.App.Features.Calendar
 			_ = RefreshExpectedDatesAsync();
 		}
 
+		private async Task OnDatesChangedMessageAsync(DatesChangedMessage message)
+		{
+			if (message.Sender != this)
+				await RefreshAsync();
+		}
+
 		private async Task MarkDateAsync(DateViewModel dateViewModel)
 		{
 			if (dateViewModel.IsMarked)
@@ -181,7 +192,7 @@ namespace Ona.App.Features.Calendar
 			dateViewModel.IsMarked = true;
 			await this.mainModel.AddDateAsync(dateViewModel.Date);
 
-			this.messenger.Send<DatesChangedMessage>();
+			this.messenger.Send(new DatesChangedMessage(this));
 		}
 
 		private async Task UnmarkDateAsync(DateViewModel dateViewModel)
@@ -192,7 +203,7 @@ namespace Ona.App.Features.Calendar
 			dateViewModel.IsMarked = false;
 			await this.mainModel.DeleteDateAsync(dateViewModel.Date);
 
-			this.messenger.Send<DatesChangedMessage>();
+			this.messenger.Send(new DatesChangedMessage(this));
 		}
 
 		private bool IsSelectingRange
@@ -203,22 +214,26 @@ namespace Ona.App.Features.Calendar
 			? this.months[this.months.IndexOf(dateViewModel.MonthViewModel) + 1].MonthDates.First()
 			: dateViewModel.MonthViewModel.Dates[dateViewModel.MonthViewModel.Dates.IndexOf(dateViewModel) + 1];
 
-		private void RefreshMarkedDates()
+		private async Task RefreshMarkedDatesAsync()
 		{
-			foreach (var date in this.mainModel.MarkedDates)
+			var markedPeriods = await Task.Run(() => this.mainModel.MarkedPeriods);
+
+			if (markedPeriods.Count == 0)
 			{
-				var monthViewModel = this.months.FirstOrDefault(m => m.Year == date.Year && m.Month == date.Month);
-				if (monthViewModel == null)
-					continue;
-				var dateViewModel = monthViewModel.Dates.First(d => d.Date == date);
-				dateViewModel.IsMarked = true;
+				foreach (var date in this.months.SelectMany(m => m.MonthDates))
+					date.IsMarked = false;
+				return;
 			}
+
+			var lastMarkedDate = this.mainModel.MarkedDates.Last();
+
+			foreach (var date in this.months.SelectMany(m => m.MonthDates))
+				date.IsMarked = date.Date <= lastMarkedDate
+					&& markedPeriods.Any(p => date.Date >= p.Start && date.Date <= p.End);
 		}
 		
 		private async Task RefreshExpectedDatesAsync()
 		{
-			this.mainModel.ObservedEnd = this.months.Last().MonthDates.Last().Date;
-
 			var expectedPeriods = await Task.Run(() => this.mainModel.ExpectedPeriods);
 
 			if (expectedPeriods.Count == 0)
@@ -233,8 +248,6 @@ namespace Ona.App.Features.Calendar
 			foreach (var date in this.months.SelectMany(m => m.MonthDates))
 				date.IsExpected = date.Date > lastMarkedDate
 					&& expectedPeriods.Any(p => date.Date >= p.Start && date.Date <= p.End);
-
-			this.messenger.Send<DatesChangedMessage>();
 		}
 	}
 }

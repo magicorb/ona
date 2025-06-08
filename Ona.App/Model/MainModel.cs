@@ -123,6 +123,26 @@ namespace Ona.App.Model
 			}
 		}
 
+		public async Task DeleteAllAsync()
+		{
+			await this.dateRepository.DeleteAllDateRecordsAsync();
+			this.markedDates.Clear();
+
+			OnDatesChanged();
+		}
+
+		public async Task ImportAsync(IEnumerable<DateTime> dates)
+		{
+			await this.dateRepository.DeleteAllDateRecordsAsync();
+
+			foreach (var date in dates)
+				await this.dateRepository.AddDateRecordAsync(date);
+			
+			await InitializeInternalAsync();
+			
+			OnDatesChanged();
+		}
+
 		private async Task InitializeInternalAsync()
 		{
 			this.markedDates = (await dateRepository.GetDateRecordsAsync()).Select(d => d.Date).ToList();

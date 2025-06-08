@@ -12,6 +12,14 @@ namespace Ona.App.Model
 
 		DateTime ObservedEnd { get; set; }
 
+		IReadOnlyList<DateTimePeriod> MarkedPeriods { get; }
+
+		IReadOnlyList<DateTimePeriod> ExpectedPeriods { get; }
+
+		PeriodStats CurrentStats { get; }
+
+		PeriodStats PreviousStats { get; }
+
 		Task InitializeAsync();
 
 		Task OnInitializedAsync();
@@ -20,12 +28,8 @@ namespace Ona.App.Model
 
 		Task DeleteDateAsync(DateTime date);
 
-		IReadOnlyList<DateTimePeriod> MarkedPeriods { get; }
+		Task DeleteAllAsync();
 
-		IReadOnlyList<DateTimePeriod> ExpectedPeriods { get; }
-
-		PeriodStats CurrentStats { get; }
-
-		PeriodStats PreviousStats { get; }
+		Task ImportAsync(IEnumerable<DateTime> dates);
 	}
 }
