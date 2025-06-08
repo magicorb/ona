@@ -6,7 +6,7 @@
 	x:Class="Ona.App.MainPage"
 	Loaded="ContentPage_Loaded">
 	<Grid
-		Padding="30,0" Background="LightGray">
+		Padding="16,0" Background="LightGray">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="Auto"/>
@@ -15,14 +15,14 @@
 
 		<Label
 			Grid.Row="0"
-			Text="Day of your cycle"
-			FontSize="Title"
+			Text="Tap"
+			FontSize="54"
 			Margin="0,12,0,0"/>
 
 		<Label
 			Grid.Row="1"
-			Text="Tap on the day"
-			FontSize="Caption"
+			Text="on the day when your last period started."
+			FontSize="18"
 			HorizontalOptions="End"/>
 
 		<calendar:CalendarView
