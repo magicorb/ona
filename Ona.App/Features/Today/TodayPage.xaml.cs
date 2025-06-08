@@ -18,13 +18,13 @@ public partial class TodayPage : ContentPage
 		await ViewModel.InititalizeAsync();
 	}
 
-	private async void CalendarView_SizeChanged(object sender, EventArgs e)
+	private void CalendarView_SizeChanged(object sender, EventArgs e)
 	{
-		if (!this.isScrollingInitialized)
+		var areTitlesLoaded = ViewModel.Title != null && ViewModel.Subtitle != null;
+		if (!this.isScrollingInitialized && areTitlesLoaded)
 		{
-			await ViewModel.OnInitializedAsync();
 			this.isScrollingInitialized = true;
-			((CalendarView)sender).InitializeScrolling();
+			Dispatcher.Dispatch(async () => await ((CalendarView)sender).InitializeScrollingAsync());
 		}
 	}
 
