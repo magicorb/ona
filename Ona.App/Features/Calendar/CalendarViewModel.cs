@@ -40,12 +40,18 @@ namespace Ona.App.Features.Calendar
 
             _ = InitializeMonths();
 
-            this.messenger.Register<DateToggledMessage>(this, (recipient, message) => _ = OnDateToggledMessageAsync(message));
+			Items = new ObservableCollection<object>(Months);
+			Items.Insert(0, new SpinnerViewModel());
+			Items.Add(new SpinnerViewModel());
+
+			this.messenger.Register<DateToggledMessage>(this, (recipient, message) => _ = OnDateToggledMessageAsync(message));
         }
 
         public ReadOnlyObservableCollection<MonthViewModel> Months { get; private set; }
 
-        public MonthViewModel CurentMonth { get; private set; }
+		public ObservableCollection<object> Items { get; }
+
+		public MonthViewModel CurentMonth { get; private set; }
 
         public void Dispose()
         {
@@ -55,9 +61,11 @@ namespace Ona.App.Features.Calendar
         internal async Task AppendMonthAsync()
         {
             var monthStart = Months[Months.Count - 1].MonthStart.AddMonths(1);
-            months.Add(monthViewModelFactory(monthStart.Year, monthStart.Month));
+			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month);
+			this.months.Add(newItem);
+			Items.Insert(Items.Count - 1, newItem);
 
-            await LoadDatesAsync();
+			await LoadDatesAsync();
 
             ApplyExpectedPeriods();
         }
@@ -65,9 +73,11 @@ namespace Ona.App.Features.Calendar
         internal async Task InsertMonthAsync()
         {
             var monthStart = Months[0].MonthStart.AddMonths(-1);
-            months.Insert(0, monthViewModelFactory(monthStart.Year, monthStart.Month));
+			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month);
+			this.months.Insert(0, newItem);
+			Items.Insert(1, newItem);
 
-            await LoadDatesAsync();
+			await LoadDatesAsync();
 
             ApplyExpectedPeriods();
         }

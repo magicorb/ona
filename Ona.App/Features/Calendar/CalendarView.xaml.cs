@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.Messaging;
+using Ona.App.Controls;
 using Ona.App.Features.Calendar;
 using Ona.App.Model;
 
@@ -19,7 +20,7 @@ public partial class CalendarView : ContentView
 	private CalendarViewModel ViewModel
 		=> (CalendarViewModel)BindingContext;
 
-	private void ListViewLite_Scrolled(object sender, ScrolledEventArgs e)
+	private void MonthListViewLite_Scrolled(object sender, ScrolledEventArgs e)
 	{
 		Dispatcher.Dispatch(() =>
 		{
@@ -39,7 +40,7 @@ public partial class CalendarView : ContentView
 					ViewModel.Months[i].IsVisible = true;
 			}
 
-			if (e.ScrollY <= 1)
+			if (delta < 0 && e.ScrollY <= 1)
 			{
 				if (this.isLoading)
 					return;
@@ -48,7 +49,7 @@ public partial class CalendarView : ContentView
 				_ = ViewModel.InsertMonthAsync();
 				this.isLoading = false;
 			}
-			else if (e.ScrollY >= MonthListViewLite.ContentHeight - MonthListViewLite.Height - 1)
+			else if (delta > 0 && e.ScrollY >= MonthListViewLite.ContentHeight - MonthListViewLite.Height - 1)
 			{
 				if (this.isLoading)
 					return;
@@ -60,11 +61,17 @@ public partial class CalendarView : ContentView
 		});
 	}
 
+	private void MonthListViewLite_ItemAdded(object sender, ListItemAddedEventArgs e)
+	{
+		if (e.Index == 1)
+			MonthListViewLite.ScrollToOffsetAsync(MonthListViewLite.ScrollY + ((View)e.Item).DesiredSize.Height, false).Wait();
+	}
+
 	private void ContentView_Loaded(object sender, EventArgs e)
 	{
 		Dispatcher.Dispatch(async () =>
 		{
-			await MonthListViewLite.ScrollToIndexAsync(2, ScrollToPosition.End, false);
+			await MonthListViewLite.ScrollToIndexAsync(3, ScrollToPosition.End, false);
 			this.isLoading = false;
 		});
 	}
