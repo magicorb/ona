@@ -17,12 +17,17 @@ public partial class CalendarView : ContentView
 	}
 
 	public async Task InitializeScrollingAsync()
-	{		
-		var index = ViewModel.Items.IndexOf(ViewModel.CurentMonth);
-		await MonthListViewLite.ScrollToIndexAsync(index, ScrollToPosition.End, false);
+	{
+		await ScrollToCurrentMonthAsync();
 		ViewModel.CurentMonth.Show();
 
 		MonthListViewLite.Scrolled += MonthListViewLite_FirstScrolled;
+	}
+
+	public async Task ScrollToCurrentMonthAsync()
+	{
+		var index = ViewModel.Items.IndexOf(ViewModel.CurentMonth);
+		await MonthListViewLite.ScrollToIndexAsync(index, ScrollToPosition.End, false);
 	}
 
 	private CalendarViewModel ViewModel

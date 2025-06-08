@@ -31,4 +31,10 @@ public partial class TodayPage : ContentPage
 	{
 		ViewModel.CalendarViewModel.ClearSelection();
 	}
+
+	private void ContentPage_Loaded(object sender, EventArgs e)
+	{
+		if (this.isScrollingInitialized)
+			_ = CalendarView.ScrollToCurrentMonthAsync();
+	}
 }

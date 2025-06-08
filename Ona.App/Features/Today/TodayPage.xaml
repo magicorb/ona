@@ -8,7 +8,7 @@
 	x:Class="Ona.App.Features.Today.TodayPage"
 	x:DataType="today:TodayViewModel"
 	Title="Today"
-	Unloaded="ContentPage_Unloaded">
+	Loaded="ContentPage_Loaded" Unloaded="ContentPage_Unloaded">
 	<Grid
 		Padding="16,0">
 		<Grid.RowDefinitions>
@@ -28,6 +28,7 @@
 			HorizontalOptions="End"/>
 
 		<calendar:CalendarView
+			x:Name="CalendarView"
 			Grid.Row="2"
 			BindingContext="{Binding CalendarViewModel}"
 			Margin="0,16,0,0"
