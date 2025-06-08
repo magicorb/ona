@@ -13,5 +13,7 @@ namespace Ona.App.Data
         Task<DateRecord> AddDateRecordAsync(DateTime date);
 
         Task DeleteDateRecordAsync(DateTime date);
+
+        Task DeleteAllDateRecordsAsync();
 	}
 }

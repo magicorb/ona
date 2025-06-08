@@ -1,0 +1,22 @@
+using Ona.App.Controls;
+using Ona.App.Data;
+using System;
+
+namespace Ona.App.Settings;
+
+public partial class SettingsPage : ContentPage
+{
+	public SettingsPage()
+	{
+		InitializeComponent();
+	}
+
+	private void ContentPage_Loaded(object sender, EventArgs e)
+	{
+		var userConfirmationServiceFactory = Handler.MauiContext.Services.GetService<Func<Page, IUserConfirmationService>>();
+
+		BindingContext = new SettingsViewModel(
+			Handler.MauiContext.Services.GetService<IDateRepository>(),
+			userConfirmationServiceFactory(this));
+	}
+}

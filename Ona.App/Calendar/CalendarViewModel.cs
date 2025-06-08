@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace Ona.App.Calendar
 {
-	public class CalendarViewModel : ObservableObject
+	public class CalendarViewModel : ObservableObject, IDisposable
 	{
 		private readonly IDateTimeProvider dateTimeProvider;
 		private readonly IDateRepository dateRepository;
@@ -45,6 +45,11 @@ namespace Ona.App.Calendar
 		public ReadOnlyObservableCollection<MonthViewModel> Months { get; private set; }
 
 		public MonthViewModel CurentMonth { get; private set; }
+
+		public void Dispose()
+		{
+			this.messenger.UnregisterAll(this);
+		}
 
 		internal async Task AppendMonthAsync()
 		{
