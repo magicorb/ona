@@ -12,19 +12,16 @@ namespace Ona.App.Calendar
 {
 	public class MonthViewModel : ObservableObject
 	{
-		private readonly IDateTimeProvider dateTimeProvider;
-		private readonly IMessenger messenger;
+		private readonly DateViewModelFactory dateViewModelFactory;
 
 		private bool isVisible = true;
 
 		public MonthViewModel(
-			IDateTimeProvider dateTimeProvider,
-			IMessenger messenger,
+			DateViewModelFactory dateViewModelFactory,
 			int year,
 			int month)
 		{
-			this.dateTimeProvider = dateTimeProvider;
-			this.messenger = messenger;
+			this.dateViewModelFactory = dateViewModelFactory;
 
 			Year = year;
 			Month = month;
@@ -50,12 +47,7 @@ namespace Ona.App.Calendar
 			var firstDate = MonthStart.StartOfWeek(DayOfWeek.Monday);
 
 			return firstDate.DateRange(MonthStart.AddMonths(1).AddDays(-1))
-				.Select(d => new DateViewModel(
-					this.dateTimeProvider,
-					this.messenger,
-					d,
-					Year,
-					Month))
+				.Select(d => dateViewModelFactory(d, Year, Month))
 				.ToArray();
 		}
 
@@ -64,4 +56,6 @@ namespace Ona.App.Calendar
 
 		public bool IsVisible { get => this.isVisible; set => SetProperty(ref this.isVisible, value); }
 	}
+
+	public delegate MonthViewModel MonthViewModelFactory(int year, int month);
 }
