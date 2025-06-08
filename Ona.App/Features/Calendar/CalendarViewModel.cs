@@ -14,7 +14,6 @@ namespace Ona.App.Features.Calendar
     public class CalendarViewModel : ObservableObject, IDisposable
     {
         private readonly IDateTimeProvider dateTimeProvider;
-        private readonly IPeriodStatsProvider periodStatsProvider;
         private readonly IMessenger messenger;
 		private readonly MainModel mainModel;
 		private readonly MonthViewModelFactory monthViewModelFactory;
@@ -26,31 +25,33 @@ namespace Ona.App.Features.Calendar
         public CalendarViewModel(
             IDateTimeProvider dateTimeProvider,
             IDateRepository dateRepository,
-            IPeriodStatsProvider periodStatsProvider,
             IMessenger messenger,
             MainModel mainModel,
             MonthViewModelFactory monthViewModelFactory)
         {
             this.dateTimeProvider = dateTimeProvider;
-            this.periodStatsProvider = periodStatsProvider;
             this.messenger = messenger;
 			this.mainModel = mainModel;
 			this.monthViewModelFactory = monthViewModelFactory;
 
             _ = InitializeMonths();
 
-			Items = new ObservableCollection<object>(Months);
+			Items = new ObservableCollection<object>(this.months);
 			Items.Insert(0, new SpinnerViewModel());
 			Items.Add(new SpinnerViewModel());
 
 			this.messenger.Register<DateToggledMessage>(this, (recipient, message) => _ = OnDateToggledMessageAsync(message));
         }
 
-        public ReadOnlyObservableCollection<MonthViewModel> Months { get; private set; }
-
 		public ObservableCollection<object> Items { get; }
 
 		public MonthViewModel CurentMonth { get; private set; }
+
+        public void ShowHiddenMonths()
+        {
+			for (var i = 0; i < this.months.Count; i++)
+				this.months[i].IsVisible = true;
+		}
 
         public void Dispose()
         {
@@ -59,26 +60,24 @@ namespace Ona.App.Features.Calendar
 
         internal async Task AppendMonthAsync()
         {
-            var monthStart = Months[Months.Count - 1].MonthStart.AddMonths(1);
+            var monthStart = this.months[this.months.Count - 1].MonthStart.AddMonths(1);
 			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month);
 			this.months.Add(newItem);
 			Items.Insert(Items.Count - 1, newItem);
 
-			MarkDates();
-
-            ApplyExpectedPeriods();
+			RefreshMarkedDates();
+			await RefreshExpectedDatesAsync();
         }
 
         internal async Task InsertMonthAsync()
         {
-            var monthStart = Months[0].MonthStart.AddMonths(-1);
+            var monthStart = this.months[0].MonthStart.AddMonths(-1);
 			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month);
 			this.months.Insert(0, newItem);
 			Items.Insert(1, newItem);
 
-			MarkDates();
-
-            ApplyExpectedPeriods();
+			RefreshMarkedDates();
+			await RefreshExpectedDatesAsync();
         }
 
         private async Task InitializeMonths()
@@ -100,13 +99,11 @@ namespace Ona.App.Features.Calendar
 
             CurentMonth.IsVisible = true;
 
-            Months = new ReadOnlyObservableCollection<MonthViewModel>(months);
-
 			await this.mainModel.InitializeAsync();
 
-			MarkDates();
+			RefreshMarkedDates();
 
-            await UpdateExpectedPeriodsAsync();
+            await RefreshExpectedDatesAsync();
         }
 
         private MonthViewModel CreateMonthViewModel(DateTime monthStart)
@@ -154,19 +151,7 @@ namespace Ona.App.Features.Calendar
                 }
             }
 
-            _ = UpdateExpectedPeriodsAsync();
-        }
-
-        private void MarkDates()
-        {
-            foreach (var date in this.mainModel.Dates)
-            {
-                var monthViewModel = Months.FirstOrDefault(m => m.Year == date.Year && m.Month == date.Month);
-                if (monthViewModel == null)
-                    continue;
-                var dateViewModel = monthViewModel.Dates.First(d => d.Date == date);
-                dateViewModel.IsMarked = true;
-            }
+            _ = RefreshExpectedDatesAsync();
         }
 
         private async Task MarkDateAsync(DateViewModel dateViewModel)
@@ -192,36 +177,39 @@ namespace Ona.App.Features.Calendar
 
         private DateViewModel GetNextDateViewModel(DateViewModel dateViewModel)
             => dateViewModel == dateViewModel.MonthViewModel.MonthDates.Last()
-            ? Months[Months.IndexOf(dateViewModel.MonthViewModel) + 1].MonthDates.First()
+            ? this.months[this.months.IndexOf(dateViewModel.MonthViewModel) + 1].MonthDates.First()
             : dateViewModel.MonthViewModel.Dates[dateViewModel.MonthViewModel.Dates.IndexOf(dateViewModel) + 1];
 
-        private async Task UpdateExpectedPeriodsAsync()
+		private void RefreshMarkedDates()
+		{
+			foreach (var date in this.mainModel.Dates)
+			{
+				var monthViewModel = this.months.FirstOrDefault(m => m.Year == date.Year && m.Month == date.Month);
+				if (monthViewModel == null)
+					continue;
+				var dateViewModel = monthViewModel.Dates.First(d => d.Date == date);
+				dateViewModel.IsMarked = true;
+			}
+		}
+		
+        private async Task RefreshExpectedDatesAsync()
         {
-            // TODO: If new call made, cancel all pending, wait for the current to complete and then start
+			this.mainModel.EndDate = this.months.Last().MonthDates.Last().Date;
 
-            await this.mainModel.UpdateExpectedPeriodsAsync();
-
-            ApplyExpectedPeriods();
-        }
-
-        private void ApplyExpectedPeriods()
-        {
-			this.mainModel.EndDate = Months.Last().MonthDates.Last().Date;
-
-            var expectedPeriods = this.mainModel.ExpectedPeriods;
+            var expectedPeriods = await this.mainModel.GetExpectedPeriodsAsync();
 
 			if (expectedPeriods.Count == 0)
             {
-                foreach (var date in Months.SelectMany(m => m.MonthDates))
+                foreach (var date in this.months.SelectMany(m => m.MonthDates))
                     date.IsExpected = false;
                 return;
             }
 
-            var lastPeriodEnd = this.mainModel.Periods[this.mainModel.Periods.Count - 1].End;
+            var lastMarkedDate = this.mainModel.Dates[this.mainModel.Dates.Count - 1];
 
-            foreach (var date in Months.SelectMany(m => m.MonthDates))
-                date.IsExpected = date.Date > lastPeriodEnd
-                    && expectedPeriods.Any(p => date.Date >= p.Start && date.Date <= p.End);
+            foreach (var date in this.months.SelectMany(m => m.MonthDates))
+                date.IsExpected = date.Date > lastMarkedDate
+					&& expectedPeriods.Any(p => date.Date >= p.Start && date.Date <= p.End);
         }
     }
 }

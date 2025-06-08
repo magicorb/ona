@@ -21,11 +21,7 @@ public partial class CalendarView : ContentView
 	{
 		Dispatcher.Dispatch(() =>
 		{
-			for (var i = 0; i < ViewModel.Months.Count; i++)
-			{
-				if (i != 2)
-					ViewModel.Months[i].IsVisible = true;
-			}
+			ViewModel.ShowHiddenMonths();
 
 			MonthListViewLite.Scrolled -= MonthListViewLite_FirstScrolled;
 			MonthListViewLite.Scrolled += MonthListViewLite_Scrolled;

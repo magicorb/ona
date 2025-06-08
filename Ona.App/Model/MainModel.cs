@@ -33,8 +33,6 @@ namespace Ona.App.Model
 
 		public DateTime EndDate { get; set; }
 
-		public IReadOnlyList<DateTimePeriod> Periods { get; private set; }
-
 		public IEnumerator<DateTimePeriod> ExpectedPeriodsEnumerator { get; private set; }
 
 		public async Task InitializeAsync()
@@ -53,6 +51,8 @@ namespace Ona.App.Model
 			}
 			this.dates.Insert(i, date);
 
+			this.expectedPeriodsEnumerator = null;
+
 			await this.dateRepository.AddDateRecordAsync(date);
 		}
 
@@ -60,27 +60,53 @@ namespace Ona.App.Model
 		{
 			this.dates.Remove(date);
 
+			this.expectedPeriodsEnumerator = null;
+
 			await this.dateRepository.DeleteDateRecordAsync(date);
 		}
 
-		public async Task UpdateExpectedPeriodsAsync()
+		public async Task<IReadOnlyList<DateTimePeriod>> GetExpectedPeriodsAsync()
 		{
-			Periods = this.periodStatsProvider.GetDatePeriods(dates.Select(d => d.Date));
+			if (this.expectedPeriodsEnumerator == null)
+				await UpdateExpectedPeriodsAsync();
 
-			expectedPeriodsEnumerator = await Task.Run(()
-				=> periodStatsProvider.GetExpectedPeriodsEnumerator(Periods));
+			var expectedPeriods = new List<DateTimePeriod>();
 
-			if (Periods.Count > 1)
+			if (this.expectedCurrentPeriod != null)
+				expectedPeriods.Add(this.expectedCurrentPeriod);
+
+			this.expectedPeriodsEnumerator.Reset();
+			while (this.expectedPeriodsEnumerator.MoveNext())
 			{
-				var previousPeriods = new List<DateTimePeriod>(this.Periods.Take(this.Periods.Count - 1));
+				var period = this.expectedPeriodsEnumerator.Current;
+
+				if (period.Start > EndDate)
+					break;
+
+				expectedPeriods.Add(period);
+			}
+
+			return expectedPeriods;
+		}
+
+		private async Task UpdateExpectedPeriodsAsync()
+		{
+			var periods = this.periodStatsProvider.GetDatePeriods(dates.Select(d => d.Date));
+
+			this.expectedPeriodsEnumerator = await Task.Run(()
+				=> this.periodStatsProvider.GetExpectedPeriodsEnumerator(periods));
+
+			if (periods.Count > 1)
+			{
+				var previousPeriods = new List<DateTimePeriod>(periods.Take(periods.Count - 1));
 
 				var previousExpectedPeriodsEnumerator = await Task.Run(()
-					=> periodStatsProvider.GetExpectedPeriodsEnumerator(previousPeriods));
+					=> this.periodStatsProvider.GetExpectedPeriodsEnumerator(previousPeriods));
 
 				if (previousExpectedPeriodsEnumerator.MoveNext())
 				{
 					var expectedCurrentPeriod = previousExpectedPeriodsEnumerator.Current;
-					var lastPeriod = this.Periods[this.Periods.Count - 1];
+					var lastPeriod = periods[periods.Count - 1];
 
 					this.expectedCurrentPeriod = expectedCurrentPeriod.Start == lastPeriod.Start
 						? expectedCurrentPeriod
@@ -91,30 +117,6 @@ namespace Ona.App.Model
 			}
 			else
 				this.expectedCurrentPeriod = null;
-		}
-
-		public IReadOnlyList<DateTimePeriod> ExpectedPeriods
-		{
-			get
-			{
-				var expectedPeriods = new List<DateTimePeriod>();
-
-				if (this.expectedCurrentPeriod != null)
-					expectedPeriods.Add(this.expectedCurrentPeriod);
-
-				this.expectedPeriodsEnumerator.Reset();
-				while (this.expectedPeriodsEnumerator.MoveNext())
-				{
-					var period = this.expectedPeriodsEnumerator.Current;
-
-					if (period.Start > EndDate)
-						break;
-
-					expectedPeriods.Add(period);
-				}
-
-				return expectedPeriods;
-			}
 		}
 	}
 }
