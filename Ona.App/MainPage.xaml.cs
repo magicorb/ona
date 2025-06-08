@@ -8,10 +8,5 @@
 		{
 			InitializeComponent();
 		}
-
-		private void CalendarView_SizeChanged(object sender, EventArgs e)
-		{
-			_ = ScrollView.ScrollToAsync(CalendarView, ScrollToPosition.End, false);
-		}
 	}
 }

@@ -5,7 +5,7 @@
              x:Class="Ona.App.Calendar.CalendarView">
 	<CollectionView
 		ItemsSource="{Binding Months}"
-		SelectionMode="None">
+		SelectionMode="None" Scrolled="CollectionView_Scrolled" ScrollToRequested="CollectionView_ScrollToRequested">
 		<CollectionView.ItemTemplate>
 			<DataTemplate>
 				<calendar:MonthView/>

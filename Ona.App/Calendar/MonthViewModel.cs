@@ -6,8 +6,6 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Ona.App.Model;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Ona.App.Calendar
 {
@@ -15,22 +13,23 @@ namespace Ona.App.Calendar
 	{
 		private readonly IDateTimeProvider dateTimeProvider;
 
-		private readonly int year;
-		private readonly int month;
-
 		public MonthViewModel(
 			IDateTimeProvider dateTimeProvider,
 			int year,
 			int month)
 		{
 			this.dateTimeProvider = dateTimeProvider;
-			this.year = year;
-			this.month = month;
+			Year = year;
+			Month = month;
 
 			DaysOfWeek = CultureInfo.CurrentUICulture.DateTimeFormat.AbbreviatedDayNames;
 
 			Dates = GenerateDates();
 		}
+
+		public int Year { get; }
+
+		public int Month { get; }
 
 		public string MonthName
 			=> MonthStart.ToString("MMMM", CultureInfo.CreateSpecificCulture("en-us"));
@@ -44,11 +43,11 @@ namespace Ona.App.Calendar
 			var firstDate = MonthStart.StartOfWeek(DayOfWeek.Monday);
 
 			return firstDate.DateRange(firstDate.AddMonths(1).AddDays(-1))
-				.Select(d => new DateViewModel(d, this.dateTimeProvider))
+				.Select(d => new DateViewModel(this.dateTimeProvider, d, Year, Month))
 				.ToArray();
 		}
 
-		private DateTime MonthStart
-			=> new DateTime(this.year, this.month, 1);
+		public DateTime MonthStart
+			=> new DateTime(Year, Month, 1);
 	}
 }
