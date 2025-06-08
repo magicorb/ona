@@ -174,7 +174,7 @@ namespace Ona.App.Calendar
 			var nextPeriod = await Task.Run(() => this.periodStatsProvider.GetNextPeriod(dates.Select(d => d.Date).ToArray()));
 
 			foreach (var date in Months.SelectMany(m => m.Dates))
-				date.IsExpected = date.Date >= nextPeriod.Start && date.Date <= nextPeriod.End;
+				date.IsExpected = nextPeriod != null && date.Date >= nextPeriod.Start && date.Date <= nextPeriod.End;
 		}
 	}
 }

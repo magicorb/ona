@@ -9,6 +9,8 @@ namespace Ona.App.Model
 {
 	public class PeriodStatsProvider : IPeriodStatsProvider
 	{
+		private const int DefaultInterval = 28;
+
 		public DateTimePeriod? GetNextPeriod(DateTime[] orderedDates)
 		{
 			if (orderedDates.Length == 0)
@@ -16,7 +18,9 @@ namespace Ona.App.Model
 
 			var periods = GetDatePeriods(orderedDates);
 			var average = GetAveragePeriodStats(periods);
-			var interval = Math.Round(average.Interval.Value, MidpointRounding.AwayFromZero);
+			var interval = average.Interval == null
+				? DefaultInterval
+				: Math.Round(average.Interval.Value, MidpointRounding.AwayFromZero);
 			var duration = Math.Round(average.Duration.Value, MidpointRounding.AwayFromZero);
 
 			var start = periods.Last().Start.AddDays(interval).Date;
