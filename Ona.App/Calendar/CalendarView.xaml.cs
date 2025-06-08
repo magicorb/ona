@@ -14,12 +14,8 @@ public partial class CalendarView : ContentView
 
 		this.isLoading = true;
 		Dispatcher.DispatchDelayed(
-			TimeSpan.FromSeconds(2),
-			() =>
-			{
-				_ = MonthListViewLite.ScrollToIndexAsync(2, ScrollToPosition.End, false);
-				ViewModel.Months[2].IsVisible = true;
-			});
+			TimeSpan.FromSeconds(5),
+			() => _ = MonthListViewLite.ScrollToIndexAsync(2, ScrollToPosition.End, false));
 		Dispatcher.DispatchDelayed(
 			TimeSpan.FromSeconds(4),
 			() => this.isLoading = false);
