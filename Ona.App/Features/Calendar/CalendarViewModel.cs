@@ -60,7 +60,7 @@ namespace Ona.App.Features.Calendar
 
         internal async Task AppendMonthAsync()
         {
-            var monthStart = this.months[this.months.Count - 1].MonthStart.AddMonths(1);
+            var monthStart = this.months.Last().MonthStart.AddMonths(1);
 			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month);
 			this.months.Add(newItem);
 			Items.Insert(Items.Count - 1, newItem);
@@ -182,7 +182,7 @@ namespace Ona.App.Features.Calendar
 
 		private void RefreshMarkedDates()
 		{
-			foreach (var date in this.mainModel.Dates)
+			foreach (var date in this.mainModel.MarkedDates)
 			{
 				var monthViewModel = this.months.FirstOrDefault(m => m.Year == date.Year && m.Month == date.Month);
 				if (monthViewModel == null)
@@ -205,7 +205,7 @@ namespace Ona.App.Features.Calendar
                 return;
             }
 
-            var lastMarkedDate = this.mainModel.Dates[this.mainModel.Dates.Count - 1];
+            var lastMarkedDate = this.mainModel.MarkedDates.Last();
 
             foreach (var date in this.months.SelectMany(m => m.MonthDates))
                 date.IsExpected = date.Date > lastMarkedDate

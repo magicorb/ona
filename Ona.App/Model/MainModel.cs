@@ -17,8 +17,9 @@ namespace Ona.App.Model
 		private readonly IDateRepository dateRepository;
 		private readonly IPeriodStatsProvider periodStatsProvider;
 
-		private List<DateTime> dates;
-		private List<DateTimePeriod> expectedPeriods;
+		private List<DateTime> markedDates;
+		private List<DateTimePeriod>? expectedPeriods;
+		private DateTime endDate;
 
 		public MainModel(
 			IDateRepository dateRepository,
@@ -28,27 +29,34 @@ namespace Ona.App.Model
 			this.periodStatsProvider = periodStatsProvider;
 		}
 
-		public IReadOnlyList<DateTime> Dates => this.dates;
+		public IReadOnlyList<DateTime> MarkedDates => this.markedDates;
 
-		public DateTime EndDate { get; set; }
+		public DateTime EndDate
+		{
+			get => this.endDate;
+			set
+			{
+				this.endDate = value;
 
-		public IEnumerator<DateTimePeriod> ExpectedPeriodsEnumerator { get; private set; }
+				this.expectedPeriods = null;
+			}
+		}
 
 		public async Task InitializeAsync()
 		{
-			this.dates = (await dateRepository.GetDateRecordsAsync()).Select(d => d.Date).ToList();
+			this.markedDates = (await dateRepository.GetDateRecordsAsync()).Select(d => d.Date).ToList();
 		}
 
 		public async Task AddDateAsync(DateTime date)
 		{
 			var i = 0;
-			foreach (var date2 in this.dates)
+			foreach (var date2 in this.markedDates)
 			{
 				if (date2 > date)
 					break;
 				i++;
 			}
-			this.dates.Insert(i, date);
+			this.markedDates.Insert(i, date);
 
 			this.expectedPeriods = null;
 
@@ -57,7 +65,7 @@ namespace Ona.App.Model
 
 		public async Task DeleteDateAsync(DateTime date)
 		{
-			this.dates.Remove(date);
+			this.markedDates.Remove(date);
 
 			this.expectedPeriods = null;
 
@@ -74,7 +82,7 @@ namespace Ona.App.Model
 
 		private async Task UpdateExpectedPeriodsAsync()
 		{
-			var periods = this.periodStatsProvider.GetDatePeriods(dates.Select(d => d.Date));
+			var periods = this.periodStatsProvider.GetDatePeriods(this.markedDates.Select(d => d.Date));
 
 			var expectedPeriodsEnumerator = await Task.Run(()
 				=> this.periodStatsProvider.GetExpectedPeriodsEnumerator(periods));
@@ -93,7 +101,7 @@ namespace Ona.App.Model
 				if (previousExpectedPeriodsEnumerator.MoveNext())
 				{
 					expectedCurrentPeriod = previousExpectedPeriodsEnumerator.Current;
-					var lastPeriod = periods[periods.Count - 1];
+					var lastPeriod = periods.Last();
 
 					expectedCurrentPeriod = expectedCurrentPeriod.Start == lastPeriod.Start
 						? expectedCurrentPeriod
