@@ -21,7 +21,7 @@
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
 		<VerticalStackLayout Grid.Row="0">
-			<Label Text="Settings" FontSize="54"/>
+			<Label Text="Settings" Style="{StaticResource Title}" />
 
 			<BoxView Style="{StaticResource HorizontalSeparatorStyle}" Margin="0,64,0,0"/>
 
