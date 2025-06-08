@@ -14,12 +14,20 @@ namespace Ona.App.Model
 
 		Task InitializeAsync();
 
-		Task OnInititalizedAsync();
+		Task OnInitializedAsync();
 
 		Task AddDateAsync(DateTime date);
 
 		Task DeleteDateAsync(DateTime date);
 
-		IReadOnlyList<DateTimePeriod> GetExpectedPeriods();
+		IReadOnlyList<DateTimePeriod> MarkedPeriods { get; }
+
+		IReadOnlyList<DateTimePeriod> ExpectedPeriods { get; }
+
+		PeriodStats CurrentStats { get; }
+
+		PeriodStats PreviousStats { get; }
+
+		event EventHandler DatesChanged;
 	}
 }

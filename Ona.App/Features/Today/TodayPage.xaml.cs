@@ -11,6 +11,6 @@ public partial class TodayPage : ContentPage
 	{
 		base.OnAppearing();
 
-		await ((TodayViewModel)BindingContext).CalendarViewModel.RefreshAsync();
+		await ((TodayViewModel)BindingContext).InititalizeAsync();
 	}
 }

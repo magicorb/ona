@@ -50,10 +50,10 @@ namespace Ona.App.Features.Insights
 
             LastPeriodStart = periods!.Last().Start.ToString("dd MMM yyyy");
 
-            AverageCycleLength = $"{(int)Math.Round(periodStats!.Duration!.Value, MidpointRounding.AwayFromZero)} days";
+            AverageCycleLength = $"{periodStats!.Duration!.Value} days";
 
             AveragePeriodLength = periodStats!.Interval != null
-                ? $"{(int)Math.Round(periodStats!.Interval.Value, MidpointRounding.AwayFromZero)} days"
+                ? $"{periodStats!.Interval.Value} days"
                 : null;
         }
     }

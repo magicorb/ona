@@ -20,7 +20,10 @@ namespace Ona.App.Model
 		private Task initializeTask;
 
 		private List<DateTime> markedDates;
+		private IReadOnlyList<DateTimePeriod>? markedPeriods;
 		private List<DateTimePeriod>? expectedPeriods;
+		private PeriodStats currentStats;
+		private PeriodStats previousStats;
 		private DateTime endDate;
 
 		public MainModel(
@@ -40,7 +43,7 @@ namespace Ona.App.Model
 			{
 				this.endDate = value;
 
-				this.expectedPeriods = null;
+				OnDatesChanged();
 			}
 		}
 
@@ -50,7 +53,7 @@ namespace Ona.App.Model
 			await this.initializeTask;
 		}
 
-		public async Task OnInititalizedAsync()
+		public async Task OnInitializedAsync()
 			=> await this.initializeTask;
 
 		public async Task AddDateAsync(DateTime date)
@@ -64,27 +67,63 @@ namespace Ona.App.Model
 			}
 			this.markedDates.Insert(i, date);
 
-			this.expectedPeriods = null;
-
 			await this.dateRepository.AddDateRecordAsync(date);
+
+			OnDatesChanged();
 		}
 
 		public async Task DeleteDateAsync(DateTime date)
 		{
 			this.markedDates.Remove(date);
 
-			this.expectedPeriods = null;
-
 			await this.dateRepository.DeleteDateRecordAsync(date);
+
+			OnDatesChanged();
 		}
 
-		public IReadOnlyList<DateTimePeriod> GetExpectedPeriods()
+		public IReadOnlyList<DateTimePeriod> MarkedPeriods
 		{
-			if (this.expectedPeriods == null)
-				UpdateExpectedPeriods();
+			get
+			{
+				if (this.markedPeriods == null)
+					this.markedPeriods = this.periodStatsProvider.GetDatePeriods(this.markedDates.Select(d => d.Date));
 
-			return this.expectedPeriods;
+				return this.markedPeriods!;
+			}
 		}
+
+		public IReadOnlyList<DateTimePeriod> ExpectedPeriods
+		{
+			get
+			{
+				if (this.expectedPeriods == null)
+					UpdateExpectedPeriods();
+
+				return this.expectedPeriods!;
+			}
+		}
+
+		public PeriodStats CurrentStats
+		{
+			get
+			{
+				if (this.currentStats == null)
+					this.currentStats = this.periodStatsProvider.GetAveragePeriodStats(MarkedPeriods);
+				return this.currentStats;
+			}
+		}
+
+		public PeriodStats PreviousStats
+		{
+			get
+			{
+				if (this.previousStats == null)
+					this.previousStats = this.periodStatsProvider.GetAveragePeriodStats(MarkedPeriods.Take(MarkedPeriods.Count - 1).ToList());
+				return this.previousStats;
+			}
+		}
+
+		public event EventHandler DatesChanged;
 
 		private async Task InitializeInternalAsync()
 		{
@@ -93,7 +132,7 @@ namespace Ona.App.Model
 
 		private void UpdateExpectedPeriods()
 		{
-			var periods = this.periodStatsProvider.GetDatePeriods(this.markedDates.Select(d => d.Date));
+			var periods = MarkedPeriods;
 
 			var expectedPeriodsEnumerator = this.periodStatsProvider.GetExpectedPeriodsEnumerator(periods);
 
@@ -135,6 +174,16 @@ namespace Ona.App.Model
 
 				this.expectedPeriods.Add(period);
 			}
+		}
+
+		private void OnDatesChanged()
+		{
+			this.expectedPeriods = null;
+			this.markedPeriods = null;
+			this.currentStats = null;
+			this.previousStats = null;
+
+			DatesChanged?.Invoke(this, null);
 		}
 	}
 }

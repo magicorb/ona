@@ -3,9 +3,10 @@
 	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+	xmlns:today="clr-namespace:Ona.App.Features.Today"
 	xmlns:calendar="clr-namespace:Ona.App.Features.Calendar"
     x:Class="Ona.App.Features.Today.TodayPage"
-    Title="TodayPage">
+    Title="TodayPage" x:DataType="today:TodayViewModel">
 	<Grid
 		Padding="16,0">
 		<Grid.RowDefinitions>
@@ -16,13 +17,13 @@
 
 		<Label
 			Grid.Row="0"
-			Text="Tap"
+			Text="{Binding Title}"
 			FontSize="54"
 			Margin="0,12,0,0"/>
 
 		<Label
 			Grid.Row="1"
-			Text="on the day when your last period started."
+			Text="{Binding Subtitle}"
 			FontSize="18"
 			HorizontalOptions="End"/>
 
