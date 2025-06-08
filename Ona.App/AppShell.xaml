@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Shell
-    x:Class="Ona.App.AppShell"
-    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:Ona.App"
-    xmlns:today="clr-namespace:Ona.App.Features.Today"
-    xmlns:insights="clr-namespace:Ona.App.Features.Insights"
-    xmlns:settings="clr-namespace:Ona.App.Features.Settings"
-    Shell.FlyoutBehavior="Disabled"
+	x:Class="Ona.App.AppShell"
+	xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+	xmlns:local="clr-namespace:Ona.App"
+	xmlns:today="clr-namespace:Ona.App.Features.Today"
+	xmlns:insights="clr-namespace:Ona.App.Features.Insights"
+	xmlns:settings="clr-namespace:Ona.App.Features.Settings"
+	Shell.FlyoutBehavior="Disabled"
 	Shell.NavBarIsVisible="false"
-    Title="Ona.App">
+	Title="Ona.App">
 	<TabBar>
 		<ShellContent
 			Title="Today" Icon="today.png"

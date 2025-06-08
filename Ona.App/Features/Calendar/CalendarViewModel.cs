@@ -11,59 +11,59 @@ using System.Threading.Tasks;
 
 namespace Ona.App.Features.Calendar
 {
-    public class CalendarViewModel : ObservableObject, IDisposable
-    {
-        private readonly IDateTimeProvider dateTimeProvider;
-        private readonly IMessenger messenger;
+	public class CalendarViewModel : ObservableObject, IDisposable
+	{
+		private readonly IDateTimeProvider dateTimeProvider;
+		private readonly IMessenger messenger;
 		private readonly IMainModel mainModel;
 		private readonly MonthViewModelFactory monthViewModelFactory;
 
-        private ObservableCollection<MonthViewModel> months;
+		private ObservableCollection<MonthViewModel> months;
 
-        private DateViewModel? selectionStart;
-        
-        public CalendarViewModel(
-            IDateTimeProvider dateTimeProvider,
-            IMessenger messenger,
-            IMainModel mainModel,
-            MonthViewModelFactory monthViewModelFactory)
-        {
-            this.dateTimeProvider = dateTimeProvider;
-            this.messenger = messenger;
+		private DateViewModel? selectionStart;
+		
+		public CalendarViewModel(
+			IDateTimeProvider dateTimeProvider,
+			IMessenger messenger,
+			IMainModel mainModel,
+			MonthViewModelFactory monthViewModelFactory)
+		{
+			this.dateTimeProvider = dateTimeProvider;
+			this.messenger = messenger;
 			this.mainModel = mainModel;
 			this.monthViewModelFactory = monthViewModelFactory;
 
-            Initialize();
+			Initialize();
 
 			this.messenger.Register<DateToggledMessage>(this, (recipient, message) => _ = OnDateToggledMessageAsync(message));
-        }
+		}
 
 		public ObservableCollection<object> Items { get; private set; }
 
 		public MonthViewModel CurentMonth { get; private set; }
 
-        public async Task RefreshAsync()
-        {
-            await this.mainModel.OnInitializedAsync();
+		public async Task RefreshAsync()
+		{
+			await this.mainModel.OnInitializedAsync();
 
 			RefreshMarkedDates();
 			await RefreshExpectedDatesAsync();
 		}
 
 		public void ShowHiddenMonths()
-        {
+		{
 			for (var i = 0; i < this.months.Count; i++)
 				this.months[i].IsVisible = true;
 		}
 
-        public void Dispose()
-        {
-            messenger.UnregisterAll(this);
-        }
+		public void Dispose()
+		{
+			messenger.UnregisterAll(this);
+		}
 
-        internal async Task AppendMonthAsync()
-        {
-            var monthStart = this.months.Last().MonthStart.AddMonths(1);
+		internal async Task AppendMonthAsync()
+		{
+			var monthStart = this.months.Last().MonthStart.AddMonths(1);
 			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month);
 			this.months.Add(newItem);
 			Items.Insert(Items.Count - 1, newItem);
@@ -73,8 +73,8 @@ namespace Ona.App.Features.Calendar
 		}
 
 		internal async Task InsertMonthAsync()
-        {
-            var monthStart = this.months[0].MonthStart.AddMonths(-1);
+		{
+			var monthStart = this.months[0].MonthStart.AddMonths(-1);
 			var newItem = monthViewModelFactory(monthStart.Year, monthStart.Month);
 			this.months.Insert(0, newItem);
 			Items.Insert(1, newItem);
@@ -84,102 +84,102 @@ namespace Ona.App.Features.Calendar
 		}
 
 		private void Initialize()
-        {
-            months = new ObservableCollection<MonthViewModel>();
+		{
+			months = new ObservableCollection<MonthViewModel>();
 
-            var now = dateTimeProvider.Now;
-            var currentMonthStart = new DateTime(now.Year, now.Month, 1);
+			var now = dateTimeProvider.Now;
+			var currentMonthStart = new DateTime(now.Year, now.Month, 1);
 
-            CurentMonth = CreateMonthViewModel(currentMonthStart);
+			CurentMonth = CreateMonthViewModel(currentMonthStart);
 
-            months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(-2)));
-            months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(-1)));
-            months.Add(CurentMonth);
-            months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(1)));
+			months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(-2)));
+			months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(-1)));
+			months.Add(CurentMonth);
+			months.Add(CreateMonthViewModel(currentMonthStart.AddMonths(1)));
 
-            foreach (var month in months)
-                month.IsVisible = false;
+			foreach (var month in months)
+				month.IsVisible = false;
 
-            CurentMonth.IsVisible = true;
+			CurentMonth.IsVisible = true;
 
 			Items = new ObservableCollection<object>(this.months);
 			Items.Insert(0, new SpinnerViewModel());
 			Items.Add(new SpinnerViewModel());
-        }
+		}
 
-        private MonthViewModel CreateMonthViewModel(DateTime monthStart)
-            => monthViewModelFactory(monthStart.Year, monthStart.Month);
+		private MonthViewModel CreateMonthViewModel(DateTime monthStart)
+			=> monthViewModelFactory(monthStart.Year, monthStart.Month);
 
-        private async Task OnDateToggledMessageAsync(DateToggledMessage message)
-        {
-            var date = message.Date;
+		private async Task OnDateToggledMessageAsync(DateToggledMessage message)
+		{
+			var date = message.Date;
 
-            if (date > dateTimeProvider.Now.Date)
-                return;
+			if (date > dateTimeProvider.Now.Date)
+				return;
 
-            var dateViewModel = months.First(m => m.Year == date.Year && m.Month == date.Month).Dates.First(d => d.Date == date);
+			var dateViewModel = months.First(m => m.Year == date.Year && m.Month == date.Month).Dates.First(d => d.Date == date);
 
-            if (IsSelectingRange)
-            {
-                if (selectionStart.Date > dateViewModel.Date)
-                {
-                    for (var d = dateViewModel; d != selectionStart; d = GetNextDateViewModel(d))
-                        await MarkDateAsync(d);
-                }
-                else if (selectionStart.Date < dateViewModel.Date)
-                {
-                    for (var d = GetNextDateViewModel(selectionStart); true; d = GetNextDateViewModel(d))
-                    {
-                        await MarkDateAsync(d);
+			if (IsSelectingRange)
+			{
+				if (selectionStart.Date > dateViewModel.Date)
+				{
+					for (var d = dateViewModel; d != selectionStart; d = GetNextDateViewModel(d))
+						await MarkDateAsync(d);
+				}
+				else if (selectionStart.Date < dateViewModel.Date)
+				{
+					for (var d = GetNextDateViewModel(selectionStart); true; d = GetNextDateViewModel(d))
+					{
+						await MarkDateAsync(d);
 
-                        if (d == dateViewModel)
-                            break;
-                    }
-                }
-                else
-                    await UnmarkDateAsync(dateViewModel);
+						if (d == dateViewModel)
+							break;
+					}
+				}
+				else
+					await UnmarkDateAsync(dateViewModel);
 
-                selectionStart = null;
-            }
-            else
-            {
-                if (dateViewModel.IsMarked)
-                    await UnmarkDateAsync(dateViewModel);
-                else
-                {
-                    await MarkDateAsync(dateViewModel);
-                    selectionStart = dateViewModel;
-                }
-            }
+				selectionStart = null;
+			}
+			else
+			{
+				if (dateViewModel.IsMarked)
+					await UnmarkDateAsync(dateViewModel);
+				else
+				{
+					await MarkDateAsync(dateViewModel);
+					selectionStart = dateViewModel;
+				}
+			}
 
-            _ = RefreshExpectedDatesAsync();
-        }
+			_ = RefreshExpectedDatesAsync();
+		}
 
-        private async Task MarkDateAsync(DateViewModel dateViewModel)
-        {
-            if (dateViewModel.IsMarked)
-                return;
+		private async Task MarkDateAsync(DateViewModel dateViewModel)
+		{
+			if (dateViewModel.IsMarked)
+				return;
 
-            dateViewModel.IsMarked = true;
-            await this.mainModel.AddDateAsync(dateViewModel.Date);
-        }
+			dateViewModel.IsMarked = true;
+			await this.mainModel.AddDateAsync(dateViewModel.Date);
+		}
 
-        private async Task UnmarkDateAsync(DateViewModel dateViewModel)
-        {
-            if (!dateViewModel.IsMarked)
-                return;
+		private async Task UnmarkDateAsync(DateViewModel dateViewModel)
+		{
+			if (!dateViewModel.IsMarked)
+				return;
 
-            dateViewModel.IsMarked = false;
-            await this.mainModel.DeleteDateAsync(dateViewModel.Date);
-        }
+			dateViewModel.IsMarked = false;
+			await this.mainModel.DeleteDateAsync(dateViewModel.Date);
+		}
 
-        private bool IsSelectingRange
-            => selectionStart != null;
+		private bool IsSelectingRange
+			=> selectionStart != null;
 
-        private DateViewModel GetNextDateViewModel(DateViewModel dateViewModel)
-            => dateViewModel == dateViewModel.MonthViewModel.MonthDates.Last()
-            ? this.months[this.months.IndexOf(dateViewModel.MonthViewModel) + 1].MonthDates.First()
-            : dateViewModel.MonthViewModel.Dates[dateViewModel.MonthViewModel.Dates.IndexOf(dateViewModel) + 1];
+		private DateViewModel GetNextDateViewModel(DateViewModel dateViewModel)
+			=> dateViewModel == dateViewModel.MonthViewModel.MonthDates.Last()
+			? this.months[this.months.IndexOf(dateViewModel.MonthViewModel) + 1].MonthDates.First()
+			: dateViewModel.MonthViewModel.Dates[dateViewModel.MonthViewModel.Dates.IndexOf(dateViewModel) + 1];
 
 		private void RefreshMarkedDates()
 		{
@@ -193,24 +193,24 @@ namespace Ona.App.Features.Calendar
 			}
 		}
 		
-        private async Task RefreshExpectedDatesAsync()
-        {
+		private async Task RefreshExpectedDatesAsync()
+		{
 			this.mainModel.ObservedEnd = this.months.Last().MonthDates.Last().Date;
 
-            var expectedPeriods = await Task.Run(() => this.mainModel.ExpectedPeriods);
+			var expectedPeriods = await Task.Run(() => this.mainModel.ExpectedPeriods);
 
 			if (expectedPeriods.Count == 0)
-            {
-                foreach (var date in this.months.SelectMany(m => m.MonthDates))
-                    date.IsExpected = false;
-                return;
-            }
+			{
+				foreach (var date in this.months.SelectMany(m => m.MonthDates))
+					date.IsExpected = false;
+				return;
+			}
 
-            var lastMarkedDate = this.mainModel.MarkedDates.Last();
+			var lastMarkedDate = this.mainModel.MarkedDates.Last();
 
-            foreach (var date in this.months.SelectMany(m => m.MonthDates))
-                date.IsExpected = date.Date > lastMarkedDate
+			foreach (var date in this.months.SelectMany(m => m.MonthDates))
+				date.IsExpected = date.Date > lastMarkedDate
 					&& expectedPeriods.Any(p => date.Date >= p.Start && date.Date <= p.End);
-        }
-    }
+		}
+	}
 }

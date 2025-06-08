@@ -53,36 +53,36 @@
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-android|AnyCPU'">
-	  <AndroidPackageFormat>apk</AndroidPackageFormat>
-	  <ApplicationId>com.natalianaumova.ona</ApplicationId>
+		<AndroidPackageFormat>apk</AndroidPackageFormat>
+		<ApplicationId>com.natalianaumova.ona</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-android|AnyCPU'">
-	  <ApplicationId>com.natalianaumova.ona</ApplicationId>
+		<ApplicationId>com.natalianaumova.ona</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
-	  <ApplicationId>com.natalianaumova.ona</ApplicationId>
+		<ApplicationId>com.natalianaumova.ona</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-maccatalyst|AnyCPU'">
-	  <ApplicationId>com.natalianaumova.ona</ApplicationId>
+		<ApplicationId>com.natalianaumova.ona</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-windows10.0.19041.0|AnyCPU'">
-	  <ApplicationId>com.natalianaumova.ona</ApplicationId>
+		<ApplicationId>com.natalianaumova.ona</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
-	  <ApplicationId>com.natalianaumova.ona</ApplicationId>
+		<ApplicationId>com.natalianaumova.ona</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-maccatalyst|AnyCPU'">
-	  <ApplicationId>com.natalianaumova.ona</ApplicationId>
+		<ApplicationId>com.natalianaumova.ona</ApplicationId>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-windows10.0.19041.0|AnyCPU'">
-	  <ApplicationId>com.natalianaumova.ona</ApplicationId>
+		<ApplicationId>com.natalianaumova.ona</ApplicationId>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -104,12 +104,12 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <AndroidResource Remove="Build\**" />
-	  <Compile Remove="Build\**" />
-	  <EmbeddedResource Remove="Build\**" />
-	  <MauiCss Remove="Build\**" />
-	  <MauiXaml Remove="Build\**" />
-	  <None Remove="Build\**" />
+		<AndroidResource Remove="Build\**" />
+		<Compile Remove="Build\**" />
+		<EmbeddedResource Remove="Build\**" />
+		<MauiCss Remove="Build\**" />
+		<MauiXaml Remove="Build\**" />
+		<None Remove="Build\**" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -122,32 +122,32 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Features\Calendar\CalendarView.xaml.cs">
-	    <DependentUpon>CalendarView.xaml</DependentUpon>
-	  </Compile>
+		<Compile Update="Features\Calendar\CalendarView.xaml.cs">
+		<DependentUpon>CalendarView.xaml</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Features\Calendar\CalendarView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Features\Calendar\DateView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Features\Calendar\MonthView.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Controls\ListViewLite.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Features\Insights\InsightsPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Features\Settings\SettingsPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Features\Today\TodayPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
+		<MauiXaml Update="Features\Calendar\CalendarView.xaml">
+		<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Features\Calendar\DateView.xaml">
+		<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Features\Calendar\MonthView.xaml">
+		<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Controls\ListViewLite.xaml">
+		<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Features\Insights\InsightsPage.xaml">
+		<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Features\Settings\SettingsPage.xaml">
+		<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
+		<MauiXaml Update="Features\Today\TodayPage.xaml">
+		<Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 	</ItemGroup>
 </Project>

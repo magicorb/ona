@@ -4,12 +4,12 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 	xmlns:controls="clr-namespace:Ona.App.Controls"
 	x:Class="Ona.App.Features.Calendar.DateView">
-    <Grid
+	<Grid
 		RowSpacing="0" ColumnSpacing="0" Margin="0" Padding="0">
 		<Grid.GestureRecognizers>
 			<TapGestureRecognizer
 				Command="{Binding ToggleCommand}"
-                NumberOfTapsRequired="1" />
+				NumberOfTapsRequired="1" />
 		</Grid.GestureRecognizers>
 		
 		<Ellipse
@@ -32,7 +32,7 @@
 		</Ellipse>
 
 		<Label 
-	        Text="{Binding Date.Day}"
+			Text="{Binding Date.Day}"
 			FontSize="32" TextColor="{StaticResource Grayscale700}"
 			HorizontalOptions="Center" VerticalOptions="Center">
 			<Label.Triggers>
@@ -45,7 +45,7 @@
 		<Ellipse
 			Fill="{StaticResource AccentSecondary}"
 			WidthRequest="12" HeightRequest="12"
-			HorizontalOptions="End"  VerticalOptions="Start"
+			HorizontalOptions="End"	VerticalOptions="Start"
 			IsVisible="{Binding IsToday}"/>
 	</Grid>
 </ContentView>

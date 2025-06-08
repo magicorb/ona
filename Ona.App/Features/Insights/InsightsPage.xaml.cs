@@ -10,5 +10,5 @@ public partial class InsightsPage : ContentPage
 	private async void ContentPage_Appearing(object sender, EventArgs e)
 	{
 		await ((InsightsViewModel)BindingContext).RefreshAsync();
-    }
+	}
 }

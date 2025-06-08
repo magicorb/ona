@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentView xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 			 xmlns:calendar="clr-namespace:Ona.App.Features.Calendar"
-             x:Class="Ona.App.Features.Calendar.MonthView">
+			 x:Class="Ona.App.Features.Calendar.MonthView">
 	<ContentView.Triggers>
 		<DataTrigger TargetType="ContentView" Binding="{Binding IsVisible}" Value="False">
 			<Setter Property="Opacity" Value="0.01"/>
 		</DataTrigger>
 	</ContentView.Triggers>
-    <VerticalStackLayout>
-        <Label 
-            Text="{Binding MonthName}"
-            HorizontalOptions="Start" HeightRequest="24"
+	<VerticalStackLayout>
+		<Label 
+			Text="{Binding MonthName}"
+			HorizontalOptions="Start" HeightRequest="24"
 			FontSize="Subtitle"/>
 
 		<CollectionView
@@ -20,7 +20,7 @@
 			<CollectionView.ItemsLayout>
 				<GridItemsLayout
 					Orientation="Vertical"
-                    Span="7" />
+					Span="7" />
 			</CollectionView.ItemsLayout>
 			<CollectionView.ItemTemplate>
 				<DataTemplate x:DataType="x:String">
@@ -36,7 +36,7 @@
 			<CollectionView.ItemsLayout>
 				<GridItemsLayout
 					Orientation="Vertical"
-                    Span="7" />
+					Span="7" />
 			</CollectionView.ItemsLayout>
 			<CollectionView.ItemTemplate>
 				<DataTemplate x:DataType="calendar:DateViewModel">
