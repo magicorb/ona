@@ -8,6 +8,6 @@ namespace Ona.App.Model
 {
 	public interface IPeriodStatsProvider
 	{
-		DateTimePeriod? GetNextPeriod(DateTime[] orderedDates);
+		IEnumerator<DateTimePeriod> GetExpectedPeriodsEnumerator(DateTime[] orderedDates);
 	}
 }
