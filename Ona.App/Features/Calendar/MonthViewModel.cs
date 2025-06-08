@@ -44,6 +44,9 @@ namespace Ona.App.Features.Calendar
 
         public ReadOnlyCollection<DateViewModel> Dates { get; }
 
+        public IEnumerable<DateViewModel> MonthDates
+            => Dates.Where(d => d.IsCurrentMonth);
+
         private ReadOnlyCollection<DateViewModel> GenerateDates()
             => new ReadOnlyCollection<DateViewModel>(
                 MonthStart.StartOfWeek(DayOfWeek.Monday)
