@@ -8,7 +8,7 @@ namespace Ona.App.Model
 {
 	public interface IPeriodStatsProvider
 	{
-		IEnumerator<DateTimePeriod> GetExpectedPeriodsEnumerator(DateTime[] orderedDates);
+		IEnumerator<DateTimePeriod> GetExpectedPeriodsEnumerator(IReadOnlyList<DateTimePeriod> orderedPeriods);
 
 		IReadOnlyList<DateTimePeriod> GetDatePeriods(IEnumerable<DateTime> orderedDates);
 
