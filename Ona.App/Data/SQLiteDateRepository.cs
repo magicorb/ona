@@ -57,8 +57,6 @@ namespace Ona.App.Data
 
 				await this.connection.CreateTablesAsync(CreateFlags.None, typeof(DateRecord));
 
-				await this.connection.Table<DateRecord>().DeleteAsync(d => true);
-
 				this.isInitialized = true;
 			}
 			finally
