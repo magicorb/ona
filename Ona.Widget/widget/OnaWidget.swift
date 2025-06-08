@@ -10,46 +10,40 @@ import SwiftUI
 
 struct Provider: TimelineProvider {
     func placeholder(in context: Context) -> PeriodStateEntry {
-        PeriodStateEntry(date: Date(), emoji: "😀", count: 0)
+        PeriodStateEntry(date: Date(), start: Date(), duration: 0, interval: 0)
     }
 
     func getSnapshot(in context: Context, completion: @escaping (PeriodStateEntry) -> ()) {
-        let entry = PeriodStateEntry(date: Date(), emoji: "😀", count: 0)
+        let entry = PeriodStateEntry(date: Date(), start: Date(), duration: 0, interval: 0)
         completion(entry)
     }
 
     func getTimeline(in context: Context, completion: @escaping (Timeline<Entry>) -> ()) {
-        var entries: [PeriodStateEntry] = []
+        let periodState = getPeriodState();
+        
+        let entry = PeriodStateEntry(date: Date(), start: periodState.start, duration: Int(periodState.duration), interval: Int(periodState.interval))
 
-        let count = getCount()
-                
-        // Generate a timeline consisting of five entries an hour apart, starting from the current date.
-        let currentDate = Date()
-        for hourOffset in 0 ..< 5 {
-            let entryDate = Calendar.current.date(byAdding: .hour, value: hourOffset, to: currentDate)!
-            let entry = PeriodStateEntry(date: entryDate, emoji: "😀", count: count)
-            entries.append(entry)
-        }
-
-        let timeline = Timeline(entries: entries, policy: .atEnd)
+        let timeline = Timeline(entries: [entry], policy: .atEnd)
+        
         completion(timeline)
     }
     
-    func getCount() -> Int {
-        let fallback = 0;
+    func getPeriodState() -> PeriodState {
+        let fallback = PeriodState(start: Date(), duration: 0, interval: 0)
         
-        guard let userDefaults = UserDefaults(suiteName: "group.com.natalianaumova.ona") else {
+        guard let userDefault = UserDefaults(suiteName: "group.com.natalianaumova.ona")?.object(forKey: "PeriodState") else {
             return fallback
         }
-        return userDefaults.integer(forKey: "Count")// ?? fallback
-        //return 4
+        let periodState = try? JSONDecoder().decode(PeriodState.self, from: userDefault as! Data)
+        return periodState ?? fallback
     }
 }
 
 struct PeriodStateEntry: TimelineEntry {
     let date: Date
-    let emoji: String
-    let count: Int
+    let start: Date
+    let duration: Int
+    let interval: Int
 }
 
 struct OnaWidgetEntryView : View {
@@ -57,14 +51,22 @@ struct OnaWidgetEntryView : View {
 
     var body: some View {
         VStack {
-            Text("Now:")
-            Text(entry.date, style: .time)
-
-            Text("Emoji:")
-            Text(entry.emoji)
-            
-            Text("Count:")
-            Text("\(entry.count)")
+            HStack {
+                Text("Today:")
+                Text(entry.date, style: .date)
+            }
+            HStack {
+                Text("Start:")
+                Text(entry.start, style: .date)
+            }
+            HStack {
+                Text("Duration:")
+                Text(String(entry.duration))
+            }
+            HStack {
+                Text("Interval:")
+                Text(String(entry.interval))
+            }
         }
     }
 }
@@ -88,9 +90,14 @@ struct OnaWidget: Widget {
     }
 }
 
+struct PeriodState : Codable {
+    var start: Date
+    var duration: Int
+    var interval: Int
+}
+
 #Preview(as: .systemSmall) {
     OnaWidget()
 } timeline: {
-    PeriodStateEntry(date: .now, emoji: "😀", count: 0)
-    PeriodStateEntry(date: .now, emoji: "🤩", count: 0)
+    PeriodStateEntry(date: .now, start: Date(), duration: 0, interval: 0)
 }
