@@ -36,7 +36,6 @@ public class DateViewModel : ObservableObject
 
 		var today = this.dateTimeProvider.Now.Date;
 
-		IsToday = Date.Date == today;
 		IsPast = Date.Date < today;
 		IsFuture = Date.Date > today;
 
@@ -46,8 +45,6 @@ public class DateViewModel : ObservableObject
 	public DateTime Date { get; }
 
 	public MonthViewModel MonthViewModel { get; }
-
-	public bool IsToday { get; }
 
 	public bool IsPast { get; }
 

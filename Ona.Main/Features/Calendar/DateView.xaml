@@ -44,11 +44,5 @@
 				</DataTrigger>
 			</Label.Triggers>
 		</Label>
-		
-		<Ellipse
-			Fill="{StaticResource AccentSecondary}"
-			WidthRequest="12" HeightRequest="12"
-			HorizontalOptions="End"	VerticalOptions="Start"
-			IsVisible="{Binding IsToday}"/>
 	</Grid>
 </ContentView>
