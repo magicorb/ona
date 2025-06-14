@@ -28,10 +28,6 @@ public interface IMainModel
 
 	Task DeleteDateAsync(DateTime date);
 
-	Task AddDraftDateAsync(DateTime date);
-
-	void CompleteDraftDate(DateTime date);
-
 	Task DeleteAllAsync();
 
 	Task ImportAsync(IEnumerable<DateTime> dates);

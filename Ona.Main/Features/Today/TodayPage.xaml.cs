@@ -27,11 +27,6 @@ private void CalendarView_SizeChanged(object sender, EventArgs e)
 private TodayViewModel ViewModel
 	=> (TodayViewModel)BindingContext;
 
-private void ContentPage_Unloaded(object sender, EventArgs e)
-{
-	ViewModel.CalendarViewModel.ClearSelection();
-}
-
 private void ContentPage_Loaded(object sender, EventArgs e)
 {
 	if (this.isScrollingInitialized)

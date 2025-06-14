@@ -18,7 +18,6 @@ public class MainModel : IMainModel
 	private Task? initializeTask;
 
 	private List<DateTime> markedDates = null!;
-	private HashSet<DateTime> draftDates = new HashSet<DateTime>();
 	private IReadOnlyList<DateTimePeriod>? markedPeriods;
 	private List<DateTimePeriod>? expectedPeriods;
 	private int? expectedDuration;
@@ -80,18 +79,6 @@ public class MainModel : IMainModel
 		OnDatesChanged();
 	}
 
-	public async Task AddDraftDateAsync(DateTime date)
-	{
-		this.draftDates.Add(date);
-		await AddDateAsync(date);
-	}
-
-	public void CompleteDraftDate(DateTime date)
-	{
-		this.draftDates.Remove(date);
-		OnDatesChanged();
-	}
-
 	public IReadOnlyList<DateTimePeriod> MarkedPeriods
 		=> this.markedPeriods
 		?? (this.markedPeriods = this.markedDates.GetDatePeriods());
@@ -146,18 +133,15 @@ public class MainModel : IMainModel
 
 	private int GetExpectedDuration()
 	{
-		var nonDraftPeriods = this.markedDates.Where(d => !IsDraft(d)).GetDatePeriods();
+		var periods = this.markedDates.GetDatePeriods();
 
-		if (nonDraftPeriods.Count == 0)
+		if (periods.Count == 0)
 			return DefaultDuration;
 
 		var lastPeriod = MarkedPeriods.Last();
-		var averageDuration = GetAverageDuration(nonDraftPeriods);
+		var averageDuration = GetAverageDuration(periods);
 
-		if (lastPeriod.Dates().All(IsDraft))
-			return averageDuration;
-
-		var previousAverageDuration = GetAverageDuration(nonDraftPeriods.SkipLast(1));
+		var previousAverageDuration = GetAverageDuration(periods.SkipLast(1));
 		var isLastPeriodInProgress = lastPeriod.Start.AddDays(previousAverageDuration - 1) > this.dateTimeProvider.Now.Date;
 
 		return isLastPeriodInProgress ? previousAverageDuration : averageDuration;
@@ -187,9 +171,6 @@ public class MainModel : IMainModel
 		=> periods.Any()
 		? (int)Math.Round(periods.Average(p => p.DayCount()), MidpointRounding.AwayFromZero)
 		: DefaultDuration;
-
-	private bool IsDraft(DateTime date)
-		=> this.draftDates.Contains(date);
 
 	private void OnDatesChanged()
 	{

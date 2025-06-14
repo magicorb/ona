@@ -8,7 +8,7 @@
 	x:Class="Ona.Main.Features.Today.TodayPage"
 	x:DataType="today:TodayViewModel"
 	Title="Today"
-	Loaded="ContentPage_Loaded" Unloaded="ContentPage_Unloaded">
+	Loaded="ContentPage_Loaded">
 	<Grid
 		Padding="16,0">
 		<Grid.RowDefinitions>
