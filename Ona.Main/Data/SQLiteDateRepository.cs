@@ -54,7 +54,7 @@ public class SQLiteDateRepository : IDateRepository
                 return;
 
             this.connection = new SQLiteAsyncConnection(
-                Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Database.db3"),
+                Path.Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.LocalApplicationData), "Database.db3"),
                 SQLiteOpenFlags.ReadWrite | SQLiteOpenFlags.Create);
 
             await this.connection.CreateTablesAsync(CreateFlags.None, typeof(DateRecord));

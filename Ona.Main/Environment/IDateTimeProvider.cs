@@ -1,4 +1,4 @@
-﻿namespace Ona.Main.Model;
+﻿namespace Ona.Main.Environment;
 
 public interface IDateTimeProvider
 {

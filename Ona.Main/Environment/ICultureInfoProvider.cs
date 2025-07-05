@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Ona.Main.Model;
+namespace Ona.Main.Environment;
 
 public interface ICultureInfoProvider
 {

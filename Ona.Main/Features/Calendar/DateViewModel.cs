@@ -1,7 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using Ona.Main.Model;
+using Ona.Main.Environment;
 using System.Windows.Input;
 
 namespace Ona.Main.Features.Calendar;
