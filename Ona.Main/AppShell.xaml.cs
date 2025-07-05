@@ -2,17 +2,17 @@
 
 public partial class AppShell : Shell
 {
-	public AppShell(AppShellViewModel viewModel)
-	{
-		InitializeComponent();
+    public AppShell(AppShellViewModel viewModel)
+    {
+        InitializeComponent();
 
-		BindingContext = viewModel;
-	}
+        BindingContext = viewModel;
+    }
 
-	protected override async void OnAppearing()
-	{
-		base.OnAppearing();
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
 
-		await ((AppShellViewModel)BindingContext).InitializeAsync();
-	}
+        await ((AppShellViewModel)BindingContext).InitializeAsync();
+    }
 }

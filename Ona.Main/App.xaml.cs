@@ -1,6 +1,4 @@
 ﻿using Ona.Main.Data;
-using System;
-using System.Runtime.InteropServices;
 
 namespace Ona.Main;
 
@@ -11,28 +9,28 @@ public partial class App : Application
 	//public extern static int ReloadWidgets();
 #endif
 
-	public App(AppShell appShell)
-	{
-		InitializeComponent();
+    public App(AppShell appShell)
+    {
+        InitializeComponent();
 
-		PropertyMapperConfigurator.Configure();
+        PropertyMapperConfigurator.Configure();
 
-		MainPage = appShell;
-	}
+        MainPage = appShell;
+    }
 
-	protected override void OnStart()
-	{
-		base.OnStart();
+    protected override void OnStart()
+    {
+        base.OnStart();
 
-		var dataPublisher = Handler.MauiContext!.Services.GetService<IDataPublisher>()!;
-		_ = dataPublisher.StartAsync();
-	}
+        var dataPublisher = Handler.MauiContext!.Services.GetService<IDataPublisher>()!;
+        _ = dataPublisher.StartAsync();
+    }
 
-	protected override void OnSleep()
-	{
-		base.OnSleep();
+    protected override void OnSleep()
+    {
+        base.OnSleep();
 #if IOS
 		//ReloadWidgets();
 #endif
-	}
+    }
 }

@@ -5,31 +5,31 @@ namespace Ona.Main.Features.Today;
 
 public partial class TodayPage : ContentPage
 {
-private bool isScrollingInitialized;
+    private bool isScrollingInitialized;
 
-public TodayPage()
-{
-	InitializeComponent();
+    public TodayPage()
+    {
+        InitializeComponent();
 
-	this.RegisterViewModel();
-}
+        this.RegisterViewModel();
+    }
 
-private void CalendarView_SizeChanged(object sender, EventArgs e)
-{
-	var areTitlesLoaded = ViewModel.Title != null && ViewModel.Subtitle != null;
-	if (!this.isScrollingInitialized && areTitlesLoaded)
-	{
-		this.isScrollingInitialized = true;
-		Dispatcher.Dispatch(async () => await ((CalendarView)sender).InitializeScrollingAsync());
-	}
-}
+    private void CalendarView_SizeChanged(object sender, EventArgs e)
+    {
+        var areTitlesLoaded = ViewModel.Title != null && ViewModel.Subtitle != null;
+        if (!this.isScrollingInitialized && areTitlesLoaded)
+        {
+            this.isScrollingInitialized = true;
+            Dispatcher.Dispatch(async () => await ((CalendarView)sender).InitializeScrollingAsync());
+        }
+    }
 
-private TodayViewModel ViewModel
-	=> (TodayViewModel)BindingContext;
+    private TodayViewModel ViewModel
+        => (TodayViewModel)BindingContext;
 
-private void ContentPage_Loaded(object sender, EventArgs e)
-{
-	if (this.isScrollingInitialized)
-		_ = CalendarView.ScrollToCurrentMonthAsync();
-}
+    private void ContentPage_Loaded(object sender, EventArgs e)
+    {
+        if (this.isScrollingInitialized)
+            _ = CalendarView.ScrollToCurrentMonthAsync();
+    }
 }

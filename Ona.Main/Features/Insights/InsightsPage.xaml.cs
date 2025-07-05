@@ -4,10 +4,10 @@ namespace Ona.Main.Features.Insights;
 
 public partial class InsightsPage : ContentPage
 {
-public InsightsPage()
-{
-	InitializeComponent();
+    public InsightsPage()
+    {
+        InitializeComponent();
 
-	this.RegisterViewModel();
-}
+        this.RegisterViewModel();
+    }
 }

@@ -12,54 +12,54 @@ namespace Ona.Main;
 
 public static class DependencyInjectionExtensions
 {
-	public static MauiAppBuilder RegisterAll(this MauiAppBuilder builder)
-	{
-		var services = builder.Services;
+    public static MauiAppBuilder RegisterAll(this MauiAppBuilder builder)
+    {
+        var services = builder.Services;
 
-		services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
+        services.AddSingleton<IDateTimeProvider, DateTimeProvider>();
 
-		services.AddSingleton<ICultureInfoProvider, CultureInfoProvider>();
-		
-		services.AddSingleton<SQLiteDateRepository>();
-		
-		services.AddSingleton<IDateRepository, SQLiteDateRepository>();
-		
-		services.AddSingleton<IMessenger, WeakReferenceMessenger>();
+        services.AddSingleton<ICultureInfoProvider, CultureInfoProvider>();
 
-		services.AddSingleton<Func<Page, IUserNotificationService>>(sp => page
-			=> new UserNotificationService(page));
+        services.AddSingleton<SQLiteDateRepository>();
 
-		services.AddSingleton(FilePicker.Default);
+        services.AddSingleton<IDateRepository, SQLiteDateRepository>();
 
-		services.AddSingleton(FileSaver.Default);
+        services.AddSingleton<IMessenger, WeakReferenceMessenger>();
 
-		services.AddSingleton<IMainModel, MainModel>();
+        services.AddSingleton<Func<Page, IUserNotificationService>>(sp => page
+            => new UserNotificationService(page));
 
-		services.AddSingleton<IDataPublisher, DataPublisher>();
+        services.AddSingleton(FilePicker.Default);
 
-		services.AddTransient<TodayViewModel>();
-		
-		services.AddTransient<CalendarViewModel>();
-		
-		services.AddSingleton<MonthViewModelFactory>(sp => (year, month, currentYear)
-			=> new MonthViewModel(
-				sp.GetService<ICultureInfoProvider>()!,
-				sp.GetService<DateViewModelFactory>()!,
-				year,
-				month,
-				currentYear));
-		
-		services.AddSingleton<DateViewModelFactory>(sp => (date, monthViewModel, currentYear, currentMonth)
-			=> new DateViewModel(sp.GetService<IDateTimeProvider>()!, sp.GetService<IMessenger>()!, date, monthViewModel, currentYear, currentMonth));
+        services.AddSingleton(FileSaver.Default);
 
-		services.AddTransient<InsightsViewModel>();
+        services.AddSingleton<IMainModel, MainModel>();
 
-		services.AddTransient<SettingsViewModel>();
+        services.AddSingleton<IDataPublisher, DataPublisher>();
 
-		services.AddSingleton<AppShellViewModel>();
+        services.AddTransient<TodayViewModel>();
 
-		services.AddSingleton<AppShell>();
+        services.AddTransient<CalendarViewModel>();
 
-		return builder;
-	}
+        services.AddSingleton<MonthViewModelFactory>(sp => (year, month, currentYear)
+            => new MonthViewModel(
+                sp.GetService<ICultureInfoProvider>()!,
+                sp.GetService<DateViewModelFactory>()!,
+                year,
+                month,
+                currentYear));
+
+        services.AddSingleton<DateViewModelFactory>(sp => (date, monthViewModel, currentYear, currentMonth)
+            => new DateViewModel(sp.GetService<IDateTimeProvider>()!, sp.GetService<IMessenger>()!, date, monthViewModel, currentYear, currentMonth));
+
+        services.AddTransient<InsightsViewModel>();
+
+        services.AddTransient<SettingsViewModel>();
+
+        services.AddSingleton<AppShellViewModel>();
+
+        services.AddSingleton<AppShell>();
+
+        return builder;
+    }
 }

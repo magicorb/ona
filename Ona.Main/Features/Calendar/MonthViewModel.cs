@@ -8,64 +8,64 @@ namespace Ona.Main.Features.Calendar;
 
 public class MonthViewModel : ObservableObject
 {
-	private readonly ICultureInfoProvider cultureProvider;
-	private readonly DateViewModelFactory dateViewModelFactory;
-	
-	private bool isVisible;
+    private readonly ICultureInfoProvider cultureProvider;
+    private readonly DateViewModelFactory dateViewModelFactory;
 
-	public MonthViewModel(
-		ICultureInfoProvider cultureProvider,
-		DateViewModelFactory dateViewModelFactory,
-		int year,
-		int month,
-		int currentYear)
-	{
-		this.cultureProvider = cultureProvider;
-		this.dateViewModelFactory = dateViewModelFactory;
+    private bool isVisible;
 
-		Year = year;
-		Month = month;
+    public MonthViewModel(
+        ICultureInfoProvider cultureProvider,
+        DateViewModelFactory dateViewModelFactory,
+        int year,
+        int month,
+        int currentYear)
+    {
+        this.cultureProvider = cultureProvider;
+        this.dateViewModelFactory = dateViewModelFactory;
 
-		var monthName = MonthStart.ToString("MMMM", CultureInfo.CreateSpecificCulture("en-us"));
-		Title = year == currentYear ? monthName : $"{monthName} {year}";
+        Year = year;
+        Month = month;
 
-		DaysOfWeek = CultureInfo.CurrentUICulture.DateTimeFormat.GetAbbreviatedDayNames();
+        var monthName = MonthStart.ToString("MMMM", CultureInfo.CreateSpecificCulture("en-us"));
+        Title = year == currentYear ? monthName : $"{monthName} {year}";
 
-		Dates = GenerateDates();
-	}
+        DaysOfWeek = CultureInfo.CurrentUICulture.DateTimeFormat.GetAbbreviatedDayNames();
 
-	public int Year { get; }
+        Dates = GenerateDates();
+    }
 
-	public int Month { get; }
+    public int Year { get; }
 
-	public string Title { get; }
+    public int Month { get; }
 
-	public IEnumerable<string> DaysOfWeek { get; }
+    public string Title { get; }
 
-	public ReadOnlyCollection<DateViewModel> Dates { get; }
+    public IEnumerable<string> DaysOfWeek { get; }
 
-	public IEnumerable<DateViewModel> MonthDates
-		=> Dates.Where(d => d.IsCurrentMonth);
+    public ReadOnlyCollection<DateViewModel> Dates { get; }
 
-	public DateTime MonthStart
-		=> new DateTime(Year, Month, 1);
+    public IEnumerable<DateViewModel> MonthDates
+        => Dates.Where(d => d.IsCurrentMonth);
 
-	public ICommand? TriggerShowCommand { get; set; }
+    public DateTime MonthStart
+        => new DateTime(Year, Month, 1);
 
-	public void Show()
-	{
-		if (this.isVisible)
-			return;
-		this.isVisible = true;
-		TriggerShowCommand?.Execute(CancellationToken.None);
-	}
+    public ICommand? TriggerShowCommand { get; set; }
 
-	private ReadOnlyCollection<DateViewModel> GenerateDates()
-		=> new ReadOnlyCollection<DateViewModel>(
-			MonthStart.StartOfWeek(this.cultureProvider.CurrentUICulture.DateTimeFormat.FirstDayOfWeek)
-				.DateRange(MonthStart.AddMonths(1).AddDays(-1))
-				.Select(d => dateViewModelFactory(d, this, Year, Month))
-				.ToList());
+    public void Show()
+    {
+        if (this.isVisible)
+            return;
+        this.isVisible = true;
+        TriggerShowCommand?.Execute(CancellationToken.None);
+    }
+
+    private ReadOnlyCollection<DateViewModel> GenerateDates()
+        => new ReadOnlyCollection<DateViewModel>(
+            MonthStart.StartOfWeek(this.cultureProvider.CurrentUICulture.DateTimeFormat.FirstDayOfWeek)
+                .DateRange(MonthStart.AddMonths(1).AddDays(-1))
+                .Select(d => dateViewModelFactory(d, this, Year, Month))
+                .ToList());
 }
 
 public delegate MonthViewModel MonthViewModelFactory(int year, int month, int currentYear);

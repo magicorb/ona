@@ -1,76 +1,73 @@
-using CommunityToolkit.Mvvm.Messaging;
 using Ona.Main.Controls;
-using Ona.Main.Features.Calendar;
-using Ona.Main.Model;
 
 namespace Ona.Main.Features.Calendar;
 
 public partial class CalendarView : ContentView
 {
-private double scrollY;
+    private double scrollY;
 
-public CalendarView()
-{
-	InitializeComponent();
+    public CalendarView()
+    {
+        InitializeComponent();
 
-	this.RegisterViewModel();
-}
+        this.RegisterViewModel();
+    }
 
-public async Task InitializeScrollingAsync()
-{
-	await ScrollToCurrentMonthAsync();
-	ViewModel.CurentMonth.Show();
+    public async Task InitializeScrollingAsync()
+    {
+        await ScrollToCurrentMonthAsync();
+        ViewModel.CurentMonth.Show();
 
-	MonthListViewLite.Scrolled += MonthListViewLite_FirstScrolled;
-}
+        MonthListViewLite.Scrolled += MonthListViewLite_FirstScrolled;
+    }
 
-public async Task ScrollToCurrentMonthAsync()
-{
-	var index = ViewModel.Items.IndexOf(ViewModel.CurentMonth);
-	await MonthListViewLite.ScrollToIndexAsync(index, ScrollToPosition.End, false);
-}
+    public async Task ScrollToCurrentMonthAsync()
+    {
+        var index = ViewModel.Items.IndexOf(ViewModel.CurentMonth);
+        await MonthListViewLite.ScrollToIndexAsync(index, ScrollToPosition.End, false);
+    }
 
-private CalendarViewModel ViewModel
-	=> (CalendarViewModel)BindingContext;
+    private CalendarViewModel ViewModel
+        => (CalendarViewModel)BindingContext;
 
-private void MonthListViewLite_FirstScrolled(object? sender, ScrolledEventArgs e)
-{
-	Dispatcher.Dispatch(() =>
-	{
-		ViewModel.ShowHiddenMonths();
+    private void MonthListViewLite_FirstScrolled(object? sender, ScrolledEventArgs e)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            ViewModel.ShowHiddenMonths();
 
-		MonthListViewLite.Scrolled -= MonthListViewLite_FirstScrolled;
-		MonthListViewLite.Scrolled += MonthListViewLite_Scrolled;
-	});
-}
+            MonthListViewLite.Scrolled -= MonthListViewLite_FirstScrolled;
+            MonthListViewLite.Scrolled += MonthListViewLite_Scrolled;
+        });
+    }
 
-private void MonthListViewLite_Scrolled(object? sender, ScrolledEventArgs e)
-{
-	Dispatcher.Dispatch(() =>
-	{
-		var delta = e.ScrollY - this.scrollY;
-		this.scrollY = e.ScrollY;
+    private void MonthListViewLite_Scrolled(object? sender, ScrolledEventArgs e)
+    {
+        Dispatcher.Dispatch(() =>
+        {
+            var delta = e.ScrollY - this.scrollY;
+            this.scrollY = e.ScrollY;
 
-		if (delta < 0 && e.ScrollY <= 1)
-			_ = ViewModel.InsertMonthAsync();
-		else if (delta > 0 && e.ScrollY >= MonthListViewLite.ContentHeight - MonthListViewLite.Height - 1)
-			_ = ViewModel.AppendMonthAsync();
-	});
-}
+            if (delta < 0 && e.ScrollY <= 1)
+                _ = ViewModel.InsertMonthAsync();
+            else if (delta > 0 && e.ScrollY >= MonthListViewLite.ContentHeight - MonthListViewLite.Height - 1)
+                _ = ViewModel.AppendMonthAsync();
+        });
+    }
 
-private void MonthListViewLite_ItemAdded(object sender, ListItemAddedEventArgs e)
-{
-	if (e.Index != 1)
-		return;
+    private void MonthListViewLite_ItemAdded(object sender, ListItemAddedEventArgs e)
+    {
+        if (e.Index != 1)
+            return;
 
-	var view = (View)e.Item;
+        var view = (View)e.Item;
 
 #if IOS
 	var sizeChangeCount = 0;
 #endif
 
-	void InsertedItem_SizeChanged(object? sender2, EventArgs e2)
-	{
+        void InsertedItem_SizeChanged(object? sender2, EventArgs e2)
+        {
 #if IOS
 		if (sizeChangeCount == 0)
 		{
@@ -78,10 +75,10 @@ private void MonthListViewLite_ItemAdded(object sender, ListItemAddedEventArgs e
 			return;
 		}
 #endif
-		view.SizeChanged -= InsertedItem_SizeChanged;
-		_ = MonthListViewLite.ScrollToOffsetAsync(MonthListViewLite.ScrollY + view.DesiredSize.Height, false);
-	}
+            view.SizeChanged -= InsertedItem_SizeChanged;
+            _ = MonthListViewLite.ScrollToOffsetAsync(MonthListViewLite.ScrollY + view.DesiredSize.Height, false);
+        }
 
-	view.SizeChanged += InsertedItem_SizeChanged;
-}
+        view.SizeChanged += InsertedItem_SizeChanged;
+    }
 }
