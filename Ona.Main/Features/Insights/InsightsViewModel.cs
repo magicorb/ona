@@ -33,17 +33,17 @@ public class InsightsViewModel : ViewModelBase
     {
         await this.mainModel.OnInitializedAsync();
 
-        var periods = await Task.Run(() => this.mainModel.MarkedPeriods);
+        var cycles = await Task.Run(() => this.mainModel.Cycles);
         int duration = default;
         int interval = default;
         await Task.Run(() =>
         {
-            duration = this.mainModel.ExpectedDuration;
-            interval = this.mainModel.ExpectedInterval;
+            duration = this.mainModel.ExpectedPeriodLength;
+            interval = this.mainModel.ExpectedCycleLength;
         });
 
-        LastPeriodStart = periods.Any()
-            ? periods.Last().Start.ToString("dd MMM yyyy")
+        LastPeriodStart = cycles.Any()
+            ? cycles.Last()[0].ToString("dd MMM yyyy")
             : "No data";
 
         AverageCycleLength = $"{duration} days";

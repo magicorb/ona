@@ -146,7 +146,7 @@ public class CalendarViewModel : ViewModelBase, IDisposable
                 await MarkDateAsync(dateViewModel);
             else
             {
-                var expectedDuration = this.mainModel.ExpectedDuration;
+                var expectedDuration = this.mainModel.ExpectedPeriodLength;
                 var dateToMark = dateViewModel;
                 for (var i = 0; i < expectedDuration; i++)
                 {
@@ -186,20 +186,10 @@ public class CalendarViewModel : ViewModelBase, IDisposable
 
     private async Task RefreshMarkedDatesAsync()
     {
-        var markedPeriods = await Task.Run(() => this.mainModel.MarkedPeriods);
-
-        if (markedPeriods.Count == 0)
-        {
-            foreach (var date in this.months.SelectMany(m => m.MonthDates))
-                date.IsMarked = false;
-            return;
-        }
-
         var lastMarkedDate = this.mainModel.MarkedDates.Last();
 
         foreach (var date in this.months.SelectMany(m => m.MonthDates))
-            date.IsMarked = date.Date <= lastMarkedDate
-                && markedPeriods.Any(p => date.Date >= p.Start && date.Date <= p.End);
+            date.IsMarked = date.Date <= lastMarkedDate && this.mainModel.MarkedDates.Contains(date.Date);
     }
 
     private async Task RefreshExpectedDatesAsync()

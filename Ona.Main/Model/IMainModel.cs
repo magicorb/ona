@@ -6,13 +6,13 @@ public interface IMainModel
 
     DateTime ObservedEnd { get; set; }
 
-    IReadOnlyList<DateTimePeriod> MarkedPeriods { get; }
+    IList<IList<DateTime>> Cycles { get; }
 
     IReadOnlyList<DateTimePeriod> ExpectedPeriods { get; }
 
-    int ExpectedDuration { get; }
+    int ExpectedPeriodLength { get; }
 
-    int ExpectedInterval { get; }
+    int ExpectedCycleLength { get; }
 
     Task InitializeAsync();
 

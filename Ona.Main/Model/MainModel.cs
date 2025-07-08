@@ -1,20 +1,21 @@
 ﻿using Ona.Main.Data;
 using Ona.Main.Environment;
+using Ona.Model;
 
 namespace Ona.Main.Model;
 
 public class MainModel : IMainModel
 {
-    private const int DefaultDuration = 5;
-    private const int DefaultInterval = 28;
+    private const int DefaultPeriodLength = 5;
+    private const int DefaultCycleLength = 28;
 
     private readonly IDateRepository dateRepository;
     private readonly IDateTimeProvider dateTimeProvider;
     private Task? initializeTask;
 
     private List<DateTime> markedDates = null!;
-    private IReadOnlyList<DateTimePeriod>? markedPeriods;
     private List<DateTimePeriod>? expectedPeriods;
+    private IList<IList<DateTime>>? cycles;
     private int? expectedDuration;
     private int? expectedInterval;
     private DateTime? endDate;
@@ -74,21 +75,21 @@ public class MainModel : IMainModel
         OnDatesChanged();
     }
 
-    public IReadOnlyList<DateTimePeriod> MarkedPeriods
-        => this.markedPeriods
-        ?? (this.markedPeriods = this.markedDates.GetDatePeriods());
+    public IList<IList<DateTime>> Cycles
+        => this.cycles
+        ?? (this.cycles = this.markedDates.GetCycles());
 
     public IReadOnlyList<DateTimePeriod> ExpectedPeriods
         => this.expectedPeriods
         ?? (this.expectedPeriods = GetExpectedPeriods().ToList());
 
-    public int ExpectedInterval
+    public int ExpectedCycleLength
         => this.expectedInterval
-        ?? (this.expectedInterval = GetExpectedInterval()).Value;
+        ?? (this.expectedInterval = GetExpectedCycleLength()).Value;
 
-    public int ExpectedDuration
+    public int ExpectedPeriodLength
         => this.expectedDuration
-        ?? (this.expectedDuration = GetExpectedDuration()).Value;
+        ?? (this.expectedDuration = GetExpectedPeriodLength()).Value;
 
     public async Task DeleteAllAsync()
     {
@@ -115,62 +116,59 @@ public class MainModel : IMainModel
         this.markedDates = (await this.dateRepository.GetDateRecordsAsync()).Select(d => d.Date).ToList();
     }
 
-    private int GetExpectedInterval()
+    private int GetExpectedCycleLength()
     {
-        var intervals = new List<int>();
-        for (var i = 0; i < MarkedPeriods.Count - 1; i++)
-            intervals.Add((MarkedPeriods[i + 1].Start - MarkedPeriods[i].Start).Days);
+        if (Cycles.Count <= 1)
+            return DefaultCycleLength;
 
-        return intervals.Any()
-            ? (int)Math.Round(intervals.Average(), MidpointRounding.AwayFromZero)
-            : DefaultInterval;
+        var cycleLengths = new int[Cycles.Count - 1];
+        for (var i = 0; i < Cycles.Count - 1; i++)
+            cycleLengths[i] = (Cycles[i + 1][0] - Cycles[i][0]).Days;
+
+        return (int)Math.Round(cycleLengths.Average(), MidpointRounding.AwayFromZero);
     }
 
-    private int GetExpectedDuration()
+    private int GetExpectedPeriodLength()
     {
-        var periods = this.markedDates.GetDatePeriods();
+        if (Cycles.Count == 0)
+            return DefaultPeriodLength;
 
-        if (periods.Count == 0)
-            return DefaultDuration;
+        var lastCycle = Cycles[^1];
+        var periodLengths = Cycles.Select(x => x.GetPeriodLength()).ToArray();
+        var averagePeriodLength = (int)Math.Round(periodLengths.Average(), MidpointRounding.AwayFromZero);
+        var previousAveragePeriodLength = periodLengths.Length > 1
+            ? (int)Math.Round(periodLengths.SkipLast(1).Average(), MidpointRounding.AwayFromZero)
+            : DefaultPeriodLength;
+        
+        var isLastPeriodInProgress = lastCycle[0].AddDays(previousAveragePeriodLength - 1) > this.dateTimeProvider.Now.Date;
 
-        var lastPeriod = MarkedPeriods.Last();
-        var averageDuration = GetAverageDuration(periods);
-
-        var previousAverageDuration = GetAverageDuration(periods.SkipLast(1));
-        var isLastPeriodInProgress = lastPeriod.Start.AddDays(previousAverageDuration - 1) > this.dateTimeProvider.Now.Date;
-
-        return isLastPeriodInProgress ? previousAverageDuration : averageDuration;
+        return isLastPeriodInProgress ? previousAveragePeriodLength : averagePeriodLength;
     }
 
     private IEnumerable<DateTimePeriod> GetExpectedPeriods()
     {
-        if (MarkedPeriods.Count == 0)
+        if (Cycles.Count == 0)
             yield break;
 
-        var lastPeriod = MarkedPeriods.Last();
-        var isLastPeriodInProgress = lastPeriod.Start.AddDays(ExpectedDuration - 1) > this.dateTimeProvider.Now.Date;
+        var lastCycle = Cycles.Last();
+        var isLastPeriodInProgress = lastCycle[0].AddDays(ExpectedPeriodLength - 1) > this.dateTimeProvider.Now.Date;
 
-        for (var start = isLastPeriodInProgress ? lastPeriod.Start : lastPeriod.Start.AddDays(ExpectedInterval);
+        for (var start = isLastPeriodInProgress ? lastCycle[0] : lastCycle[0].AddDays(ExpectedCycleLength);
             start <= ObservedEnd;
-            start = start.AddDays(ExpectedInterval))
+            start = start.AddDays(ExpectedCycleLength))
         {
             yield return new DateTimePeriod
             {
                 Start = start,
-                End = start.AddDays(ExpectedDuration - 1)
+                End = start.AddDays(ExpectedPeriodLength - 1)
             };
         }
     }
 
-    private int GetAverageDuration(IEnumerable<DateTimePeriod> periods)
-        => periods.Any()
-        ? (int)Math.Round(periods.Average(p => p.DayCount()), MidpointRounding.AwayFromZero)
-        : DefaultDuration;
-
     private void OnDatesChanged()
     {
         this.expectedPeriods = null;
-        this.markedPeriods = null;
+        this.cycles = null;
         this.expectedDuration = null;
         this.expectedInterval = null;
     }

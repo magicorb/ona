@@ -32,19 +32,19 @@ public class DataPublisher : IDataPublisher
     private async Task PublishAsync()
         => await Task.Run(() =>
         {
-            var periods = this.mainModel.MarkedPeriods;
-            if (!periods.Any())
+            var cycles = this.mainModel.Cycles;
+            if (!cycles.Any())
             {
                 Preferences.Remove(Key, SharedName);
                 return;
             }
 
-            var lastPeriodStart = periods.Last().Start;
+            var lastPeriodStart = cycles.Last()[0];
             var periodState = new PeriodState
             {
                 startDate = lastPeriodStart.ToString("yyyy-MM-dd"),
-                duration = this.mainModel.ExpectedDuration,
-                interval = this.mainModel.ExpectedInterval
+                duration = this.mainModel.ExpectedPeriodLength,
+                interval = this.mainModel.ExpectedCycleLength
             };
 
             var periodStateString = JsonSerializer.Serialize(periodState);

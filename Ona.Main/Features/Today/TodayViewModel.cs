@@ -46,19 +46,20 @@ public class TodayViewModel : ViewModelBase
         }
         else
         {
-            var lastPeriodStart = this.mainModel.MarkedPeriods.Last().Start;
+            var cycles = await Task.Run(() => this.mainModel.Cycles);
+            var lastPeriodStart = cycles.Last()[0];
             var today = this.timeProvider.Now.Date;
             var periodElapsedDays = (today - lastPeriodStart).Days;
 
             Title = $"Day {periodElapsedDays + 1} of your cycle";
 
-            var periodLeftDays = this.mainModel.ExpectedDuration - periodElapsedDays;
+            var periodLeftDays = this.mainModel.ExpectedPeriodLength - periodElapsedDays;
 
             if (periodLeftDays > 0)
                 Subtitle = $"This period ends in {periodLeftDays} days.\r\nTap on the day to adjust.";
             else
             {
-                var averageInterval = this.mainModel.ExpectedInterval;
+                var averageInterval = this.mainModel.ExpectedCycleLength;
                 var cycleLeftDays = (lastPeriodStart.AddDays(averageInterval) - today).Days;
 
                 Subtitle = cycleLeftDays > 0
