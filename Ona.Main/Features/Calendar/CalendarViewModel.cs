@@ -2,6 +2,7 @@
 using Ona.Main.Controls;
 using Ona.Main.Environment;
 using Ona.Main.Model;
+using Ona.Model;
 using System.Collections.ObjectModel;
 
 namespace Ona.Main.Features.Calendar;
@@ -139,27 +140,35 @@ public class CalendarViewModel : ViewModelBase, IDisposable
             dateViewModel.IsMarked = false;
             await this.mainModel.DeleteDateAsync(dateViewModel.Date);
         }
-        else
+        else if (IsNewCycleStart(dateViewModel))
         {
-            var isAdjacent = GetNextDateViewModel(dateViewModel).IsMarked || GetPreviousDateViewModel(dateViewModel).IsMarked;
-            if (isAdjacent)
-                await MarkDateAsync(dateViewModel);
-            else
+            var expectedDuration = this.mainModel.ExpectedPeriodLength;
+            var dateToMark = dateViewModel;
+            for (var i = 0; i < expectedDuration; i++)
             {
-                var expectedDuration = this.mainModel.ExpectedPeriodLength;
-                var dateToMark = dateViewModel;
-                for (var i = 0; i < expectedDuration; i++)
-                {
-                    if (!dateToMark.IsMarked)
-                        await MarkDateAsync(dateToMark);
-                    dateToMark = GetNextDateViewModel(dateToMark);
-                }
+                if (!dateToMark.IsMarked)
+                    await MarkDateAsync(dateToMark);
+                dateToMark = GetNextDateViewModel(dateToMark);
             }
         }
+        else
+            await MarkDateAsync(dateViewModel);
 
         this.messenger.Send(new DatesChangedMessage(this));
 
         await RefreshExpectedDatesAsync();
+    }
+
+    private bool IsNewCycleStart(DateViewModel dateViewModel)
+    {
+        var currentDate = dateViewModel.Date;
+        if (this.mainModel.MarkedDates.TryLast(x => x < currentDate, out var previousDate))
+        {
+            var currentCycleStartDate = this.mainModel.Cycles.Select(x => x[0]).Last(x => x < currentDate);
+            return DateTimeEnumerableExtensions.IsNewCycleStart(currentDate, currentCycleStartDate, previousDate);
+        }
+
+        return true;
     }
 
     private async Task MarkDateAsync(DateViewModel dateViewModel)

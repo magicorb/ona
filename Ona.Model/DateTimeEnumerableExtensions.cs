@@ -57,7 +57,7 @@ public static class DateTimeEnumerableExtensions
         return length;
     }
 
-    private static bool IsNewCycleStart(DateTime currentDate, DateTime currentCycleStartDate, DateTime previousDate)
+    public static bool IsNewCycleStart(DateTime currentDate, DateTime currentCycleStartDate, DateTime previousDate)
     {
         const int MinCycleLength = 17;
         const int MinCycleGap = 4;
