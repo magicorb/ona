@@ -46,12 +46,13 @@ public static class DateTimeEnumerableExtensions
 
         while (enumerator.MoveNext())
         {
-            if ((enumerator.Current - previousDate).Days > MinPeriodGap)
+            var dayDiff = (enumerator.Current - previousDate).Days;
+            if (dayDiff > MinPeriodGap)
                 break;
 
             previousDate = enumerator.Current;
 
-            length++;
+            length += dayDiff;
         }
 
         return length;
