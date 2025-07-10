@@ -65,7 +65,7 @@ public class CalendarViewModel : ViewModelBase, IDisposable
 
         this.mainModel.ObservedEnd = this.months.Last().MonthDates.Last().Date;
 
-        await RefreshMarkedDatesAsync();
+        RefreshMarkedDates();
         await RefreshExpectedDatesAsync();
 
         newItem.Show();
@@ -83,7 +83,7 @@ public class CalendarViewModel : ViewModelBase, IDisposable
         this.months.Insert(0, newItem);
         Items.Insert(1, newItem);
 
-        await RefreshMarkedDatesAsync();
+        RefreshMarkedDates();
         await RefreshExpectedDatesAsync();
 
         newItem.Show();
@@ -97,7 +97,7 @@ public class CalendarViewModel : ViewModelBase, IDisposable
 
         this.mainModel.ObservedEnd = this.months.Last().MonthDates.Last().Date;
 
-        await RefreshMarkedDatesAsync();
+        RefreshMarkedDates();
         await RefreshExpectedDatesAsync();
     }
 
@@ -193,12 +193,10 @@ public class CalendarViewModel : ViewModelBase, IDisposable
         ? this.months[this.months.IndexOf(dateViewModel.MonthViewModel) - 1].MonthDates.Last()
         : dateViewModel.MonthViewModel.Dates[dateViewModel.MonthViewModel.Dates.IndexOf(dateViewModel) - 1];
 
-    private async Task RefreshMarkedDatesAsync()
+    private void RefreshMarkedDates()
     {
-        var lastMarkedDate = this.mainModel.MarkedDates.Last();
-
         foreach (var date in this.months.SelectMany(m => m.MonthDates))
-            date.IsMarked = date.Date <= lastMarkedDate && this.mainModel.MarkedDates.Contains(date.Date);
+            date.IsMarked = this.mainModel.MarkedDates.Contains(date.Date);
     }
 
     private async Task RefreshExpectedDatesAsync()
