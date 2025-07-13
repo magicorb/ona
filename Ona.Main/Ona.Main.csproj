@@ -2,16 +2,6 @@
 	<PropertyGroup>
 		<TargetFrameworks>net8.0-android;net8.0-ios;net8.0-maccatalyst</TargetFrameworks>
 		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net8.0-windows10.0.19041.0</TargetFrameworks>
-		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
-		<!-- <TargetFrameworks>$(TargetFrameworks);net8.0-tizen</TargetFrameworks> -->
-
-		<!-- Note for MacCatalyst:
-		The default runtime is maccatalyst-x64, except in Release config, in which case the default is maccatalyst-x64;maccatalyst-arm64.
-		When specifying both architectures, use the plural <RuntimeIdentifiers> instead of the singular <RuntimeIdentifier>.
-		The Mac App Store will NOT accept apps with ONLY maccatalyst-arm64 indicated;
-		either BOTH runtimes must be indicated or ONLY macatalyst-x64. -->
-		<!-- For example: <RuntimeIdentifiers>maccatalyst-x64;maccatalyst-arm64</RuntimeIdentifiers> -->
-
 		<OutputType>Exe</OutputType>
 		<RootNamespace>Ona.Main</RootNamespace>
 		<UseMaui>true</UseMaui>
@@ -51,6 +41,8 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-ios|AnyCPU'">
 		<ApplicationId>com.natalianaumova.ona</ApplicationId>
 		<CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
+		<CodesignKey>iPhone Distribution: Natalia Naumova (84LSMRR756)</CodesignKey>
+  		<CodesignProvision>Ovela Ad Hoc 2</CodesignProvision>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net8.0-maccatalyst|AnyCPU'">
@@ -64,6 +56,8 @@
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-ios|AnyCPU'">
 		<ApplicationId>com.natalianaumova.ona</ApplicationId>
 		<CodesignEntitlements>Platforms\iOS\Entitlements.plist</CodesignEntitlements>
+		<CodesignKey>iPhone Distribution: Natalia Naumova (84LSMRR756)</CodesignKey>
+  		<CodesignProvision>Ovela App Store 2</CodesignProvision>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net8.0-maccatalyst|AnyCPU'">
@@ -114,13 +108,13 @@
 	  <ProjectReference Include="..\Ona.Model\Ona.Model.csproj" />
 	</ItemGroup>
 
-	<!--<ItemGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
+	<ItemGroup Condition="'$(TargetFramework)'=='net8.0-ios'">
 		<AdditionalAppExtensions Include="$(MSBuildProjectDirectory)/../Ona.Widget">
 			<Name>widgetExtension</Name>
-			<BuildOutput Condition="'$(ComputedPlatform)' == 'iPhone'">Build/Products/Release-iphoneos</BuildOutput>
-			<BuildOutput Condition="'$(ComputedPlatform)' == 'iPhoneSimulator'">Build/Products/Debug-iphonesimulator</BuildOutput>
+			<BuildOutput Condition="'$(ComputedPlatform)' == 'iPhone'">DerivedData/ona/Build/Products/Release-iphoneos</BuildOutput>
+			<BuildOutput Condition="'$(ComputedPlatform)' == 'iPhoneSimulator'">DerivedData/ona/Build/Products/Debug-iphonesimulator</BuildOutput>
 		</AdditionalAppExtensions>
-	</ItemGroup>-->
+	</ItemGroup>
 
-	<!--<Import Project="$(MSBuildThisFileDirectory)CompileSwift.targets" />-->
+	<Import Project="$(MSBuildThisFileDirectory)CompileSwift.targets" />
 </Project>
