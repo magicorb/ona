@@ -6,8 +6,8 @@ namespace Ona.Main;
 public partial class App : Application
 {
 #if IOS
-	//[DllImport("__Internal", EntryPoint = "ReloadWidgets")]
-	//public extern static int ReloadWidgets();
+	[DllImport("__Internal", EntryPoint = "ReloadWidgets")]
+	public extern static int ReloadWidgets();
 #endif
 
     public App(AppShell appShell)
@@ -31,7 +31,7 @@ public partial class App : Application
     {
         base.OnSleep();
 #if IOS
-		//ReloadWidgets();
+		ReloadWidgets();
 #endif
     }
 }
